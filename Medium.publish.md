@@ -103,7 +103,7 @@ For `{2, 5, 7, 7}`, the lower rank of seven is two and the upper rank is four. T
 
 The interactive version accompanying this article lets you change the values, choose a rank or threshold, and step through the decisions. Every step shows what was counted or skipped.
 
-**Interactive walkthrough: publication URL pending.**
+[Open the interactive rank/select walkthrough](https://tareq-ali-1998.github.io/Organized-CPP-Ordered-Set/)
 
 
 

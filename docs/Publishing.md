@@ -2,15 +2,15 @@
 
 ## Links to add later
 
-The project has been pushed to [GitHub](https://github.com/Tareq-Ali-1998/Organized-CPP-Ordered-Set) and [GitLab](https://gitlab.com/tareqali591998/organized-cpp-ordered-set). GitHub is the primary repository linked from the articles. The Medium story and hosted interactive-guide URLs are still pending:
+The project has been pushed to [GitHub](https://github.com/Tareq-Ali-1998/Organized-CPP-Ordered-Set) and [GitLab](https://gitlab.com/tareqali591998/organized-cpp-ordered-set). GitHub is the primary repository linked from the articles. The [interactive guide](https://tareq-ali-1998.github.io/Organized-CPP-Ordered-Set/) and [Medium import page](https://tareq-ali-1998.github.io/Organized-CPP-Ordered-Set/Medium.publish.html) are live on GitHub Pages; both pages and all three article diagrams were checked with successful HTTP responses. The Medium story URL is still pending:
 
 - [x] Create both repositories and add the actual GitHub URL to `repository_url` in `publishing.json`.
 - [ ] Add the actual Medium story URL to `medium_url`.
-- [ ] Add the hosted interactive HTML URL to `interactive_url`.
+- [x] Confirm the hosted website and add its actual URL to `interactive_url`.
 - [ ] Run `python build.py` to put those links into both articles.
 - [ ] After the Medium story and hosted guide exist, run `python build.py --release-check` before posting the Codeforces article. It rejects missing or invalid URLs and stale outputs.
 
-Draft the Medium story first, arrange hosting for the interactive guide, and publish the story when its content and outgoing links are ready. Then save its actual public story URL in `publishing.json`, rebuild, and finish Codeforces last. The release check is the final cross-platform link check; it does not prevent starting a Medium draft before that story has a public URL.
+Push the generated article with its confirmed interactive-guide link, wait for Pages to update, and import the hosted article into Medium. Publish the story when its content and outgoing links are ready. Then save its actual public story URL in `publishing.json`, rebuild, and finish Codeforces last. The release check is the final cross-platform link check; it does not prevent starting a Medium draft before that story has a public URL.
 
 The Codeforces draft intentionally displays a pending Medium link until that real URL exists. The repository links point to the projects' default-branch views, so readers reach the current code as new commits are pushed. No unpublished article or hosting URL is guessed.
 
@@ -26,7 +26,7 @@ Commit the generated articles, `index.html`, other named article previews, and t
 
 The `.gitattributes` file keeps text line endings stable across Windows and Linux, so diagram/provenance hash checks survive a checkout. `.nojekyll` marks the prebuilt website for GitHub Pages without a Jekyll conversion. For a live tutorial URL, configure Pages after creating the repository; merely clicking an HTML file in the repository viewer shows its source rather than launching the website.
 
-`index.html` and `Medium.html` contain the same interactive tutorial. They can be hosted as static files using [GitHub Pages](https://docs.github.com/en/pages/getting-started-with-github-pages/creating-a-github-pages-site) or [GitLab Pages](https://docs.gitlab.com/user/project/pages/) after configuring hosting in the future repository. Keep the `assets` directory beside them. Static files alone cannot guarantee that Medium will embed an arbitrary hosting URL; a normal link works independently of embed support. The `repository_url` field can point to either host; choose the primary one for the articles and add the other repository as a mirror link in the README once both exist.
+`index.html` and `Medium.html` contain the same interactive tutorial. This project's live site is served by [GitHub Pages](https://docs.github.com/en/pages/getting-started-with-github-pages/creating-a-github-pages-site). [GitLab Pages](https://docs.gitlab.com/user/project/pages/) is an alternative if separately configured; mirroring the Git repository there does not enable a second website automatically. Keep the `assets` directory beside the HTML files. Static files alone cannot guarantee that Medium will embed an arbitrary hosting URL; a normal link works independently of embed support. The `repository_url` field points to the primary GitHub repository, and the README links to its GitLab mirror.
 
 ## Codeforces
 

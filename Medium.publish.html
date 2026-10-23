@@ -192,7 +192,7 @@ pre .il { color: #666 } /* Literal.Number.Integer.Long */
 <p>This is the idea behind <code>order_of_key(x)</code>. With the default ascending comparator, it counts values <code>&lt; x</code>. A second operation, <code>order_of_key_upper(x)</code>, includes equivalent values and therefore counts <code>&lt;= x</code>.</p>
 <p>For <code>{2, 5, 7, 7}</code>, the lower rank of seven is two and the upper rank is four. Their difference gives the number of sevens: two. Counting duplicates does not require walking over them.</p>
 <p>The interactive version accompanying this article lets you change the values, choose a rank or threshold, and step through the decisions. Every step shows what was counted or skipped.</p>
-<p><strong>Interactive walkthrough: publication URL pending.</strong></p>
+<p><a href="https://tareq-ali-1998.github.io/Organized-CPP-Ordered-Set/">Open the interactive rank/select walkthrough</a></p>
 <h2 id="the-library-already-knows-how-to-balance-the-tree">The library already knows how to balance the tree</h2>
 <p>GNU C++ provides a policy-based data structures extension, usually called <strong>PBDS</strong>. Its order-statistics policy maintains the subtree metadata we have been discussing.</p>
 <p>The underlying unique-key declaration looks like this:</p>
