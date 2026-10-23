@@ -52,15 +52,29 @@ A post on Medium is called a **story**. Clicking **Write** creates a draft; Medi
 
 The story editor is a visual document editor. Write normal text, then select it to apply bold, headings, and links. The title is the first title line; select the line below it and use the smaller **T** to make the subtitle if needed. Medium's [editor guide](https://help.medium.com/hc/en-us/articles/215194537-Using-the-story-editor) documents these controls. Medium does not natively render LaTeX expressions; this story already writes complexities such as `O(log(n + 1))` as ordinary inline code, so no math extension is needed.
 
-Use `Medium.publish.md` as the publishing copy and `Medium.publish.html` as a formatted reading/copying aid. `Medium.md` is the source version that keeps Mermaid diagrams available on GitHub. Medium is a rich-text editor; copying a Markdown file is not a guarantee that every formatting element will be imported automatically.
+Use `Medium.publish.md` as the publishing source and `Medium.publish.html` as the complete static article with PNG diagrams. `Medium.md` retains Mermaid diagram sources. Medium's Write editor does not turn a local HTML or Markdown file attachment into a finished story. You do not need to retype the article paragraph by paragraph: import a public webpage URL, or copy the rendered article into a draft.
 
 Pasting HTML source into Medium will not install the website or execute the tutorial's JavaScript. Copying rendered text can help transfer prose, but images and code blocks still need checking in Medium's own editor. Colors, layout, and custom CSS from the local preview are not promised to survive. The PNG diagrams retain their colors because those colors are part of the images.
 
-1. Add the title, subtitle, and prose in the Medium editor.
-2. Insert code through Medium’s code-block control or its triple-backtick shortcut. The [Medium code-block guide](https://help.medium.com/hc/en-us/articles/35756844492439-Using-code-blocks-and-inline-code) documents the editor controls.
-3. Upload the matching PNG at each figure position. Set descriptive alt text and the caption printed after the figure in the article.
-4. Add the actual repository and interactive-walkthrough links. Keep the full implementation in the repository; the Medium article explains it through smaller examples.
-5. Check the story on a narrow screen and confirm the final AI-assistance disclosure remains at the end.
+### Recommended: import the hosted article
+
+Medium's [Import a story tool](https://help.medium.com/hc/en-us/articles/214550207-Importing-a-post-to-Medium) accepts a public article URL. The files are already prepared; hosting makes that HTML and its images available to the importer.
+
+1. Build and push the current files, including the updated title and repository links, to GitHub. GitLab can receive the same commit.
+2. In the GitHub repository, open **Settings → Pages**. Choose **Deploy from a branch**, branch **main**, folder **/(root)**, then **Save**. These are the [GitHub Pages branch-publishing settings](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site). No additional site generator is needed: this project includes prebuilt HTML and `.nojekyll`.
+3. Wait for deployment and open the actual website URL shown by GitHub. Confirm that both its main page and `Medium.publish.html` load, including the images. Do not use the repository's `github.com/.../blob/...` source-view URL as the article URL.
+4. Save the confirmed main website URL in `interactive_url` in `publishing.json`, rebuild, verify, and push. Wait for the updated article to deploy so its interactive-guide link is filled before importing.
+5. In Medium, open **Stories → Import a story**, paste the public URL ending in `/Medium.publish.html`, click **Import**, then **See your story**. This creates an imported draft; the earlier manually started draft can remain saved.
+6. Review the title, subtitle, all three diagrams, captions, code blocks, repository/interactive links, and final AI-assistance line. Medium applies its own formatting. Importing is a best-effort conversion, not a guarantee that every element transfers correctly. The importer also sets a canonical link to the original page.
+7. Publish the reviewed story. Save its actual public Medium URL in `medium_url`, rebuild, and finish the Codeforces article last.
+
+The website URL is filled in only after its deployment is confirmed. A file on your computer is not a public URL, and pushing HTML into a repository does not by itself enable Pages hosting. Medium does not run the website's JavaScript; the story links to the interactive page.
+
+### Fallback: copy the complete rendered article
+
+If import fails, use Medium's [documented manual migration process](https://help.medium.com/hc/en-us/articles/360033931713-Trouble-importing-content-using-the-import-tool). Open `Medium.publish.html` in a browser, select the article body from the opening paragraph through the final attribution, and copy it. Exclude the navigation/sidebar and the title/subtitle if those are already in the draft. Paste into the draft with normal **Ctrl+V** to retain available formatting; **Ctrl+Shift+V** strips formatting.
+
+Review headings and links, restore any missing images, and repair code blocks with Medium's **{ }** control. You can transfer the whole body in one paste; the smaller paragraph-by-paragraph steps are optional. The [code-block guide](https://help.medium.com/hc/en-us/articles/35756844492439-Using-code-blocks-and-inline-code) documents the controls. Keep the full implementation in the repository and the smaller examples in the story.
 
 | Figure | Upload | Meaning |
 |---|---|---|

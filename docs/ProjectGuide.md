@@ -10,7 +10,7 @@ To use the C++ container, take `OrderedSet.hpp`. To explore the tree, open `inde
 | `Medium.html` | The same interactive website under an article-friendly filename. Its contents match `index.html`. |
 | `Medium.md` | The long article in Markdown, retaining editable Mermaid diagram blocks. |
 | `Medium.publish.md` | The story-preparation copy with PNG diagrams instead of Mermaid source. |
-| `Medium.publish.html` | A formatted, static preparation preview of that copy. Its images are ready to upload; its HTML is not a Medium publishing format. |
+| `Medium.publish.html` | The complete static article with PNG diagrams. Copy its rendered content, or host it and give its public URL to Medium's importer. It is not a local file attachment to upload in Write. |
 | `Codeforces.md` | The shorter contest article in Codeforces Markdown, including math and a full-code spoiler. Paste this version into the Codeforces editor. |
 | `Codeforces.html` | A local preview for reading. Codeforces itself renders the final math and spoiler. |
 
@@ -92,4 +92,6 @@ The executable goes under `build/`; its exact location depends on the generator.
 
 ## Publishing
 
-Follow [Publishing.md](Publishing.md) for GitHub, GitLab, Codeforces, and Medium. Publishing the repository and publishing the articles are separate steps. Remember to add the real URLs to `publishing.json` when they exist; the release check deliberately refuses missing links. The local HTML is a complete offline website, while the story platforms use their own editors.
+Follow [Publishing.md](Publishing.md) for GitHub, GitLab, Codeforces, and Medium. For Medium, the recommended bulk-transfer route is to host `Medium.publish.html` and use **Stories → Import a story** with its public URL. Copying the complete rendered article is the fallback; retyping it section by section is unnecessary. Review the converted story before publishing.
+
+Publishing the repository and publishing the articles are separate steps. Remember to add the real URLs to `publishing.json` when they exist; the release check deliberately refuses missing links. The local HTML is a complete offline website, while the story platforms use their own editors.
