@@ -1,0 +1,97 @@
+{
+    "started_at_utc": "2026-10-23T19:05:28.146110+00:00",
+    "shared_snippets": 8,
+    "snippet_cpp_tokens_unchanged": true,
+    "trailing_comment_column_one_based": 53,
+    "header_sha256": "2b84c1cc006341e1c36093e0834e06a034d1a227eb67a2aa4e3d749d8c8749df",
+    "local_export_whitespace_updates": [
+        "README.html",
+        "docs/Examples.html"
+    ],
+    "checks": {
+        "vscode_builtin_html_css_diagnostics": {
+            "before": {
+                "index.html": {
+                    "errors": 30,
+                    "warnings": 25
+                }
+            },
+            "after": {
+                "index.html": {
+                    "errors": 0,
+                    "warnings": 0
+                },
+                "Medium.html": {
+                    "errors": 0,
+                    "warnings": 0
+                },
+                "Medium.publish.html": {
+                    "errors": 0,
+                    "warnings": 0
+                },
+                "Codeforces.html": {
+                    "errors": 0,
+                    "warnings": 0
+                },
+                "docs/API.html": {
+                    "errors": 0,
+                    "warnings": 0
+                }
+            }
+        },
+        "publication_link_tests": 5,
+        "documentation_tool_tests": 8,
+        "current_generated_outputs": 11,
+        "local_markdown_links_checked": 31,
+        "local_html_links_and_resources_checked": 67,
+        "ci_configurations": {
+            ".github/workflows/verify.yml": {
+                "yaml_parsed": true,
+                "verification_commands": 7,
+                "hosted_run": "not run; repository not created"
+            },
+            ".gitlab-ci.yml": {
+                "yaml_parsed": true,
+                "verification_commands": 6,
+                "hosted_run": "not run; repository not created"
+            }
+        },
+        "release_check_rejects_pending_links": true,
+        "preserved_contributions": {
+            "status": "unchanged",
+            "files": 22
+        },
+        "fresh_runtime_report": "validation/PublicationRun.json",
+        "browser_checks": 54
+    },
+    "status": "passed",
+    "finished_at_utc": "2026-10-23T19:08:30.420125+00:00",
+    "current_sha256": {
+        ".gitattributes": "aca7672e19c00077291fd8ed1d95d2c580b219d79d251019c3b0757b0619fcb1",
+        ".github/workflows/verify.yml": "fc6715c3c7041d6b98a131f6654659ce192777d949c39f768456299d7c330e8d",
+        ".gitignore": "73adf239f7470857d3e249aadf413647bf18645699b93d0d66207381694d7cb2",
+        ".gitlab-ci.yml": "bde6965c3588d1663293b7f760e2c16151017007d1ae2458b9235951ae5b651c",
+        ".vscode/settings.json": "4afd878780c64ce35deced1f1daf6aa5b664e561c503ec528380f6641c65c199",
+        "CONTRIBUTING.md": "217d1dd88a7f5dcd806e40a08337e5c625895c679c235d4b1cb860b494f26748",
+        "Codeforces.html": "e59e594f8117f67aec8694f2bc96806a01a661050c747260893a089acfff1bf8",
+        "Codeforces.md": "88df7901d1758e8349789b394d1165ecae5d40304060fe84cd98c96eba7299fb",
+        "Medium.html": "eaaf22002a9a4bcea240c335a48fbb09e1d4c63f25c386dd578f810eafbfe345",
+        "Medium.md": "c9939c9fea959aed260a4c68f0ab9fa9dc4062e1185ff3894795e7d2cc2b8b86",
+        "Medium.publish.html": "e7ad17087bee11aa44440387532d49c6fd0ec52a9300deabceb17b4261711e47",
+        "Medium.publish.md": "49d7fdc00f150639d5f00a7d7a211bcf9781c22670e4c54841bb893c414cbe1e",
+        "OrderedSet.cpp": "cc79b7311fe82b8f026fc6079e6cb2e6128264634df1b74989f347d6017cbb95",
+        "README.md": "020ae17b6907dd1dab05302b366a739541281cdd68f3d3d40e48ea873b78301d",
+        "STATUS.md": "4b056f3758a5ab7d1e61b5750ca9a36a5d605e72956e450cc5e036d1f629fa65",
+        "build.py": "88798088a009638e1dc7f4c81fb71b4dc87cde35d7850daa78210d43a571444f",
+        "docs/API.html": "615dadbf2148365ed15599433282df0703578ee3d9d9e698a9c0dbee869984af",
+        "docs/Examples.md": "43fe939a4a103a05b6d0c0978aa93da08715f489b506013c135e0c81ff55315e",
+        "docs/ProjectGuide.md": "0c1dabbb2ffaeeda9bb353b9e74f542c3e4d7898345902c77fdc65e71ff78df9",
+        "docs/Publishing.md": "8cbe7e4114a7523d2e6bb40df76b72712b9f50dac9708b7cc80794222b306b87",
+        "docs/Validation.md": "95f3bf3b8210179da3c0ecab1d47282565e003c033a8c9efae805901068509cc",
+        "index.html": "eaaf22002a9a4bcea240c335a48fbb09e1d4c63f25c386dd578f810eafbfe345",
+        "sources/examples.json": "f7d4f2760ca30511b702461cf2d2ee6d66047477165ffd621a9ded71c86b9ead",
+        "tests/DocumentationTests.py": "7afb21c37c1e6ea2ce6318b2d98d66a6ce14d6faa71efb7e6ace50cc0f0c98cb",
+        "tools/browser_check.py": "8e4f9757f2a87633eda07e353594393ee7fefcf56828d1f7793c38e06f254bdb",
+        "verify.py": "f393e83256970744a1ff1d00beb0a6d843f5a35c10191042939feea91bd9ebcf"
+    }
+}

@@ -1,0 +1,480 @@
+{
+    "status": "completed_with_execution_limitations",
+    "started_at_utc": "2026-10-23T13:02:43.472160+00:00",
+    "documents": {
+        "generated_files": [
+            "README.md",
+            "OrderedSet.cpp",
+            "Medium.md",
+            "Medium.publish.md",
+            "Codeforces.md",
+            "Medium.html",
+            "index.html",
+            "Medium.publish.html",
+            "Codeforces.html",
+            "docs/Examples.md",
+            "docs/API.html"
+        ],
+        "documented_method_names": 34,
+        "rendered_diagrams": 4,
+        "offline_assets_present": true
+    },
+    "preserved_contributions": {
+        "status": "unchanged",
+        "files": 22
+    },
+    "profiles": [
+        {
+            "name": "gcc17",
+            "compiler": "g++.EXE (MinGW-W64 x86_64-ucrt-posix-seh, built by Brecht Sanders, r3) 14.2.0",
+            "flags": [
+                "-std=c++17",
+                "-O2",
+                "-Wall",
+                "-Wextra",
+                "-Wshadow",
+                "-pedantic",
+                "-Werror"
+            ],
+            "container_suite": "Passed 384000 randomized operations, 265720 exhaustive trace states, and 27073587 checks.",
+            "article_examples": "Passed 6 runnable snippets and 34495 recipe checks.",
+            "standalone_example": "compiled; execution blocked"
+        },
+        {
+            "name": "clang17",
+            "compiler": "(built by Brecht Sanders, r3) clang version 19.1.7",
+            "flags": [
+                "-std=c++17",
+                "-O2",
+                "-Wall",
+                "-Wextra",
+                "-Wshadow",
+                "-pedantic",
+                "-Werror"
+            ],
+            "container_suite": "compiled; execution blocked",
+            "article_examples": "Passed 6 runnable snippets and 34495 recipe checks.",
+            "standalone_example": "matched Example.out"
+        },
+        {
+            "name": "gcc20",
+            "compiler": "g++.EXE (MinGW-W64 x86_64-ucrt-posix-seh, built by Brecht Sanders, r3) 14.2.0",
+            "flags": [
+                "-std=c++20",
+                "-O2",
+                "-Wall",
+                "-Wextra",
+                "-Wshadow",
+                "-pedantic",
+                "-Werror"
+            ],
+            "container_suite": "Passed 384000 randomized operations, 265720 exhaustive trace states, and 27073587 checks.",
+            "article_examples": "Passed 6 runnable snippets and 34495 recipe checks.",
+            "standalone_example": "matched Example.out"
+        },
+        {
+            "name": "gcc17_ubsan_traps",
+            "compiler": "g++.EXE (MinGW-W64 x86_64-ucrt-posix-seh, built by Brecht Sanders, r3) 14.2.0",
+            "flags": [
+                "-std=c++17",
+                "-O1",
+                "-Wall",
+                "-Wextra",
+                "-Wshadow",
+                "-pedantic",
+                "-Werror",
+                "-D_GLIBCXX_ASSERTIONS",
+                "-fsanitize=undefined",
+                "-fsanitize-undefined-trap-on-error",
+                "-fno-sanitize=vptr"
+            ],
+            "container_suite": "Passed 384000 randomized operations, 265720 exhaustive trace states, and 27073587 checks.",
+            "article_examples": "compiled; execution blocked",
+            "standalone_example": "matched Example.out"
+        }
+    ],
+    "execution_limitations": [
+        {
+            "program": "gcc17-example.exe",
+            "reason": "Windows Application Control blocked execution (WinError 4551)"
+        },
+        {
+            "program": "clang17-suite.exe",
+            "reason": "Windows Application Control blocked execution (WinError 4551)"
+        },
+        {
+            "program": "gcc17_ubsan_traps-articles.exe",
+            "reason": "Windows Application Control blocked execution (WinError 4551)"
+        }
+    ],
+    "benchmark": {
+        "n": 300000,
+        "trials": {
+            "raw_set": [
+                {
+                    "mode": "raw_set",
+                    "n": 300000,
+                    "object_bytes": 32,
+                    "insert_seconds": 0.097804,
+                    "query_seconds": 0.153674,
+                    "erase_seconds": 0.066522,
+                    "total_seconds": 0.318,
+                    "remaining": 103339,
+                    "checksum": 125407207918
+                },
+                {
+                    "mode": "raw_set",
+                    "n": 300000,
+                    "object_bytes": 32,
+                    "insert_seconds": 0.100145,
+                    "query_seconds": 0.153175,
+                    "erase_seconds": 0.053779,
+                    "total_seconds": 0.307099,
+                    "remaining": 103339,
+                    "checksum": 125407207918
+                },
+                {
+                    "mode": "raw_set",
+                    "n": 300000,
+                    "object_bytes": 32,
+                    "insert_seconds": 0.105469,
+                    "query_seconds": 0.173568,
+                    "erase_seconds": 0.090573,
+                    "total_seconds": 0.369609,
+                    "remaining": 103339,
+                    "checksum": 125407207918
+                },
+                {
+                    "mode": "raw_set",
+                    "n": 300000,
+                    "object_bytes": 32,
+                    "insert_seconds": 0.106536,
+                    "query_seconds": 0.1791,
+                    "erase_seconds": 0.077305,
+                    "total_seconds": 0.362941,
+                    "remaining": 103339,
+                    "checksum": 125407207918
+                },
+                {
+                    "mode": "raw_set",
+                    "n": 300000,
+                    "object_bytes": 32,
+                    "insert_seconds": 0.117458,
+                    "query_seconds": 0.18319,
+                    "erase_seconds": 0.066629,
+                    "total_seconds": 0.367276,
+                    "remaining": 103339,
+                    "checksum": 125407207918
+                }
+            ],
+            "set": [
+                {
+                    "mode": "set",
+                    "n": 300000,
+                    "object_bytes": 32,
+                    "insert_seconds": 0.099277,
+                    "query_seconds": 0.198418,
+                    "erase_seconds": 0.073766,
+                    "total_seconds": 0.371461,
+                    "remaining": 103339,
+                    "checksum": 125407207918
+                },
+                {
+                    "mode": "set",
+                    "n": 300000,
+                    "object_bytes": 32,
+                    "insert_seconds": 0.078215,
+                    "query_seconds": 0.141357,
+                    "erase_seconds": 0.066068,
+                    "total_seconds": 0.28564,
+                    "remaining": 103339,
+                    "checksum": 125407207918
+                },
+                {
+                    "mode": "set",
+                    "n": 300000,
+                    "object_bytes": 32,
+                    "insert_seconds": 0.113807,
+                    "query_seconds": 0.197444,
+                    "erase_seconds": 0.096143,
+                    "total_seconds": 0.407394,
+                    "remaining": 103339,
+                    "checksum": 125407207918
+                },
+                {
+                    "mode": "set",
+                    "n": 300000,
+                    "object_bytes": 32,
+                    "insert_seconds": 0.11267,
+                    "query_seconds": 0.173915,
+                    "erase_seconds": 0.072769,
+                    "total_seconds": 0.359354,
+                    "remaining": 103339,
+                    "checksum": 125407207918
+                },
+                {
+                    "mode": "set",
+                    "n": 300000,
+                    "object_bytes": 32,
+                    "insert_seconds": 0.097681,
+                    "query_seconds": 0.160256,
+                    "erase_seconds": 0.065848,
+                    "total_seconds": 0.323785,
+                    "remaining": 103339,
+                    "checksum": 125407207918
+                }
+            ],
+            "raw_multi64": [
+                {
+                    "mode": "raw_multi64",
+                    "n": 300000,
+                    "object_bytes": 32,
+                    "insert_seconds": 0.12671,
+                    "query_seconds": 0.227731,
+                    "erase_seconds": 0.114303,
+                    "total_seconds": 0.468744,
+                    "remaining": 150000,
+                    "checksum": 45434861789
+                },
+                {
+                    "mode": "raw_multi64",
+                    "n": 300000,
+                    "object_bytes": 32,
+                    "insert_seconds": 0.100151,
+                    "query_seconds": 0.194376,
+                    "erase_seconds": 0.061063,
+                    "total_seconds": 0.355591,
+                    "remaining": 150000,
+                    "checksum": 45434861789
+                },
+                {
+                    "mode": "raw_multi64",
+                    "n": 300000,
+                    "object_bytes": 32,
+                    "insert_seconds": 0.106423,
+                    "query_seconds": 0.230879,
+                    "erase_seconds": 0.077664,
+                    "total_seconds": 0.414966,
+                    "remaining": 150000,
+                    "checksum": 45434861789
+                },
+                {
+                    "mode": "raw_multi64",
+                    "n": 300000,
+                    "object_bytes": 32,
+                    "insert_seconds": 0.119387,
+                    "query_seconds": 0.214146,
+                    "erase_seconds": 0.064933,
+                    "total_seconds": 0.398467,
+                    "remaining": 150000,
+                    "checksum": 45434861789
+                },
+                {
+                    "mode": "raw_multi64",
+                    "n": 300000,
+                    "object_bytes": 32,
+                    "insert_seconds": 0.120105,
+                    "query_seconds": 0.232234,
+                    "erase_seconds": 0.067559,
+                    "total_seconds": 0.419898,
+                    "remaining": 150000,
+                    "checksum": 45434861789
+                }
+            ],
+            "multi64": [
+                {
+                    "mode": "multi64",
+                    "n": 300000,
+                    "object_bytes": 40,
+                    "insert_seconds": 0.117212,
+                    "query_seconds": 0.188479,
+                    "erase_seconds": 0.050604,
+                    "total_seconds": 0.356294,
+                    "remaining": 150000,
+                    "checksum": 45434861789
+                },
+                {
+                    "mode": "multi64",
+                    "n": 300000,
+                    "object_bytes": 40,
+                    "insert_seconds": 0.105593,
+                    "query_seconds": 0.179024,
+                    "erase_seconds": 0.047549,
+                    "total_seconds": 0.332167,
+                    "remaining": 150000,
+                    "checksum": 45434861789
+                },
+                {
+                    "mode": "multi64",
+                    "n": 300000,
+                    "object_bytes": 40,
+                    "insert_seconds": 0.124922,
+                    "query_seconds": 0.240156,
+                    "erase_seconds": 0.059702,
+                    "total_seconds": 0.42478,
+                    "remaining": 150000,
+                    "checksum": 45434861789
+                },
+                {
+                    "mode": "multi64",
+                    "n": 300000,
+                    "object_bytes": 40,
+                    "insert_seconds": 0.151791,
+                    "query_seconds": 0.243378,
+                    "erase_seconds": 0.075029,
+                    "total_seconds": 0.470198,
+                    "remaining": 150000,
+                    "checksum": 45434861789
+                },
+                {
+                    "mode": "multi64",
+                    "n": 300000,
+                    "object_bytes": 40,
+                    "insert_seconds": 0.12941,
+                    "query_seconds": 0.209872,
+                    "erase_seconds": 0.053281,
+                    "total_seconds": 0.392563,
+                    "remaining": 150000,
+                    "checksum": 45434861789
+                }
+            ],
+            "raw_multi32": [
+                {
+                    "mode": "raw_multi32",
+                    "n": 300000,
+                    "object_bytes": 32,
+                    "insert_seconds": 0.101588,
+                    "query_seconds": 0.191058,
+                    "erase_seconds": 0.058843,
+                    "total_seconds": 0.351489,
+                    "remaining": 150000,
+                    "checksum": 45434861789
+                },
+                {
+                    "mode": "raw_multi32",
+                    "n": 300000,
+                    "object_bytes": 32,
+                    "insert_seconds": 0.099761,
+                    "query_seconds": 0.188315,
+                    "erase_seconds": 0.063295,
+                    "total_seconds": 0.351372,
+                    "remaining": 150000,
+                    "checksum": 45434861789
+                },
+                {
+                    "mode": "raw_multi32",
+                    "n": 300000,
+                    "object_bytes": 32,
+                    "insert_seconds": 0.118842,
+                    "query_seconds": 0.24622,
+                    "erase_seconds": 0.082474,
+                    "total_seconds": 0.447536,
+                    "remaining": 150000,
+                    "checksum": 45434861789
+                },
+                {
+                    "mode": "raw_multi32",
+                    "n": 300000,
+                    "object_bytes": 32,
+                    "insert_seconds": 0.125269,
+                    "query_seconds": 0.27186,
+                    "erase_seconds": 0.095262,
+                    "total_seconds": 0.492391,
+                    "remaining": 150000,
+                    "checksum": 45434861789
+                },
+                {
+                    "mode": "raw_multi32",
+                    "n": 300000,
+                    "object_bytes": 32,
+                    "insert_seconds": 0.093015,
+                    "query_seconds": 0.195551,
+                    "erase_seconds": 0.062359,
+                    "total_seconds": 0.350926,
+                    "remaining": 150000,
+                    "checksum": 45434861789
+                }
+            ],
+            "multi32": [
+                {
+                    "mode": "multi32",
+                    "n": 300000,
+                    "object_bytes": 40,
+                    "insert_seconds": 0.1177,
+                    "query_seconds": 0.180315,
+                    "erase_seconds": 0.050531,
+                    "total_seconds": 0.348546,
+                    "remaining": 150000,
+                    "checksum": 45434861789
+                },
+                {
+                    "mode": "multi32",
+                    "n": 300000,
+                    "object_bytes": 40,
+                    "insert_seconds": 0.107926,
+                    "query_seconds": 0.20088,
+                    "erase_seconds": 0.069715,
+                    "total_seconds": 0.378522,
+                    "remaining": 150000,
+                    "checksum": 45434861789
+                },
+                {
+                    "mode": "multi32",
+                    "n": 300000,
+                    "object_bytes": 40,
+                    "insert_seconds": 0.134225,
+                    "query_seconds": 0.233554,
+                    "erase_seconds": 0.067402,
+                    "total_seconds": 0.435181,
+                    "remaining": 150000,
+                    "checksum": 45434861789
+                },
+                {
+                    "mode": "multi32",
+                    "n": 300000,
+                    "object_bytes": 40,
+                    "insert_seconds": 0.128872,
+                    "query_seconds": 0.224214,
+                    "erase_seconds": 0.072331,
+                    "total_seconds": 0.425417,
+                    "remaining": 150000,
+                    "checksum": 45434861789
+                },
+                {
+                    "mode": "multi32",
+                    "n": 300000,
+                    "object_bytes": 40,
+                    "insert_seconds": 0.112188,
+                    "query_seconds": 0.227204,
+                    "erase_seconds": 0.067674,
+                    "total_seconds": 0.407066,
+                    "remaining": 150000,
+                    "checksum": 45434861789
+                }
+            ]
+        },
+        "matching_trial_pairs": 15,
+        "median_total_seconds": {
+            "raw_set": 0.362941,
+            "set": 0.359354,
+            "raw_multi64": 0.414966,
+            "multi64": 0.392563,
+            "raw_multi32": 0.351489,
+            "multi32": 0.407066
+        },
+        "note": "One seeded workload; object sizes exclude allocated nodes; no universal speed claim."
+    },
+    "sha256": {
+        "OrderedSet.hpp": "80027e5e8e13f407515182e9eeedbc6f9c9fcde23d09abb4bb9838c12bd1d063",
+        "OrderedSet.cpp": "73b8f447a5c34aecbd19ba892a6eef3a82c622aa8a40024ae95ce37ad0fe57e9",
+        "Medium.md": "1829797367ac9e76343fadbcc612914271e81ce76999edddbf4f46961b158226",
+        "Codeforces.md": "65feb6385daeac756f87232d24bc37a659eedbf9c775a7cb2182bfc70eed3bca",
+        "sources/examples.json": "0caf07e934e9a691d5f83640643496d2740cd21062f025071f87c51069006e35",
+        "tests/OrderedSetTests.cpp": "a55a14ea4faeedcb386a14251741af6eeafb267106fe5a49ea649ff22982920d",
+        "tests/OrderedSetBenchmark.cpp": "c97e76e5f763fcf6240d6eae136b139007afcb5dad9268933d61683f762e9235",
+        "assets/demo-model.js": "a24ee49569910a601e435eeeb3a5ae7b3533ee3234bcec4eef857fcb9098b762",
+        "verify.py": "f76a9c6e596f7bc7bfa61e655f2244dafba00be017d7b1399c96b14dee48c7dd"
+    },
+    "walkthrough_model": "Passed 430847 walkthrough-model checks.",
+    "finished_at_utc": "2026-10-23T13:04:19.705536+00:00"
+}

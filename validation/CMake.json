@@ -1,0 +1,7 @@
+{
+    "status": "passed",
+    "generator": "MinGW Makefiles",
+    "target": "ordered_set_example",
+    "configuration_and_build": true,
+    "note": "The CMake target compiled successfully; the example runtime was tested separately."
+}

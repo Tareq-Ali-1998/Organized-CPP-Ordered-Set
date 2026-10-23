@@ -1,0 +1,25 @@
+__pycache__/
+*.pyc
+*.exe
+*.o
+build/
+node_modules/
+.venv/
+.DS_Store
+/Example
+/Benchmark
+*.layout
+*.depend
+exports/
+*.log
+
+# Local Markdown PDF previews; build.py manages the named article HTML files.
+/README.html
+/CONTRIBUTING.html
+/STATUS.html
+/THIRD_PARTY_NOTICES.html
+/sources/*.html
+/docs/Examples.html
+/docs/Publishing.html
+/docs/ProjectGuide.html
+/docs/Validation.html

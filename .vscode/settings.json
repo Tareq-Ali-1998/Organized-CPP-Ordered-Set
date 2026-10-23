@@ -1,0 +1,6 @@
+{
+    "markdown-pdf.outputDirectory": "exports",
+    "markdown-pdf.outputDirectoryRelativePathFile": false,
+    "markdown-pdf.styles": ["assets/article.css"],
+    "markdown-pdf.stylesRelativePathFile": false
+}

@@ -1,0 +1,16 @@
+flowchart TD
+    subgraph Input["Attach insertion IDs"]
+        direction LR
+        A["Insert: 7, 2, 7, 5"] --> B["(7,0), (2,1), (7,2), (5,3)"]
+    end
+    subgraph Output["Sort by value, then ID"]
+        direction LR
+        C["(2,1), (5,3), (7,0), (7,2)"] --> D["Public values: 2, 5, 7, 7"]
+    end
+    Input --> Output
+    classDef input fill:#dbeafe,stroke:#2563eb,color:#172554;
+    classDef ids fill:#ede9fe,stroke:#7c3aed,color:#4c1d95;
+    classDef output fill:#dcfce7,stroke:#15803d,color:#14532d;
+    class A input;
+    class B,C ids;
+    class D output;

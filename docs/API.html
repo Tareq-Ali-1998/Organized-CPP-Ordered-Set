@@ -1,0 +1,500 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Ordered set API</title><style>
+:root { color-scheme: light; --ink: #182d44; --muted: #526479; --teal: #087f78; }
+* { box-sizing: border-box; }
+body { margin: 0; color: var(--ink); background: #f7f8fa; font-family: "Segoe UI", Arial, sans-serif; line-height: 1.75; }
+.topbar { padding: 18px max(24px, calc((100vw - 1150px) / 2)); background: #132c45; color: #fff; display: flex; justify-content: space-between; gap: 18px; flex-wrap: wrap; }
+.brand { font-weight: 700; letter-spacing: .02em; }
+.topbar a { color: #e2f8f3; margin-left: 20px; }
+.layout { display: grid; grid-template-columns: 190px minmax(0, 850px); gap: 35px; max-width: 1150px; margin: 45px auto; padding: 0 24px; }
+.toc { position: sticky; top: 25px; align-self: start; font-size: 13px; line-height: 1.5; }
+.toc strong { color: var(--teal); }
+.toc a { display: block; padding: 7px 0; color: var(--muted); text-decoration: none; }
+article { min-width: 0; background: #fff; padding: 38px 48px; border: 1px solid #e1e7ec; border-radius: 12px; }
+h1, h2, h3 { line-height: 1.25; color: #132c45; scroll-margin-top: 25px; break-after: avoid; }
+h1 { font-size: clamp(2.2rem, 5vw, 3.4rem); letter-spacing: -.035em; margin-top: 5px; }
+.subtitle { font-size: 1.25rem; line-height: 1.5; color: var(--muted); margin: .5em 0 1.6em; }
+h2 { font-size: 1.55rem; margin-top: 2.4em; padding-top: .3em; }
+h3 { font-size: 1.15rem; margin-top: 1.8em; }
+a { color: #086f89; text-underline-offset: 3px; }
+p, li { font-size: 16px; }
+strong { color: #112f46; }
+figure { margin: 28px 0; background: #fafcfd; padding: 18px; border: 1px solid #dce6eb; border-radius: 10px; overflow: auto; }
+figure svg { display: block; max-width: 100%; height: auto; margin: auto; }
+figure img { width: 100%; height: auto; }
+figure figcaption { color: var(--muted); font-size: 13px; margin-top: 10px; }
+pre, code { font-family: Consolas, "Cascadia Mono", monospace; }
+pre { padding: 18px; background: #f4f7fa; border: 1px solid #dce5ec; border-left: 3px solid var(--teal); border-radius: 6px; font-size: 13px; line-height: 1.6; overflow: auto; tab-size: 4; }
+:not(pre) > code { background: #edf3f7; border-radius: 3px; padding: 1px 4px; overflow-wrap: anywhere; font-size: .92em; }
+table { width: 100%; border-collapse: collapse; margin: 24px 0; font-size: 13px; }
+th, td { padding: 9px; border: 1px solid #d9e2ea; text-align: left; vertical-align: top; overflow-wrap: anywhere; }
+th { background: #e9f2f4; }
+details { margin: 24px 0; }
+summary { cursor: pointer; font-weight: 700; padding: 14px; background: #eaf3f4; border-radius: 6px; }
+.math { font-family: Georgia, serif; white-space: normal; }
+.draft-link { border-left: 3px solid #c9841d; padding: 8px 12px; background: #fff8e8; color: #795515; font-size: 14px; }
+.lab { margin: 30px 0; padding: 22px; border: 2px solid #9acfc7; border-radius: 12px; background: #fbfefd; }
+.lab h2 { margin-top: 0; }
+.lab label { display: block; font-weight: 600; font-size: 14px; }
+.lab input, .lab select { width: 100%; padding: 9px; border: 1px solid #abbfc9; border-radius: 5px; background: white; font: inherit; }
+.lab-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 12px; }
+.lab-buttons { display: flex; gap: 10px; flex-wrap: wrap; margin: 15px 0; }
+button { font: inherit; cursor: pointer; border: 1px solid #087f78; border-radius: 5px; padding: 8px 14px; background: #087f78; color: white; }
+button.secondary { background: white; color: #087f78; }
+button:disabled { cursor: default; opacity: .55; }
+button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible { outline: 3px solid #cf8b15; outline-offset: 3px; }
+.legend { font-size: 13px; color: var(--muted); }
+.legend span { display: inline-block; margin-right: 12px; padding: 2px 6px; border-radius: 3px; }
+.blue { background: #dbeafe; } .green { background: #dcfce7; } .amber { background: #fff1d6; }
+.tree-panel { overflow: auto; min-height: 130px; margin: 14px 0; }
+.tree-panel svg { display: block; max-width: none !important; height: auto; margin: auto; }
+.trace { font-size: 14px; padding-left: 24px; }
+.lab-note { color: var(--muted); font-size: 13px; }
+.status { min-height: 26px; font-weight: 600; }
+@media (max-width: 950px) { .layout { display: block; margin: 22px auto; } .toc { display: none; } article { padding: 26px; } .lab-grid { grid-template-columns: 1fr; } }
+@media print { @page { size: A4; margin: 16mm; } body { background: white; } .topbar, .toc, .lab { display: none; } .layout { display: block; margin: 0; padding: 0; } article { border: 0; padding: 0; } p, li { font-size: 10pt; } h1 { font-size: 27pt; } h2 { font-size: 17pt; } pre { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 8pt; } figure { break-inside: avoid; } tr { break-inside: avoid; } thead { display: table-header-group; } }
+
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+pre .hll { background-color: #ffffcc }
+pre { background: #f8f8f8; }
+pre .c { color: #3D7B7B; font-style: italic } /* Comment */
+pre .err { border: 1px solid #F00 } /* Error */
+pre .k { color: #008000; font-weight: bold } /* Keyword */
+pre .o { color: #666 } /* Operator */
+pre .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+pre .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+pre .cp { color: #9C6500 } /* Comment.Preproc */
+pre .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+pre .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+pre .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+pre .gd { color: #A00000 } /* Generic.Deleted */
+pre .ge { font-style: italic } /* Generic.Emph */
+pre .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+pre .gr { color: #E40000 } /* Generic.Error */
+pre .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+pre .gi { color: #008400 } /* Generic.Inserted */
+pre .go { color: #717171 } /* Generic.Output */
+pre .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+pre .gs { font-weight: bold } /* Generic.Strong */
+pre .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+pre .gt { color: #04D } /* Generic.Traceback */
+pre .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+pre .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+pre .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+pre .kp { color: #008000 } /* Keyword.Pseudo */
+pre .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+pre .kt { color: #B00040 } /* Keyword.Type */
+pre .m { color: #666 } /* Literal.Number */
+pre .s { color: #BA2121 } /* Literal.String */
+pre .na { color: #687822 } /* Name.Attribute */
+pre .nb { color: #008000 } /* Name.Builtin */
+pre .nc { color: #00F; font-weight: bold } /* Name.Class */
+pre .no { color: #800 } /* Name.Constant */
+pre .nd { color: #A2F } /* Name.Decorator */
+pre .ni { color: #717171; font-weight: bold } /* Name.Entity */
+pre .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+pre .nf { color: #00F } /* Name.Function */
+pre .nl { color: #767600 } /* Name.Label */
+pre .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+pre .nt { color: #008000; font-weight: bold } /* Name.Tag */
+pre .nv { color: #19177C } /* Name.Variable */
+pre .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+pre .w { color: #BBB } /* Text.Whitespace */
+pre .mb { color: #666 } /* Literal.Number.Bin */
+pre .mf { color: #666 } /* Literal.Number.Float */
+pre .mh { color: #666 } /* Literal.Number.Hex */
+pre .mi { color: #666 } /* Literal.Number.Integer */
+pre .mo { color: #666 } /* Literal.Number.Oct */
+pre .sa { color: #BA2121 } /* Literal.String.Affix */
+pre .sb { color: #BA2121 } /* Literal.String.Backtick */
+pre .sc { color: #BA2121 } /* Literal.String.Char */
+pre .dl { color: #BA2121 } /* Literal.String.Delimiter */
+pre .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+pre .s2 { color: #BA2121 } /* Literal.String.Double */
+pre .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+pre .sh { color: #BA2121 } /* Literal.String.Heredoc */
+pre .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+pre .sx { color: #008000 } /* Literal.String.Other */
+pre .sr { color: #A45A77 } /* Literal.String.Regex */
+pre .s1 { color: #BA2121 } /* Literal.String.Single */
+pre .ss { color: #19177C } /* Literal.String.Symbol */
+pre .bp { color: #008000 } /* Name.Builtin.Pseudo */
+pre .fm { color: #00F } /* Name.Function.Magic */
+pre .vc { color: #19177C } /* Name.Variable.Class */
+pre .vg { color: #19177C } /* Name.Variable.Global */
+pre .vi { color: #19177C } /* Name.Variable.Instance */
+pre .vm { color: #19177C } /* Name.Variable.Magic */
+pre .il { color: #666 } /* Literal.Number.Integer.Long */
+</style></head><body><header class="topbar"><span class="brand">Organized C++ Ordered Set</span><nav><a href="../index.html">Visual guide</a><a href="../Codeforces.html">For contests</a><a href="../docs/API.html">API</a></nav></header><div class="layout"><aside class="toc"><strong>IN THIS GUIDE</strong></aside><article><h1 id="function-reference">Function reference</h1>
+<p>The functions below belong to both containers unless a difference is stated. <code>n</code> is the current number of occurrences, <code>m</code> is the number of incoming values, and <code>q</code> is the number erased. Bounds are worst-case, assuming constant-cost key comparisons/copies and comparator operations. For expensive keys, include those costs as well.</p>
+<h3 id="construction-assignment-and-types">Construction, assignment, and types</h3>
+<p>The following forms use <code>C</code> for either container type:</p>
+<table>
+<thead>
+<tr>
+<th>Form</th>
+<th>Meaning</th>
+<th>Time</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>C s;</code></td>
+<td>Empty container with a default-constructed comparator</td>
+<td><code>O(1)</code> plus allocation</td>
+</tr>
+<tr>
+<td><code>C s(compare);</code></td>
+<td>Empty container with the supplied comparator</td>
+<td><code>O(1)</code> plus allocation</td>
+</tr>
+<tr>
+<td><code>C s(first, last, compare);</code></td>
+<td>Insert values from the half-open input range; comparator is optional</td>
+<td><code>O(m log(m + 1))</code></td>
+</tr>
+<tr>
+<td><code>C s({a, b, c}, compare);</code></td>
+<td>Insert an initializer list; comparator is optional</td>
+<td><code>O(m log(m + 1))</code></td>
+</tr>
+<tr>
+<td><code>C b(a);</code></td>
+<td>Independent copy, including comparator and multiset ID state</td>
+<td><code>O(n)</code></td>
+</tr>
+<tr>
+<td><code>b = a;</code></td>
+<td>Replace <code>b</code> with an independent copy of <code>a</code>; return <code>b</code> by reference</td>
+<td><code>O(a.size() + b.size())</code></td>
+</tr>
+<tr>
+<td><code>C b(move(a));</code></td>
+<td>Transfer storage; <code>a</code> becomes empty and reusable</td>
+<td><code>O(1)</code> plus allocation</td>
+</tr>
+<tr>
+<td><code>b = move(a);</code></td>
+<td>Transfer storage and clear the previous contents of <code>b</code>; return <code>b</code> by reference</td>
+<td><code>O(b.size())</code> plus allocation</td>
+</tr>
+<tr>
+<td>End of lifetime</td>
+<td>Destroy the container and its remaining keys</td>
+<td><code>O(n)</code></td>
+</tr>
+</tbody>
+</table>
+<p>Copy and move self-assignment are supported. The move operations create an empty PBDS sentinel before swapping, so they can allocate and are <strong>not <code>noexcept</code></strong>. An outer <code>vector&lt;C&gt;</code> may choose copying during reallocation; reserving its capacity can matter.</p>
+<p>Both classes expose <code>value_type</code> and <code>key_type</code> (<code>T</code>), <code>key_compare</code> (<code>Compare</code>), unsigned <code>size_type</code>, signed <code>difference_type</code>, and the iterator aliases <code>iterator</code>, <code>const_iterator</code>, <code>reverse_iterator</code>, <code>const_reverse_iterator</code>. The const and non-const iterator aliases are the same read-only iterator type. Iterators also provide the usual <code>iterator_category</code>, <code>value_type</code>, <code>difference_type</code>, <code>pointer</code>, and <code>reference</code> traits.</p>
+<h3 id="inserting-values">Inserting values</h3>
+<table>
+<thead>
+<tr>
+<th>Call</th>
+<th>Return value and behavior</th>
+<th>Time</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>s.insert(x)</code></td>
+<td>Unique set: <code>pair&lt;iterator, bool&gt;</code>; bool says whether a new key was inserted. Multiset: iterator to the new occurrence</td>
+<td><code>O(log(n + 1))</code></td>
+</tr>
+<tr>
+<td><code>s.insert(first, last)</code></td>
+<td><code>void</code>; insert each value in the half-open input range</td>
+<td><code>O(m log(n + m + 1))</code></td>
+</tr>
+<tr>
+<td><code>s.insert({a, b, c})</code></td>
+<td><code>void</code>; insert each value in the list</td>
+<td><code>O(m log(n + m + 1))</code></td>
+</tr>
+<tr>
+<td><code>s.emplace(args...)</code></td>
+<td>Construct <code>T(args...)</code>, then insert it; same return type as single-value <code>insert</code></td>
+<td><code>O(log(n + 1))</code> plus construction</td>
+</tr>
+</tbody>
+</table>
+<p>For a unique set, inserting an equivalent key returns the existing element and <code>false</code>. Range insertion does not report an individual result for every value. Use a valid input range from a different container, not from the destination itself.</p>
+<p><code>emplace</code> is a convenience here, not a promise of in-place node construction. PBDS still copies the constructed key into its node. Batch insertion can leave earlier values inserted if a later operation throws.</p>
+<h3 id="finding-values-and-bounds">Finding values and bounds</h3>
+<table>
+<thead>
+<tr>
+<th>Call</th>
+<th>Result</th>
+<th>Time</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>s.find(x)</code></td>
+<td>Iterator to an equivalent key, or <code>end()</code>; the multiset returns the first occurrence</td>
+<td><code>O(log(n + 1))</code></td>
+</tr>
+<tr>
+<td><code>s.contains(x)</code></td>
+<td><code>bool</code>: whether an equivalent key exists</td>
+<td><code>O(log(n + 1))</code></td>
+</tr>
+<tr>
+<td><code>s.count(x)</code></td>
+<td><code>size_type</code>: number of equivalent keys; zero or one for a unique set</td>
+<td><code>O(log(n + 1))</code></td>
+</tr>
+<tr>
+<td><code>s.lower_bound(x)</code></td>
+<td>Iterator to the first key that does not come before <code>x</code>, or <code>end()</code></td>
+<td><code>O(log(n + 1))</code></td>
+</tr>
+<tr>
+<td><code>s.upper_bound(x)</code></td>
+<td>Iterator to the first key strictly after <code>x</code>, or <code>end()</code></td>
+<td><code>O(log(n + 1))</code></td>
+</tr>
+<tr>
+<td><code>s.equal_range(x)</code></td>
+<td><code>pair&lt;iterator, iterator&gt;</code>: <code>{lower_bound(x), upper_bound(x)}</code></td>
+<td><code>O(log(n + 1))</code></td>
+</tr>
+</tbody>
+</table>
+<p>With the default ascending order, <code>lower_bound(x)</code> means first value <code>&gt;= x</code> and <code>upper_bound(x)</code> means first value <code>&gt; x</code>. If <code>x</code> is absent, both bounds are the same. The range returned by <code>equal_range</code> is half-open.</p>
+<h3 id="ranks-indexing-and-counts">Ranks, indexing, and counts</h3>
+<table>
+<thead>
+<tr>
+<th>Call</th>
+<th>Result</th>
+<th>Time</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>s.order_of_key(x)</code></td>
+<td><code>size_type</code>: number of keys strictly before <code>x</code></td>
+<td><code>O(log(n + 1))</code></td>
+</tr>
+<tr>
+<td><code>s.order_of_key_upper(x)</code></td>
+<td><code>size_type</code>: number before or equivalent to <code>x</code></td>
+<td><code>O(log(n + 1))</code></td>
+</tr>
+<tr>
+<td><code>s.find_by_order(i)</code></td>
+<td>Iterator at rank <code>i</code>; <code>end()</code> when <code>i &gt;= size()</code></td>
+<td><code>O(log(n + 1))</code></td>
+</tr>
+<tr>
+<td><code>s[i]</code></td>
+<td><code>const T&amp;</code> at rank <code>i</code>; throws <code>out_of_range</code> if invalid</td>
+<td><code>O(log(n + 1))</code></td>
+</tr>
+<tr>
+<td><code>s.at(i)</code></td>
+<td>Same checked access and return type as <code>s[i]</code></td>
+<td><code>O(log(n + 1))</code></td>
+</tr>
+<tr>
+<td><code>s.first_index(x)</code></td>
+<td>Signed rank of the first equivalent key; <code>-1</code> if absent</td>
+<td><code>O(log(n + 1))</code></td>
+</tr>
+<tr>
+<td><code>s.last_index(x)</code></td>
+<td>Signed rank of the last equivalent key; <code>-1</code> if absent</td>
+<td><code>O(log(n + 1))</code></td>
+</tr>
+<tr>
+<td><code>s.index_of(it)</code></td>
+<td>Exact rank of that occurrence; <code>index_of(end()) == size()</code></td>
+<td><code>O(log(n + 1))</code></td>
+</tr>
+<tr>
+<td><code>s.count_range(a, b)</code></td>
+<td>Number of keys in the <strong>inclusive value range</strong> from <code>a</code> through <code>b</code>; zero for reversed bounds in comparator order</td>
+<td><code>O(log(n + 1))</code></td>
+</tr>
+</tbody>
+</table>
+<p><code>first_index</code> and <code>last_index</code> are identical in a unique set. In a multiset, <code>index_of(it)</code> uses the hidden ID, so it can distinguish equivalent occurrences. Their ranks can change after insertions and erasures even while their iterators remain valid.</p>
+<p>Use this table for ascending order, with <code>L = s.order_of_key(x)</code> and <code>R = s.order_of_key_upper(x)</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Desired count</th>
+<th>Expression</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt; x</code></td>
+<td><code>L</code></td>
+</tr>
+<tr>
+<td><code>&lt;= x</code></td>
+<td><code>R</code></td>
+</tr>
+<tr>
+<td><code>== x</code></td>
+<td><code>R - L</code></td>
+</tr>
+<tr>
+<td><code>&gt; x</code></td>
+<td><code>s.size() - R</code></td>
+</tr>
+<tr>
+<td><code>&gt;= x</code></td>
+<td><code>s.size() - L</code></td>
+</tr>
+</tbody>
+</table>
+<p>For an inclusive range with <code>a &lt;= b</code>, use <code>s.order_of_key_upper(b) - s.order_of_key(a)</code>. <code>count_range</code> also checks for reversed bounds.</p>
+<p>Do not replace the upper rank with <code>order_of_key(x + 1)</code>. <code>x + 1</code> can overflow at the maximum integer and makes no sense for a string or an arbitrary custom key. The upper-rank operation works directly with the comparator.</p>
+<h3 id="erasing-values">Erasing values</h3>
+<table>
+<thead>
+<tr>
+<th>Call</th>
+<th>Return value and behavior</th>
+<th>Time</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>s.erase_one(x)</code></td>
+<td><code>bool</code>: remove one equivalent occurrence if present; multiset removes the first one</td>
+<td><code>O(log(n + 1))</code></td>
+</tr>
+<tr>
+<td><code>s.erase(x)</code></td>
+<td><code>size_type</code>: remove <strong>all</strong> equivalent occurrences and return how many</td>
+<td>Unique: <code>O(log(n + 1))</code>; multi: <code>O((q + 1) log(n + 1))</code></td>
+</tr>
+<tr>
+<td><code>s.erase(it)</code></td>
+<td>Remove that exact occurrence and return its successor; <code>end()</code> is a no-op returning <code>end()</code></td>
+<td><code>O(log(n + 1))</code></td>
+</tr>
+<tr>
+<td><code>s.erase(first, last)</code></td>
+<td>Remove the half-open iterator range and return <code>last</code></td>
+<td><code>O(q log(n + 1))</code></td>
+</tr>
+<tr>
+<td><code>s.erase_by_order(i)</code></td>
+<td><code>bool</code>: remove rank <code>i</code>; false if it does not exist</td>
+<td><code>O(log(n + 1))</code></td>
+</tr>
+<tr>
+<td><code>s.clear()</code></td>
+<td><code>void</code>: remove everything and reset the multiset ID counter</td>
+<td><code>O(n)</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong><code>erase(x)</code> and <code>erase_one(x)</code> are intentionally different.</strong> In a sliding window, you usually want <code>erase_one</code>. Erasing every copy of the outgoing value would shrink the window incorrectly.</p>
+<p>Bulk erasure performs individual PBDS node erasures. Do not give it the standard multiset's <code>O(log(n + 1) + q)</code> complexity by accident. Iterator arguments must belong to this container, and <code>[first, last)</code> must be a valid ordered range.</p>
+<h3 id="size-endpoints-comparator-and-swapping">Size, endpoints, comparator, and swapping</h3>
+<table>
+<thead>
+<tr>
+<th>Call</th>
+<th>Result</th>
+<th>Time</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>s.size()</code></td>
+<td><code>size_type</code>: number of stored occurrences</td>
+<td><code>O(1)</code></td>
+</tr>
+<tr>
+<td><code>s.empty()</code></td>
+<td><code>bool</code>: whether size is zero</td>
+<td><code>O(1)</code></td>
+</tr>
+<tr>
+<td><code>s.front()</code></td>
+<td><code>const T&amp;</code>: first value in comparator order</td>
+<td><code>O(1)</code></td>
+</tr>
+<tr>
+<td><code>s.back()</code></td>
+<td><code>const T&amp;</code>: last value in comparator order</td>
+<td><code>O(1)</code></td>
+</tr>
+<tr>
+<td><code>s.key_comp()</code></td>
+<td>A copy of the comparator</td>
+<td>Comparator copy cost</td>
+</tr>
+<tr>
+<td><code>s.swap(other)</code></td>
+<td><code>void</code>: exchange trees, comparators, and multiset ID state</td>
+<td><code>O(1)</code> with constant-time comparator swap</td>
+</tr>
+<tr>
+<td><code>swap(a, b)</code></td>
+<td><code>void</code>: the same exchange through the friend overload</td>
+<td>Same as member <code>swap</code></td>
+</tr>
+</tbody>
+</table>
+<p>Both <code>front()</code> and <code>back()</code> throw <code>out_of_range</code> on an empty container. The GNU tree caches its first and last nodes, which makes these endpoint operations constant time. Swapping requires the same full container type, including comparator and ID type. If comparator operations can throw, swapping should not be assumed to provide a strong exception guarantee.</p>
+<h3 id="iteration">Iteration</h3>
+<table>
+<thead>
+<tr>
+<th>Call or operation</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>begin()</code>, <code>end()</code></td>
+<td>First element and past-the-end forward sentinel</td>
+</tr>
+<tr>
+<td><code>cbegin()</code>, <code>cend()</code></td>
+<td>The same read-only forward iterators</td>
+</tr>
+<tr>
+<td><code>rbegin()</code>, <code>rend()</code></td>
+<td>First reverse element and reverse sentinel</td>
+</tr>
+<tr>
+<td><code>crbegin()</code>, <code>crend()</code></td>
+<td>The same read-only reverse iterators</td>
+</tr>
+<tr>
+<td><code>*it</code>, <code>it-&gt;member</code></td>
+<td>Read the current key; never expose the hidden ID</td>
+</tr>
+<tr>
+<td><code>++it</code>, <code>it++</code>, <code>--it</code>, <code>it--</code></td>
+<td>Move forward/backward; postfix returns the previous iterator</td>
+</tr>
+<tr>
+<td><code>a == b</code>, <code>a != b</code></td>
+<td>Compare iterators from the same sequence</td>
+</tr>
+<tr>
+<td><code>iterator it;</code></td>
+<td>Default construction; assign a valid iterator before using it</td>
+</tr>
+</tbody>
+</table>
+<p>Getting an endpoint or dereferencing a valid iterator is constant time. A single iterator step can take <code>O(log(n + 1))</code> in the worst case; a full forward or reverse traversal takes <code>O(n)</code>. There is no <code>it + i</code>, <code>it[i]</code>, or iterator subtraction. To jump by sorted rank, use <code>find_by_order</code>.</p>
+<p>Insertions preserve existing element iterators and references. Erasing invalidates only the erased elements; <code>clear</code> and destruction invalidate all of them. Swapping or moving transfers element iterators with their elements to the receiving container. Reacquire end iterators after those operations. As usual, do not dereference an end iterator, increment <code>end()</code>, or decrement <code>begin()</code>.</p>
+<p>All keys are read-only, even when the container itself is mutable. <code>s[0] = 10</code> and <code>*s.begin() = 10</code> are compile errors. To change a value, erase it and insert the replacement. This keeps the tree sorted.</p>
+</article></div></body></html>

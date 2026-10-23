@@ -1,0 +1,11 @@
+{
+    "non_comment_cpp_tokens_identical": true,
+    "token_count": 3599,
+    "token_sha256": "a2fa7799d95947a361fa34a7e64cec28eba7693294f4869c8e5952bcfabf4867",
+    "example_optimized_assembly_identical": true,
+    "assembly_bytes": 182884,
+    "assembly_sha256": "2cda562121d9963d0f4074ad273ea2284cc3fce212b278953a8c57f66b25abd7",
+    "compiler": "g++.EXE (MinGW-W64 x86_64-ucrt-posix-seh, built by Brecht Sanders, r3) 14.2.0",
+    "flags": "-std=c++17 -O2 -g0 -S",
+    "note": "Focused comments leave this example\u2019s generated code unchanged. This is not a universal benchmark comparison against other containers."
+}

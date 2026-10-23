@@ -1,0 +1,24 @@
+name: Verify containers and documentation
+
+on: [push, pull_request, workflow_dispatch]
+
+permissions:
+    contents: read
+
+jobs:
+    verify:
+        runs-on: ubuntu-24.04
+        steps:
+            - uses: actions/checkout@v6
+              with:
+                  persist-credentials: false
+            - uses: actions/setup-python@v6
+              with:
+                  python-version: '3.12'
+            - run: python -m pip install -r requirements-dev.txt
+            - run: python build.py --check
+            - run: python tests/PublishingTests.py
+            - run: python tests/DocumentationTests.py
+            - run: python verify.py --full --require-execution
+            - run: cmake -S . -B build -DBUILD_TESTING=OFF
+            - run: cmake --build build

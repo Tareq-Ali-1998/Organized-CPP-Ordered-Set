@@ -1,0 +1,151 @@
+{
+    "status": "passed",
+    "started_at_utc": "2026-10-23T19:05:42.530660+00:00",
+    "documents": {
+        "generated_files": [
+            "README.md",
+            "OrderedSet.cpp",
+            "Medium.md",
+            "Medium.publish.md",
+            "Codeforces.md",
+            "Medium.html",
+            "index.html",
+            "Medium.publish.html",
+            "Codeforces.html",
+            "docs/Examples.md",
+            "docs/API.html"
+        ],
+        "documented_method_names": 34,
+        "rendered_diagrams": 4,
+        "offline_assets_present": true
+    },
+    "preserved_contributions": {
+        "status": "unchanged",
+        "files": 22
+    },
+    "profiles": [
+        {
+            "name": "gcc17",
+            "compiler": "g++.EXE (MinGW-W64 x86_64-ucrt-posix-seh, built by Brecht Sanders, r3) 14.2.0",
+            "flags": [
+                "-std=c++17",
+                "-O2",
+                "-Wall",
+                "-Wextra",
+                "-Wshadow",
+                "-pedantic",
+                "-Werror"
+            ],
+            "container_suite": "Passed 384000 randomized operations, 265720 exhaustive trace states, and 27073587 checks.",
+            "article_examples": "Passed 6 runnable snippets and 34495 recipe checks.",
+            "standalone_example": "matched Example.out"
+        }
+    ],
+    "execution_limitations": [],
+    "benchmark": {
+        "n": 300000,
+        "trials": {
+            "raw_set": [
+                {
+                    "mode": "raw_set",
+                    "n": 300000,
+                    "object_bytes": 32,
+                    "insert_seconds": 0.055254,
+                    "query_seconds": 0.091798,
+                    "erase_seconds": 0.034131,
+                    "total_seconds": 0.181183,
+                    "remaining": 103339,
+                    "checksum": 125407207918
+                }
+            ],
+            "set": [
+                {
+                    "mode": "set",
+                    "n": 300000,
+                    "object_bytes": 32,
+                    "insert_seconds": 0.057445,
+                    "query_seconds": 0.092012,
+                    "erase_seconds": 0.036556,
+                    "total_seconds": 0.186014,
+                    "remaining": 103339,
+                    "checksum": 125407207918
+                }
+            ],
+            "raw_multi64": [
+                {
+                    "mode": "raw_multi64",
+                    "n": 300000,
+                    "object_bytes": 32,
+                    "insert_seconds": 0.075383,
+                    "query_seconds": 0.125207,
+                    "erase_seconds": 0.043223,
+                    "total_seconds": 0.243813,
+                    "remaining": 150000,
+                    "checksum": 45434861789
+                }
+            ],
+            "multi64": [
+                {
+                    "mode": "multi64",
+                    "n": 300000,
+                    "object_bytes": 40,
+                    "insert_seconds": 0.075272,
+                    "query_seconds": 0.123566,
+                    "erase_seconds": 0.03598,
+                    "total_seconds": 0.234818,
+                    "remaining": 150000,
+                    "checksum": 45434861789
+                }
+            ],
+            "raw_multi32": [
+                {
+                    "mode": "raw_multi32",
+                    "n": 300000,
+                    "object_bytes": 32,
+                    "insert_seconds": 0.075769,
+                    "query_seconds": 0.130355,
+                    "erase_seconds": 0.043183,
+                    "total_seconds": 0.249307,
+                    "remaining": 150000,
+                    "checksum": 45434861789
+                }
+            ],
+            "multi32": [
+                {
+                    "mode": "multi32",
+                    "n": 300000,
+                    "object_bytes": 40,
+                    "insert_seconds": 0.075108,
+                    "query_seconds": 0.132738,
+                    "erase_seconds": 0.036638,
+                    "total_seconds": 0.244484,
+                    "remaining": 150000,
+                    "checksum": 45434861789
+                }
+            ]
+        },
+        "matching_trial_pairs": 3,
+        "median_total_seconds": {
+            "raw_set": 0.181183,
+            "set": 0.186014,
+            "raw_multi64": 0.243813,
+            "multi64": 0.234818,
+            "raw_multi32": 0.249307,
+            "multi32": 0.244484
+        },
+        "note": "One seeded workload; object sizes exclude allocated nodes; no universal speed claim."
+    },
+    "sha256": {
+        "OrderedSet.hpp": "2b84c1cc006341e1c36093e0834e06a034d1a227eb67a2aa4e3d749d8c8749df",
+        "OrderedSet.cpp": "cc79b7311fe82b8f026fc6079e6cb2e6128264634df1b74989f347d6017cbb95",
+        "Medium.md": "c9939c9fea959aed260a4c68f0ab9fa9dc4062e1185ff3894795e7d2cc2b8b86",
+        "Codeforces.md": "88df7901d1758e8349789b394d1165ecae5d40304060fe84cd98c96eba7299fb",
+        "sources/examples.json": "f7d4f2760ca30511b702461cf2d2ee6d66047477165ffd621a9ded71c86b9ead",
+        "tests/OrderedSetTests.cpp": "a55a14ea4faeedcb386a14251741af6eeafb267106fe5a49ea649ff22982920d",
+        "tests/OrderedSetBenchmark.cpp": "c97e76e5f763fcf6240d6eae136b139007afcb5dad9268933d61683f762e9235",
+        "assets/demo-model.js": "a24ee49569910a601e435eeeb3a5ae7b3533ee3234bcec4eef857fcb9098b762",
+        "verify.py": "f393e83256970744a1ff1d00beb0a6d843f5a35c10191042939feea91bd9ebcf"
+    },
+    "walkthrough_model": "Passed 430847 walkthrough-model checks.",
+    "finished_at_utc": "2026-10-23T19:06:23.079310+00:00"
+}

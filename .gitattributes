@@ -1,0 +1,7 @@
+# Keep hash-checked sources and generated text stable across Windows and Linux.
+* text=auto eol=lf
+*.png binary
+
+# Retain the exact upstream renderer and license bytes used by provenance.json.
+/assets/vendor/mermaid.min.js -text
+/assets/vendor/MERMAID-LICENSE.txt -text

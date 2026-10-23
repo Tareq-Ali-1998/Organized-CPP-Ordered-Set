@@ -1,0 +1,15 @@
+flowchart TD
+    N5["5 | size = 7"] --> N2["2 | size = 3"]
+    N5 --> N7["7 | size = 3"]
+    N2 --> N1["1 | size = 1"]
+    N2 --> N3["3 | size = 1"]
+    N7 --> N6["6 | size = 1"]
+    N7 --> N9["9 | size = 1"]
+    classDef current fill:#dbeafe,stroke:#2563eb,stroke-width:3px,color:#172554;
+    classDef skipped fill:#dcfce7,stroke:#15803d,color:#14532d;
+    classDef path fill:#fff1d6,stroke:#b45309,stroke-width:2px,color:#78350f;
+    classDef quiet fill:#f1f5f9,stroke:#94a3b8,color:#334155;
+    class N5 current;
+    class N2,N1,N3 skipped;
+    class N7,N6 path;
+    class N9 quiet;

@@ -1,0 +1,14 @@
+flowchart LR
+    A["Insert / erase values"] --> B["Balanced search tree"]
+    B --> C["Sorted iteration"]
+    B --> D["Subtree sizes"]
+    D --> E["Value to rank"]
+    D --> F["Rank to value"]
+    classDef input fill:#e0e7ff,stroke:#4338ca,color:#172554;
+    classDef tree fill:#dbeafe,stroke:#2563eb,color:#172554;
+    classDef count fill:#dcfce7,stroke:#15803d,color:#14532d;
+    classDef answer fill:#fff1d6,stroke:#b45309,color:#78350f;
+    class A input;
+    class B,C tree;
+    class D count;
+    class E,F answer;

@@ -1,0 +1,46 @@
+{
+    "status": "passed",
+    "checked_at_utc": "2026-10-23T13:23:18.671260+00:00",
+    "runtime_tested_cpp_only_license_notice_changed": true,
+    "runtime_tested_examples_and_models_unchanged": true,
+    "cpp_tokens_and_example_assembly_identical": true,
+    "local_markdown_links_checked": 28,
+    "local_html_links_and_assets_checked": 24,
+    "original_contributions_files_unchanged": 22,
+    "browser_checks": 52,
+    "browser_viewports": {
+        "desktop": [
+            1440,
+            1080
+        ],
+        "mobile": [
+            390,
+            844
+        ]
+    },
+    "pending_publication_urls": [
+        "repository_url",
+        "medium_url",
+        "interactive_url"
+    ],
+    "release_check_rejects_missing_urls": true,
+    "current_sha256": {
+        "README.md": "eb0d022f3b83cbf7618dd95b1896447be6306cfcbc5b441db87650d34512b79e",
+        "OrderedSet.hpp": "2b84c1cc006341e1c36093e0834e06a034d1a227eb67a2aa4e3d749d8c8749df",
+        "OrderedSet.cpp": "cc79b7311fe82b8f026fc6079e6cb2e6128264634df1b74989f347d6017cbb95",
+        "Medium.md": "83cd7c0351a06ef6c3e72d02d4be6735d8bdf7d5e102487d0e8168de3c9971b8",
+        "Medium.html": "5a9cd1cf24aacb85a0ccf89f721033901c86734414909004ab0b34c9a96327b9",
+        "index.html": "5a9cd1cf24aacb85a0ccf89f721033901c86734414909004ab0b34c9a96327b9",
+        "Codeforces.md": "9ef83b5fb86788b4d696950c1bd6c8eb8e13b0a62fa3090323e6c7e84f80efeb",
+        "Codeforces.html": "16f6258105629a6e9ec19965469679467b4789c721544ab1f3aae20d862d83d8",
+        "publishing.json": "11a24d1088434c3d499202d3a5e24824fafddd33e1d6f4a4da99629108751008",
+        "build.py": "cc46ae3dfa67ee3fa1856fd6fb98d4b79de60626bcb1be17a49893f6a1413a64",
+        "verify.py": "f76a9c6e596f7bc7bfa61e655f2244dafba00be017d7b1399c96b14dee48c7dd",
+        "assets/demo-ui.js": "ad25baaec29390aeb985776ab639a78750e4f42697b3eaa28321f19d110da287",
+        "assets/demo-model.js": "a24ee49569910a601e435eeeb3a5ae7b3533ee3234bcec4eef857fcb9098b762",
+        "docs/API.md": "2bfa80a12c7b65547b10897363fb9f3013326fc1a821744d360501d081178d8c",
+        "docs/Publishing.md": "889327b9440c792d5b91d1c8d828cd765e83c49f087741f5c4893554df104bba",
+        "docs/Validation.md": "884bf3ffa44dec5ca916682bc6a94d93fc72e2aab8435e6e3db00a3661489b29"
+    },
+    "note": "Functional C++ run details and execution restrictions are retained in Results.json. Browser tests checked the same walkthrough logic; final HTML navigation points to index.html."
+}

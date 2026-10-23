@@ -1,0 +1,22 @@
+stages:
+    - test
+
+verify:
+    stage: test
+    image: node:24-bookworm
+    before_script:
+        - apt-get update
+        - apt-get install -y --no-install-recommends python3 python3-venv g++ clang cmake make
+        - python3 -m venv .venv
+        - .venv/bin/python -m pip install -r requirements-dev.txt
+    script:
+        - .venv/bin/python build.py --check
+        - .venv/bin/python tests/PublishingTests.py
+        - .venv/bin/python tests/DocumentationTests.py
+        - .venv/bin/python verify.py --full --require-execution
+        - cmake -S . -B build -DBUILD_TESTING=OFF
+        - cmake --build build
+    artifacts:
+        when: always
+        paths:
+            - validation/*.json

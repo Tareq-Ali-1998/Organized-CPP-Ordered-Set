@@ -1,0 +1,13 @@
+flowchart TD
+    A["At a node: let L be its left subtree size"] --> B{"Compare rank k with L"}
+    B -->|"k is below L"| C["Go left; keep k"]
+    B -->|"k equals L"| D["Return this node"]
+    B -->|"k is above L"| E["Go right; k becomes k - L - 1"]
+    C --> A
+    E --> A
+    classDef inspect fill:#dbeafe,stroke:#2563eb,color:#172554;
+    classDef walk fill:#fff1d6,stroke:#b45309,color:#78350f;
+    classDef answer fill:#dcfce7,stroke:#15803d,color:#14532d;
+    class A,B inspect;
+    class C,E walk;
+    class D answer;

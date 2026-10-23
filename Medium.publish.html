@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>The Missing Index in C++ Sets — publishing copy</title><style>
+:root { color-scheme: light; --ink: #182d44; --muted: #526479; --teal: #087f78; }
+* { box-sizing: border-box; }
+body { margin: 0; color: var(--ink); background: #f7f8fa; font-family: "Segoe UI", Arial, sans-serif; line-height: 1.75; }
+.topbar { padding: 18px max(24px, calc((100vw - 1150px) / 2)); background: #132c45; color: #fff; display: flex; justify-content: space-between; gap: 18px; flex-wrap: wrap; }
+.brand { font-weight: 700; letter-spacing: .02em; }
+.topbar a { color: #e2f8f3; margin-left: 20px; }
+.layout { display: grid; grid-template-columns: 190px minmax(0, 850px); gap: 35px; max-width: 1150px; margin: 45px auto; padding: 0 24px; }
+.toc { position: sticky; top: 25px; align-self: start; font-size: 13px; line-height: 1.5; }
+.toc strong { color: var(--teal); }
+.toc a { display: block; padding: 7px 0; color: var(--muted); text-decoration: none; }
+article { min-width: 0; background: #fff; padding: 38px 48px; border: 1px solid #e1e7ec; border-radius: 12px; }
+h1, h2, h3 { line-height: 1.25; color: #132c45; scroll-margin-top: 25px; break-after: avoid; }
+h1 { font-size: clamp(2.2rem, 5vw, 3.4rem); letter-spacing: -.035em; margin-top: 5px; }
+.subtitle { font-size: 1.25rem; line-height: 1.5; color: var(--muted); margin: .5em 0 1.6em; }
+h2 { font-size: 1.55rem; margin-top: 2.4em; padding-top: .3em; }
+h3 { font-size: 1.15rem; margin-top: 1.8em; }
+a { color: #086f89; text-underline-offset: 3px; }
+p, li { font-size: 16px; }
+strong { color: #112f46; }
+figure { margin: 28px 0; background: #fafcfd; padding: 18px; border: 1px solid #dce6eb; border-radius: 10px; overflow: auto; }
+figure svg { display: block; max-width: 100%; height: auto; margin: auto; }
+figure img { width: 100%; height: auto; }
+figure figcaption { color: var(--muted); font-size: 13px; margin-top: 10px; }
+pre, code { font-family: Consolas, "Cascadia Mono", monospace; }
+pre { padding: 18px; background: #f4f7fa; border: 1px solid #dce5ec; border-left: 3px solid var(--teal); border-radius: 6px; font-size: 13px; line-height: 1.6; overflow: auto; tab-size: 4; }
+:not(pre) > code { background: #edf3f7; border-radius: 3px; padding: 1px 4px; overflow-wrap: anywhere; font-size: .92em; }
+table { width: 100%; border-collapse: collapse; margin: 24px 0; font-size: 13px; }
+th, td { padding: 9px; border: 1px solid #d9e2ea; text-align: left; vertical-align: top; overflow-wrap: anywhere; }
+th { background: #e9f2f4; }
+details { margin: 24px 0; }
+summary { cursor: pointer; font-weight: 700; padding: 14px; background: #eaf3f4; border-radius: 6px; }
+.math { font-family: Georgia, serif; white-space: normal; }
+.draft-link { border-left: 3px solid #c9841d; padding: 8px 12px; background: #fff8e8; color: #795515; font-size: 14px; }
+.lab { margin: 30px 0; padding: 22px; border: 2px solid #9acfc7; border-radius: 12px; background: #fbfefd; }
+.lab h2 { margin-top: 0; }
+.lab label { display: block; font-weight: 600; font-size: 14px; }
+.lab input, .lab select { width: 100%; padding: 9px; border: 1px solid #abbfc9; border-radius: 5px; background: white; font: inherit; }
+.lab-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 12px; }
+.lab-buttons { display: flex; gap: 10px; flex-wrap: wrap; margin: 15px 0; }
+button { font: inherit; cursor: pointer; border: 1px solid #087f78; border-radius: 5px; padding: 8px 14px; background: #087f78; color: white; }
+button.secondary { background: white; color: #087f78; }
+button:disabled { cursor: default; opacity: .55; }
+button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible { outline: 3px solid #cf8b15; outline-offset: 3px; }
+.legend { font-size: 13px; color: var(--muted); }
+.legend span { display: inline-block; margin-right: 12px; padding: 2px 6px; border-radius: 3px; }
+.blue { background: #dbeafe; } .green { background: #dcfce7; } .amber { background: #fff1d6; }
+.tree-panel { overflow: auto; min-height: 130px; margin: 14px 0; }
+.tree-panel svg { display: block; max-width: none !important; height: auto; margin: auto; }
+.trace { font-size: 14px; padding-left: 24px; }
+.lab-note { color: var(--muted); font-size: 13px; }
+.status { min-height: 26px; font-weight: 600; }
+@media (max-width: 950px) { .layout { display: block; margin: 22px auto; } .toc { display: none; } article { padding: 26px; } .lab-grid { grid-template-columns: 1fr; } }
+@media print { @page { size: A4; margin: 16mm; } body { background: white; } .topbar, .toc, .lab { display: none; } .layout { display: block; margin: 0; padding: 0; } article { border: 0; padding: 0; } p, li { font-size: 10pt; } h1 { font-size: 27pt; } h2 { font-size: 17pt; } pre { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 8pt; } figure { break-inside: avoid; } tr { break-inside: avoid; } thead { display: table-header-group; } }
+
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+pre .hll { background-color: #ffffcc }
+pre { background: #f8f8f8; }
+pre .c { color: #3D7B7B; font-style: italic } /* Comment */
+pre .err { border: 1px solid #F00 } /* Error */
+pre .k { color: #008000; font-weight: bold } /* Keyword */
+pre .o { color: #666 } /* Operator */
+pre .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+pre .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+pre .cp { color: #9C6500 } /* Comment.Preproc */
+pre .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+pre .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+pre .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+pre .gd { color: #A00000 } /* Generic.Deleted */
+pre .ge { font-style: italic } /* Generic.Emph */
+pre .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+pre .gr { color: #E40000 } /* Generic.Error */
+pre .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+pre .gi { color: #008400 } /* Generic.Inserted */
+pre .go { color: #717171 } /* Generic.Output */
+pre .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+pre .gs { font-weight: bold } /* Generic.Strong */
+pre .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+pre .gt { color: #04D } /* Generic.Traceback */
+pre .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+pre .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+pre .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+pre .kp { color: #008000 } /* Keyword.Pseudo */
+pre .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+pre .kt { color: #B00040 } /* Keyword.Type */
+pre .m { color: #666 } /* Literal.Number */
+pre .s { color: #BA2121 } /* Literal.String */
+pre .na { color: #687822 } /* Name.Attribute */
+pre .nb { color: #008000 } /* Name.Builtin */
+pre .nc { color: #00F; font-weight: bold } /* Name.Class */
+pre .no { color: #800 } /* Name.Constant */
+pre .nd { color: #A2F } /* Name.Decorator */
+pre .ni { color: #717171; font-weight: bold } /* Name.Entity */
+pre .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+pre .nf { color: #00F } /* Name.Function */
+pre .nl { color: #767600 } /* Name.Label */
+pre .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+pre .nt { color: #008000; font-weight: bold } /* Name.Tag */
+pre .nv { color: #19177C } /* Name.Variable */
+pre .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+pre .w { color: #BBB } /* Text.Whitespace */
+pre .mb { color: #666 } /* Literal.Number.Bin */
+pre .mf { color: #666 } /* Literal.Number.Float */
+pre .mh { color: #666 } /* Literal.Number.Hex */
+pre .mi { color: #666 } /* Literal.Number.Integer */
+pre .mo { color: #666 } /* Literal.Number.Oct */
+pre .sa { color: #BA2121 } /* Literal.String.Affix */
+pre .sb { color: #BA2121 } /* Literal.String.Backtick */
+pre .sc { color: #BA2121 } /* Literal.String.Char */
+pre .dl { color: #BA2121 } /* Literal.String.Delimiter */
+pre .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+pre .s2 { color: #BA2121 } /* Literal.String.Double */
+pre .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+pre .sh { color: #BA2121 } /* Literal.String.Heredoc */
+pre .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+pre .sx { color: #008000 } /* Literal.String.Other */
+pre .sr { color: #A45A77 } /* Literal.String.Regex */
+pre .s1 { color: #BA2121 } /* Literal.String.Single */
+pre .ss { color: #19177C } /* Literal.String.Symbol */
+pre .bp { color: #008000 } /* Name.Builtin.Pseudo */
+pre .fm { color: #00F } /* Name.Function.Magic */
+pre .vc { color: #19177C } /* Name.Variable.Class */
+pre .vg { color: #19177C } /* Name.Variable.Global */
+pre .vi { color: #19177C } /* Name.Variable.Instance */
+pre .vm { color: #19177C } /* Name.Variable.Magic */
+pre .il { color: #666 } /* Literal.Number.Integer.Long */
+</style></head><body><header class="topbar"><span class="brand">Organized C++ Ordered Set</span><nav><a href="index.html">Visual guide</a><a href="Codeforces.html">For contests</a><a href="docs/API.html">API</a></nav></header><div class="layout"><aside class="toc"><strong>IN THIS GUIDE</strong><a href="#start-with-the-interface">Start with the interface</a><a href="#the-useful-detail-hidden-inside-the-tree">The useful detail hidden inside the tree</a><a href="#finding-a-value-by-its-position">Finding a value by its position</a><a href="#turning-the-question-around-how-many-values-come-before-x">Turning the question around: how many values come before x?</a><a href="#the-library-already-knows-how-to-balance-the-tree">The library already knows how to balance the tree</a><a href="#repeated-values-need-identity-not-a-relaxed-comparison">Repeated values need identity, not a relaxed comparison</a><a href="#a-few-declarations-you-can-keep-in-a-template">A few declarations you can keep in a template</a><a href="#two-places-where-the-interface-earns-its-keep">Two places where the interface earns its keep</a><a href="#the-contract-behind-the-convenience">The contract behind the convenience</a><a href="#what-is-worth-measuring">What is worth measuring?</a><a href="#copy-it-test-it-and-keep-the-small-details-visible">Copy it, test it, and keep the small details visible</a></aside><article><h1 id="the-missing-index-in-c-sets">The Missing Index in C++ Sets</h1>
+<p class="subtitle">Building an ordered set you can read, query, and actually enjoy using</p>
+<p>You are keeping a collection of numbers. New values arrive, old values leave, and the collection needs to stay sorted. Then someone asks a slightly different question:</p>
+<p><strong>“What is the third-smallest value right now?”</strong></p>
+<p>A vector answers that question easily—until an insertion forces its elements to move. A set handles insertions and erasures—until you try to count how far an iterator is from the beginning.</p>
+<p>This is the gap an <strong>order-statistics tree</strong> fills. It keeps values ordered and remembers enough about its own shape to answer questions about positions without walking through all the preceding values.</p>
+<p>In this guide, we will follow the counting idea through a small tree, handle repeated values properly, and finish with two reusable C++ containers: <code>ordered_set</code> and <code>ordered_multiset</code>.</p>
+<p><strong>Repository: publication URL pending.</strong></p>
+<h2 id="start-with-the-interface">Start with the interface</h2>
+<p>An ordered set is still a set. A unique set keeps one equivalent key; a multiset keeps repeated occurrences. The extra feature is access by <strong>sorted rank</strong>.</p>
+<pre><code class="language-cpp"><span class="n">ordered_set</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">};</span>
+<span class="n">ordered_multiset</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ms</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">};</span>
+
+<span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span><span class="w">                           </span><span class="c1">// 3</span>
+<span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">ms</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span><span class="w">                          </span><span class="c1">// 4</span>
+<span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span><span class="w">                               </span><span class="c1">// 2</span>
+<span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">ms</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span><span class="w">                              </span><span class="c1">// 7</span>
+<span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">ms</span><span class="p">.</span><span class="n">order_of_key</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span><span class="w">                 </span><span class="c1">// 2</span>
+<span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">ms</span><span class="p">.</span><span class="n">order_of_key_upper</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span><span class="w">           </span><span class="c1">// 4</span>
+<span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">ms</span><span class="p">.</span><span class="n">count</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span><span class="w">                        </span><span class="c1">// 2</span>
+<span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">ms</span><span class="p">.</span><span class="n">count_range</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">7</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span><span class="w">               </span><span class="c1">// 3</span>
+
+<span class="n">ms</span><span class="p">.</span><span class="n">erase_one</span><span class="p">(</span><span class="mi">7</span><span class="p">);</span>
+<span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">ms</span><span class="p">.</span><span class="n">count</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span><span class="w">                        </span><span class="c1">// 1</span>
+
+<span class="n">ms</span><span class="p">.</span><span class="n">erase</span><span class="p">(</span><span class="mi">7</span><span class="p">);</span>
+<span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">ms</span><span class="p">.</span><span class="n">contains</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span><span class="w">                     </span><span class="c1">// 0</span>
+
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">ms</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39; &#39;</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span><span class="w">                                       </span><span class="c1">// 2 5</span>
+</code></pre>
+<p>The sorted multiset begins as <code>{2, 5, 7, 7}</code>. Its ranks are <code>0, 1, 2, 3</code>. The last two values are equal, but they occupy two separate positions.</p>
+<p><code>s[0]</code> means the first value in the current sorted order. It does not mean “the first value I inserted.” As the collection changes, ranks can change too.</p>
+<p>The bracket syntax is convenient, but the work behind it is logarithmic: <code>O(log(n + 1))</code>, where <code>n</code> is the number of stored occurrences. A new pair of brackets does not persuade a tree to become a vector. :)</p>
+<h2 id="the-useful-detail-hidden-inside-the-tree">The useful detail hidden inside the tree</h2>
+<p>In a binary search tree, each node stores one key. Its children lead to keys ordered before and after it. Keeping such a tree balanced prevents a long chain from forming after unlucky insertions.</p>
+<p>Now add a single count to every node: <strong>the number of nodes in its subtree, including itself</strong>.</p>
+<p><img src="assets/medium/subtree-sizes.png" alt="Subtree sizes diagram" /></p>
+<p><em>Figure 1. A schematic tree for <code>1, 2, 3, 5, 6, 7, 9</code>. The root stores size seven; its left subtree contains three values. Green marks the group a query can skip, blue marks the starting node, and amber marks the route toward six. These colors explain the query; they are not red-black balancing colors.</em></p>
+<p>The rule for the count is small:</p>
+<pre><code class="language-text">subtree size = left subtree size + 1 + right subtree size
+</code></pre>
+<p>For a missing child, its size is zero. For a leaf, both children are missing, so its size is one.</p>
+<p>The exact drawing is illustrative. Our C++ implementation delegates balancing to GNU PBDS’s red-black tree; that library may choose a different valid shape. Rank and selection use the same subtree-size principle in any valid balanced shape.</p>
+<h2 id="finding-a-value-by-its-position">Finding a value by its position</h2>
+<p>Suppose we want rank four in the picture. The sorted values are <code>1, 2, 3, 5, 6, 7, 9</code>, so the answer should be six.</p>
+<p>At the root, the left subtree contains three elements. That puts the root itself at rank three. Our target is later, so the entire left subtree <strong>and the root</strong> can be skipped: four elements in one decision.</p>
+<p>We move right and subtract four from the requested rank. We now want rank zero within that right subtree.</p>
+<p>At node seven, the left subtree contains one element. Rank zero is before the current node, so we move left. Node six has no left child; its local rank is zero. We found the answer.</p>
+<p><img src="assets/medium/select-walk.png" alt="Select walk diagram" /></p>
+<p><em>Figure 2. Selection compares the target rank with the left subtree’s size. Moving right adjusts the rank; moving left keeps it unchanged. This flow assumes a valid initial rank.</em></p>
+<p>This is what <code>find_by_order(i)</code> does conceptually. The wrapper’s <code>s[i]</code> checks the rank and returns the selected value as a const reference.</p>
+<p>Only one path is visited. Because the underlying tree stays balanced, that path has logarithmic length.</p>
+<h2 id="turning-the-question-around-how-many-values-come-before-x">Turning the question around: how many values come before x?</h2>
+<p>Now ask how many values are smaller than six in the same tree.</p>
+<p>At node five, every value in its left subtree is smaller than six. The node itself is smaller too, so add <code>3 + 1 = 4</code> and move right.</p>
+<p>At node seven, the current value is too large. Do not add it or its right subtree; move left.</p>
+<p>At node six, equality does not count for a strict “smaller than” query. Move left again, reaching a missing child. The answer is four.</p>
+<p>This is the idea behind <code>order_of_key(x)</code>. With the default ascending comparator, it counts values <code>&lt; x</code>. A second operation, <code>order_of_key_upper(x)</code>, includes equivalent values and therefore counts <code>&lt;= x</code>.</p>
+<p>For <code>{2, 5, 7, 7}</code>, the lower rank of seven is two and the upper rank is four. Their difference gives the number of sevens: two. Counting duplicates does not require walking over them.</p>
+<p>The interactive version accompanying this article lets you change the values, choose a rank or threshold, and step through the decisions. Every step shows what was counted or skipped.</p>
+<p><strong>Interactive walkthrough: publication URL pending.</strong></p>
+<h2 id="the-library-already-knows-how-to-balance-the-tree">The library already knows how to balance the tree</h2>
+<p>GNU C++ provides a policy-based data structures extension, usually called <strong>PBDS</strong>. Its order-statistics policy maintains the subtree metadata we have been discussing.</p>
+<p>The underlying unique-key declaration looks like this:</p>
+<pre><code class="language-cpp"><span class="k">using</span><span class="w"> </span><span class="n">RawOrderedSet</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">__gnu_pbds</span><span class="o">::</span><span class="n">tree</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="n">__gnu_pbds</span><span class="o">::</span><span class="n">null_type</span><span class="p">,</span>
+<span class="w">                                     </span><span class="n">less</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">__gnu_pbds</span><span class="o">::</span><span class="n">rb_tree_tag</span><span class="p">,</span>
+<span class="w">                                     </span><span class="n">__gnu_pbds</span><span class="o">::</span><span class="n">tree_order_statistics_node_update</span><span class="o">&gt;</span><span class="p">;</span>
+
+<span class="n">RawOrderedSet</span><span class="w"> </span><span class="n">s</span><span class="p">;</span>
+<span class="n">s</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+<span class="n">s</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
+<span class="n">s</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">7</span><span class="p">);</span>
+
+<span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">order_of_key</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span><span class="w">                  </span><span class="c1">// 2</span>
+<span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="o">*</span><span class="n">s</span><span class="p">.</span><span class="n">find_by_order</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span><span class="w">                </span><span class="c1">// 5</span>
+</code></pre>
+<p>The long declaration specifies the key type, no mapped value, the comparator, a red-black tree backend, and the policy that maintains subtree sizes. <a href="https://gcc.gnu.org/onlinedocs/gcc-10.4.0/libstdc++/api/a10587.html">GCC’s API documentation</a> describes the rank and selection operations.</p>
+<p>Our wrapper gives those capabilities a smaller everyday interface. It does not keep a second sorted vector or a separate frequency map. The tree does the ordering and counting; the class handles the public contract.</p>
+<p>Use GCC with GNU libstdc++ or Clang with that library, in C++17 mode or newer. PBDS is a GNU extension and is not supplied by plain MSVC’s standard library. The C++ container itself has no JavaScript or diagramming dependency.</p>
+<h2 id="repeated-values-need-identity-not-a-relaxed-comparison">Repeated values need identity, not a relaxed comparison</h2>
+<p>There is a tempting shortcut: change the comparator from <code>less</code> to <code>less_equal</code>, so two equal values appear to be allowed.</p>
+<p>That breaks a tree’s ordering contract. An ordered search tree needs a <strong>strict weak ordering</strong>, including the rule that a key does not compare before itself. <code>less_equal(7, 7)</code> is true. The resulting search and bound behavior should not be treated as a multiset implementation. <a href="https://eel.is/c++draft/associative.reqmts">The C++ associative-container requirements explain the ordering rule</a>.</p>
+<p>Instead, give each inserted occurrence an internal ID:</p>
+<p><img src="assets/medium/duplicate-ids.png" alt="Duplicate ids diagram" /></p>
+<p><em>Figure 3. IDs distinguish equal occurrences. Ordering uses the value first and the ID only for equivalent values. The public interface returns the value alone.</em></p>
+<p>Insertions of <code>7, 2, 7, 5</code> receive IDs <code>0, 1, 2, 3</code>. After sorting, <code>(7, 0)</code> comes before <code>(7, 2)</code>. The two sevens stay distinct without breaking strict ordering.</p>
+<p>An ID is a counter here. It is not a random priority or a hash, so this technique introduces no collision probability. Equivalent occurrences retain their insertion order.</p>
+<p>The public iterator hides the second field. You write <code>*it</code>, <code>it-&gt;member</code>, or <code>ms[i]</code> and receive the original value. Internally, the ID also lets <code>index_of(it)</code> find the rank of the exact occurrence rather than merely the first equivalent value.</p>
+<p>Value lookups compare the searched value directly while walking the tree. They do not construct temporary pair keys or invent artificial minimum/maximum values. That matters for strings, custom objects, and integers at their limits.</p>
+<h2 id="a-few-declarations-you-can-keep-in-a-template">A few declarations you can keep in a template</h2>
+<pre><code class="language-cpp"><span class="n">ordered_set</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">a</span><span class="p">;</span>
+<span class="n">ordered_set</span><span class="o">&lt;</span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="o">&gt;</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">9</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">9</span><span class="p">};</span>
+<span class="n">ordered_multiset</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;</span><span class="w"> </span><span class="n">names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="s">&quot;Ali&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Tareq&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Ali&quot;</span><span class="p">};</span>
+<span class="n">ordered_set</span><span class="o">&lt;</span><span class="n">pair</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">pairs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{{</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">}};</span>
+
+<span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">8</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">};</span>
+<span class="n">ordered_multiset</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">fromVector</span><span class="p">(</span><span class="n">v</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">v</span><span class="p">.</span><span class="n">end</span><span class="p">());</span>
+<span class="n">ordered_set</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">uniqueValues</span><span class="p">(</span><span class="n">v</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">v</span><span class="p">.</span><span class="n">end</span><span class="p">());</span>
+
+<span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span><span class="w">                           </span><span class="c1">// 2</span>
+<span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">names</span><span class="p">.</span><span class="n">count</span><span class="p">(</span><span class="s">&quot;Ali&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span><span class="w">                 </span><span class="c1">// 2</span>
+<span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">pairs</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">second</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span><span class="w">                    </span><span class="c1">// 4</span>
+<span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">fromVector</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span><span class="w">                      </span><span class="c1">// 8</span>
+<span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">uniqueValues</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span><span class="w">                </span><span class="c1">// 3</span>
+<span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">a</span><span class="p">.</span><span class="n">empty</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span><span class="w">                          </span><span class="c1">// 1</span>
+</code></pre>
+<p><code>T</code> is the stored type. The optional second template parameter controls the ordering. The multiset’s optional third parameter controls the unsigned insertion-ID type.</p>
+<p>For descending order:</p>
+<pre><code class="language-cpp"><span class="n">ordered_multiset</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="n">greater</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">9</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">9</span><span class="p">};</span>
+
+<span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span><span class="w">                               </span><span class="c1">// 9</span>
+<span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">order_of_key</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span><span class="w">                  </span><span class="c1">// 2: values before 4 are 9, 9</span>
+<span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="o">*</span><span class="n">s</span><span class="p">.</span><span class="n">lower_bound</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span><span class="w">                  </span><span class="c1">// 4</span>
+<span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">count_range</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span><span class="w">                </span><span class="c1">// 3: 9, 9, 4</span>
+<span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">count_range</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">9</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span><span class="w">                </span><span class="c1">// 0: reversed in this ordering</span>
+</code></pre>
+<p>The word to remember is <strong>before</strong>. With <code>greater&lt;int&gt;</code>, nine comes before four. Rank zero is the largest value, and a range from nine through three is written <code>count_range(9, 3)</code>.</p>
+<p>For custom objects, equivalence also follows the comparator:</p>
+<pre><code class="language-cpp"><span class="k">struct</span><span class="w"> </span><span class="nc">Player</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">    </span><span class="n">string</span><span class="w"> </span><span class="n">name</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">score</span><span class="p">;</span>
+
+<span class="p">};</span>
+
+<span class="k">struct</span><span class="w"> </span><span class="nc">ComparePlayer</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="nf">operator</span><span class="p">()(</span><span class="k">const</span><span class="w"> </span><span class="n">Player</span><span class="o">&amp;</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">Player</span><span class="o">&amp;</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">a</span><span class="p">.</span><span class="n">score</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">score</span><span class="p">;</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="p">};</span>
+
+<span class="n">ordered_multiset</span><span class="o">&lt;</span><span class="n">Player</span><span class="p">,</span><span class="w"> </span><span class="n">ComparePlayer</span><span class="o">&gt;</span><span class="w"> </span><span class="n">players</span><span class="p">;</span>
+<span class="n">players</span><span class="p">.</span><span class="n">insert</span><span class="p">({</span><span class="s">&quot;Ali&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">});</span>
+<span class="n">players</span><span class="p">.</span><span class="n">insert</span><span class="p">({</span><span class="s">&quot;Tareq&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">});</span>
+<span class="n">players</span><span class="p">.</span><span class="n">insert</span><span class="p">({</span><span class="s">&quot;Omar&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">80</span><span class="p">});</span>
+
+<span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">players</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">name</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span><span class="w">                    </span><span class="c1">// Ali</span>
+<span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">players</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="n">name</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span><span class="w">                    </span><span class="c1">// Tareq</span>
+<span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">players</span><span class="p">.</span><span class="n">count</span><span class="p">({</span><span class="s">&quot;Anyone&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">})</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span><span class="w">     </span><span class="c1">// 2</span>
+<span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">players</span><span class="p">.</span><span class="n">begin</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">score</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span><span class="w">             </span><span class="c1">// 100</span>
+</code></pre>
+<p>Here the comparator considers only the score. Two players with the same score are equivalent keys, even when their names differ. The multiset retains both. A unique set using the same comparator would retain only the first one.</p>
+<p>Keys must be copyable for the PBDS backend. A supplied custom comparator can avoid any need for <code>operator&lt;</code>, arithmetic, or <code>operator==</code>. Stateful comparators are supported too, provided their ordering remains consistent while the container holds keys.</p>
+<h2 id="two-places-where-the-interface-earns-its-keep">Two places where the interface earns its keep</h2>
+<h3 id="counting-inversions">Counting inversions</h3>
+<p>An inversion is a pair of positions <code>i &lt; j</code> whose values satisfy <code>v[i] &gt; v[j]</code>. Read values from left to right. When a new value arrives, ask how many earlier values are strictly greater.</p>
+<pre><code class="language-cpp"><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="nf">CountInversions</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">v</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">    </span><span class="n">ordered_multiset</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">s</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">ans</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">v</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">ans</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">order_of_key_upper</span><span class="p">(</span><span class="n">value</span><span class="p">);</span>
+<span class="w">        </span><span class="n">s</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="n">value</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">ans</span><span class="p">;</span>
+
+<span class="p">}</span>
+</code></pre>
+<p>We subtract the <strong>upper</strong> rank so equal values do not count as inversions. For <code>{3, 1, 2, 2}</code>, the result is three. The algorithm takes <code>O(n log(n + 1))</code> time and <code>O(n)</code> extra space. The answer must fit in <code>long long</code> for this function.</p>
+<h3 id="sliding-lower-medians">Sliding lower medians</h3>
+<p>A moving window repeatedly inserts one value, removes one value, and asks for its median. That is almost a sentence made out of this container’s operations.</p>
+<pre><code class="language-cpp"><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">SlidingMedian</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">k</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">k</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="p">)</span><span class="n">k</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">v</span><span class="p">.</span><span class="n">size</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">throw</span><span class="w"> </span><span class="n">invalid_argument</span><span class="p">(</span><span class="s">&quot;Invalid window size&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">ordered_multiset</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">s</span><span class="p">;</span>
+<span class="w">    </span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ans</span><span class="p">;</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">v</span><span class="p">.</span><span class="n">size</span><span class="p">();</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">s</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="p">)</span><span class="n">k</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">s</span><span class="p">.</span><span class="n">erase_one</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">k</span><span class="p">]);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="p">)</span><span class="n">k</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">ans</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">s</span><span class="p">[(</span><span class="n">k</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">2</span><span class="p">]);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">ans</span><span class="p">;</span>
+
+<span class="p">}</span>
+</code></pre>
+<p>For <code>{5, 1, 5, 2, 9, 2}</code> and a window size of three, the answers are <code>5, 2, 5, 2</code>. For an even window size, <code>(k - 1) / 2</code> chooses the lower of the two middle values. Runtime is <code>O(n log(k + 1))</code>; the tree stores <code>O(k)</code> elements, apart from the output vector.</p>
+<p>The quiet but important line is <code>erase_one</code>. Removing all copies of the outgoing value would silently damage a window containing duplicates.</p>
+<h2 id="the-contract-behind-the-convenience">The contract behind the convenience</h2>
+<p>Indexed access returns a read-only reference. Assigning through <code>s[0]</code> would let a value change without being placed back in sorted order, so it is intentionally disallowed. To change a key, erase it and insert the replacement.</p>
+<p>Invalid <code>s[i]</code> and <code>at(i)</code> calls throw <code>out_of_range</code>. Invalid <code>find_by_order(i)</code> calls return <code>end()</code>. Empty <code>front()</code> and <code>back()</code> calls also throw. Ordinary iterator operations still require a valid iterator; do not dereference <code>end()</code>.</p>
+<p><code>erase(x)</code> removes every equivalent occurrence and returns the count. <code>erase_one(x)</code> removes at most one and returns a bool. Erasing by iterator identifies one exact occurrence. Iterator-range erasure uses a half-open range; <code>count_range(a, b)</code> uses an inclusive <strong>value</strong> range.</p>
+<p>Existing element iterators survive insertions and unrelated erasures. Erasing an element invalidates its iterator; clearing invalidates all element iterators. After moving or swapping, iterators follow their elements to the receiving container, but end iterators should be reacquired.</p>
+<p>The default 64-bit ID counter allows <code>2^64 - 1</code> successful insertions between clears, counting entries later erased. It throws before wraparound. Ordinary erasures do not reset IDs; <code>clear()</code> does. A narrower unsigned ID type can be chosen explicitly, but padding may absorb any storage saving.</p>
+<pre><code class="language-cpp"><span class="n">ordered_multiset</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="n">less</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="o">&gt;</span><span class="w"> </span><span class="n">s</span><span class="p">;</span>
+<span class="n">s</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
+<span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span><span class="w">                               </span><span class="c1">// 5</span>
+</code></pre>
+<p>Most individual search, rank, selection, insertion, and single-erasure operations cost <code>O(log(n + 1))</code>. Full traversal costs <code>O(n)</code>. Size and cached endpoints are constant-time. Bulk erasure performs individual tree erasures, so removing <code>q</code> equivalent occurrences costs <code>O((q + 1) log(n + 1))</code> in the multiset.</p>
+<p>The wrapper supports copying, moving, swapping, range construction, and initializer lists. Moving creates an empty PBDS sentinel and can allocate, so move operations are not <code>noexcept</code>. <code>emplace</code> constructs a value before inserting it; it does not promise zero-copy in-place node construction.</p>
+<p>The full API reference documents every overload, return type, complexity, and iterator precondition. The repository also includes a standalone <code>.cpp</code> file for judges where you paste one whole source file instead of uploading a local header.</p>
+<h2 id="what-is-worth-measuring">What is worth measuring?</h2>
+<p>Templates do not require a runtime type switch here. The unique wrapper stores one PBDS tree. The multiset adds one counter per container and an ID inside each stored key. Both use <code>O(n)</code> node storage.</p>
+<p>Actual node bytes depend on types, alignment, the allocator, and the library. <code>sizeof(container)</code> excludes its dynamically allocated nodes, and a narrower ID does not guarantee a smaller allocation.</p>
+<p>The useful improvements are easy to explain: subtree counts avoid scanning, upper ranks avoid <code>x + 1</code> tricks, direct multiset searches avoid copying lookup keys, and IDs preserve a valid ordering for duplicates. Benchmark results belong next to the workload and toolchain that produced them, rather than beside a claim that one container always wins.</p>
+<p>If you never need ranks, a normal set may be enough. If all coordinates are known, a compressed Fenwick tree can be a compact alternative for frequencies. If you need split/merge operations or custom augmentation, a treap may be a better fit. Choose the structure for the operations your problem actually needs.</p>
+<h2 id="copy-it-test-it-and-keep-the-small-details-visible">Copy it, test it, and keep the small details visible</h2>
+<p>The supplied suite compares these containers with standard sets and multisets, tests both ordering directions, and checks custom types, numeric limits, iterators, copy/move/swap, and ID exhaustion. Each successful full suite run includes 27,073,587 checks, with randomized operations and bounded exhaustive traces. The examples above are extracted and compiled, and the recipe functions are compared with simple reference solutions.</p>
+<p>The exact compiler results and any execution restrictions are recorded with the project. Tests give us evidence and useful regression cases; the ordering invariant explains why the method works.</p>
+<p>The central idea is small enough to keep in mind: <strong>store the size of each subtree, then count whole groups instead of individual elements</strong>. The reusable class is there so that idea is convenient to use on the next problem.</p>
+<p><strong>Repository: publication URL pending.</strong></p>
+<p><em>By Tareq Ali. This article was organized with AI assistance.</em></p>
+</article></div></body></html>

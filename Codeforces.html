@@ -1,0 +1,1253 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Organized C++ Ordered Set — Codeforces preview</title><style>
+:root { color-scheme: light; --ink: #182d44; --muted: #526479; --teal: #087f78; }
+* { box-sizing: border-box; }
+body { margin: 0; color: var(--ink); background: #f7f8fa; font-family: "Segoe UI", Arial, sans-serif; line-height: 1.75; }
+.topbar { padding: 18px max(24px, calc((100vw - 1150px) / 2)); background: #132c45; color: #fff; display: flex; justify-content: space-between; gap: 18px; flex-wrap: wrap; }
+.brand { font-weight: 700; letter-spacing: .02em; }
+.topbar a { color: #e2f8f3; margin-left: 20px; }
+.layout { display: grid; grid-template-columns: 190px minmax(0, 850px); gap: 35px; max-width: 1150px; margin: 45px auto; padding: 0 24px; }
+.toc { position: sticky; top: 25px; align-self: start; font-size: 13px; line-height: 1.5; }
+.toc strong { color: var(--teal); }
+.toc a { display: block; padding: 7px 0; color: var(--muted); text-decoration: none; }
+article { min-width: 0; background: #fff; padding: 38px 48px; border: 1px solid #e1e7ec; border-radius: 12px; }
+h1, h2, h3 { line-height: 1.25; color: #132c45; scroll-margin-top: 25px; break-after: avoid; }
+h1 { font-size: clamp(2.2rem, 5vw, 3.4rem); letter-spacing: -.035em; margin-top: 5px; }
+.subtitle { font-size: 1.25rem; line-height: 1.5; color: var(--muted); margin: .5em 0 1.6em; }
+h2 { font-size: 1.55rem; margin-top: 2.4em; padding-top: .3em; }
+h3 { font-size: 1.15rem; margin-top: 1.8em; }
+a { color: #086f89; text-underline-offset: 3px; }
+p, li { font-size: 16px; }
+strong { color: #112f46; }
+figure { margin: 28px 0; background: #fafcfd; padding: 18px; border: 1px solid #dce6eb; border-radius: 10px; overflow: auto; }
+figure svg { display: block; max-width: 100%; height: auto; margin: auto; }
+figure img { width: 100%; height: auto; }
+figure figcaption { color: var(--muted); font-size: 13px; margin-top: 10px; }
+pre, code { font-family: Consolas, "Cascadia Mono", monospace; }
+pre { padding: 18px; background: #f4f7fa; border: 1px solid #dce5ec; border-left: 3px solid var(--teal); border-radius: 6px; font-size: 13px; line-height: 1.6; overflow: auto; tab-size: 4; }
+:not(pre) > code { background: #edf3f7; border-radius: 3px; padding: 1px 4px; overflow-wrap: anywhere; font-size: .92em; }
+table { width: 100%; border-collapse: collapse; margin: 24px 0; font-size: 13px; }
+th, td { padding: 9px; border: 1px solid #d9e2ea; text-align: left; vertical-align: top; overflow-wrap: anywhere; }
+th { background: #e9f2f4; }
+details { margin: 24px 0; }
+summary { cursor: pointer; font-weight: 700; padding: 14px; background: #eaf3f4; border-radius: 6px; }
+.math { font-family: Georgia, serif; white-space: normal; }
+.draft-link { border-left: 3px solid #c9841d; padding: 8px 12px; background: #fff8e8; color: #795515; font-size: 14px; }
+.lab { margin: 30px 0; padding: 22px; border: 2px solid #9acfc7; border-radius: 12px; background: #fbfefd; }
+.lab h2 { margin-top: 0; }
+.lab label { display: block; font-weight: 600; font-size: 14px; }
+.lab input, .lab select { width: 100%; padding: 9px; border: 1px solid #abbfc9; border-radius: 5px; background: white; font: inherit; }
+.lab-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 12px; }
+.lab-buttons { display: flex; gap: 10px; flex-wrap: wrap; margin: 15px 0; }
+button { font: inherit; cursor: pointer; border: 1px solid #087f78; border-radius: 5px; padding: 8px 14px; background: #087f78; color: white; }
+button.secondary { background: white; color: #087f78; }
+button:disabled { cursor: default; opacity: .55; }
+button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible { outline: 3px solid #cf8b15; outline-offset: 3px; }
+.legend { font-size: 13px; color: var(--muted); }
+.legend span { display: inline-block; margin-right: 12px; padding: 2px 6px; border-radius: 3px; }
+.blue { background: #dbeafe; } .green { background: #dcfce7; } .amber { background: #fff1d6; }
+.tree-panel { overflow: auto; min-height: 130px; margin: 14px 0; }
+.tree-panel svg { display: block; max-width: none !important; height: auto; margin: auto; }
+.trace { font-size: 14px; padding-left: 24px; }
+.lab-note { color: var(--muted); font-size: 13px; }
+.status { min-height: 26px; font-weight: 600; }
+@media (max-width: 950px) { .layout { display: block; margin: 22px auto; } .toc { display: none; } article { padding: 26px; } .lab-grid { grid-template-columns: 1fr; } }
+@media print { @page { size: A4; margin: 16mm; } body { background: white; } .topbar, .toc, .lab { display: none; } .layout { display: block; margin: 0; padding: 0; } article { border: 0; padding: 0; } p, li { font-size: 10pt; } h1 { font-size: 27pt; } h2 { font-size: 17pt; } pre { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 8pt; } figure { break-inside: avoid; } tr { break-inside: avoid; } thead { display: table-header-group; } }
+
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+pre .hll { background-color: #ffffcc }
+pre { background: #f8f8f8; }
+pre .c { color: #3D7B7B; font-style: italic } /* Comment */
+pre .err { border: 1px solid #F00 } /* Error */
+pre .k { color: #008000; font-weight: bold } /* Keyword */
+pre .o { color: #666 } /* Operator */
+pre .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+pre .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+pre .cp { color: #9C6500 } /* Comment.Preproc */
+pre .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+pre .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+pre .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+pre .gd { color: #A00000 } /* Generic.Deleted */
+pre .ge { font-style: italic } /* Generic.Emph */
+pre .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+pre .gr { color: #E40000 } /* Generic.Error */
+pre .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+pre .gi { color: #008400 } /* Generic.Inserted */
+pre .go { color: #717171 } /* Generic.Output */
+pre .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+pre .gs { font-weight: bold } /* Generic.Strong */
+pre .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+pre .gt { color: #04D } /* Generic.Traceback */
+pre .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+pre .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+pre .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+pre .kp { color: #008000 } /* Keyword.Pseudo */
+pre .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+pre .kt { color: #B00040 } /* Keyword.Type */
+pre .m { color: #666 } /* Literal.Number */
+pre .s { color: #BA2121 } /* Literal.String */
+pre .na { color: #687822 } /* Name.Attribute */
+pre .nb { color: #008000 } /* Name.Builtin */
+pre .nc { color: #00F; font-weight: bold } /* Name.Class */
+pre .no { color: #800 } /* Name.Constant */
+pre .nd { color: #A2F } /* Name.Decorator */
+pre .ni { color: #717171; font-weight: bold } /* Name.Entity */
+pre .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+pre .nf { color: #00F } /* Name.Function */
+pre .nl { color: #767600 } /* Name.Label */
+pre .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+pre .nt { color: #008000; font-weight: bold } /* Name.Tag */
+pre .nv { color: #19177C } /* Name.Variable */
+pre .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+pre .w { color: #BBB } /* Text.Whitespace */
+pre .mb { color: #666 } /* Literal.Number.Bin */
+pre .mf { color: #666 } /* Literal.Number.Float */
+pre .mh { color: #666 } /* Literal.Number.Hex */
+pre .mi { color: #666 } /* Literal.Number.Integer */
+pre .mo { color: #666 } /* Literal.Number.Oct */
+pre .sa { color: #BA2121 } /* Literal.String.Affix */
+pre .sb { color: #BA2121 } /* Literal.String.Backtick */
+pre .sc { color: #BA2121 } /* Literal.String.Char */
+pre .dl { color: #BA2121 } /* Literal.String.Delimiter */
+pre .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+pre .s2 { color: #BA2121 } /* Literal.String.Double */
+pre .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+pre .sh { color: #BA2121 } /* Literal.String.Heredoc */
+pre .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+pre .sx { color: #008000 } /* Literal.String.Other */
+pre .sr { color: #A45A77 } /* Literal.String.Regex */
+pre .s1 { color: #BA2121 } /* Literal.String.Single */
+pre .ss { color: #19177C } /* Literal.String.Symbol */
+pre .bp { color: #008000 } /* Name.Builtin.Pseudo */
+pre .fm { color: #00F } /* Name.Function.Magic */
+pre .vc { color: #19177C } /* Name.Variable.Class */
+pre .vg { color: #19177C } /* Name.Variable.Global */
+pre .vi { color: #19177C } /* Name.Variable.Instance */
+pre .vm { color: #19177C } /* Name.Variable.Magic */
+pre .il { color: #666 } /* Literal.Number.Integer.Long */
+</style></head><body><header class="topbar"><span class="brand">Organized C++ Ordered Set</span><nav><a href="index.html">Visual guide</a><a href="Codeforces.html">For contests</a><a href="docs/API.html">API</a></nav></header><div class="layout"><aside class="toc"><strong>IN THIS GUIDE</strong><a href="#usage-first">Usage first</a><a href="#two-operations-behind-the-interface">Two operations behind the interface</a><a href="#duplicates-without-less_equal">Duplicates without `less_equal`</a><a href="#interface-and-complexity">Interface and complexity</a><a href="#a-sliding-window-example">A sliding-window example</a><a href="#details-that-can-cost-a-submission">Details that can cost a submission</a><a href="#validation">Validation</a><a href="#complete-implementation">Complete implementation</a></aside><article><h1 id="organized-c-ordered-set-and-multiset">Organized C++ Ordered Set and Multiset</h1>
+<p>Hello everyone!</p>
+<p>After a long break from competitive programming, I’m back with something I wanted to have ready in my template: an ordered set and multiset with a clean member-function interface.</p>
+<p>The project is <strong>Organized C++ Ordered Set</strong>. You can write <code>ordered_set&lt;int&gt;</code> or <code>ordered_multiset&lt;int&gt;</code>, access sorted ranks with <code>s[i]</code>, and use normal-looking bounds and erasure functions. It uses GNU PBDS with a strict comparator, including when duplicates are present.</p>
+<p><strong>Repository: publication URL pending.</strong></p>
+<h2 id="usage-first">Usage first</h2>
+<pre><code class="language-c++"><span class="n">ordered_set</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">};</span>
+<span class="n">ordered_multiset</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ms</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">};</span>
+
+<span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span><span class="w">                           </span><span class="c1">// 3</span>
+<span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">ms</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span><span class="w">                          </span><span class="c1">// 4</span>
+<span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span><span class="w">                               </span><span class="c1">// 2</span>
+<span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">ms</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span><span class="w">                              </span><span class="c1">// 7</span>
+<span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">ms</span><span class="p">.</span><span class="n">order_of_key</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span><span class="w">                 </span><span class="c1">// 2</span>
+<span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">ms</span><span class="p">.</span><span class="n">order_of_key_upper</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span><span class="w">           </span><span class="c1">// 4</span>
+<span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">ms</span><span class="p">.</span><span class="n">count</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span><span class="w">                        </span><span class="c1">// 2</span>
+<span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">ms</span><span class="p">.</span><span class="n">count_range</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">7</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span><span class="w">               </span><span class="c1">// 3</span>
+
+<span class="n">ms</span><span class="p">.</span><span class="n">erase_one</span><span class="p">(</span><span class="mi">7</span><span class="p">);</span>
+<span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">ms</span><span class="p">.</span><span class="n">count</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span><span class="w">                        </span><span class="c1">// 1</span>
+
+<span class="n">ms</span><span class="p">.</span><span class="n">erase</span><span class="p">(</span><span class="mi">7</span><span class="p">);</span>
+<span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">ms</span><span class="p">.</span><span class="n">contains</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span><span class="w">                     </span><span class="c1">// 0</span>
+
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">ms</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39; &#39;</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span><span class="w">                                       </span><span class="c1">// 2 5</span>
+</code></pre>
+<p>Every rank is <strong>zero-based</strong>. <code>s[i]</code> returns a read-only reference and costs <span class="math" title="O(\log(n+1))">O(log(n+1))</span>, not <span class="math" title="O(1)">O(1)</span>. Both <code>s[i]</code> and <code>s.at(i)</code> throw <code>out_of_range</code> if the rank is invalid; <code>find_by_order(i)</code> returns <code>end()</code> instead.</p>
+<p>Use C++17 or newer with GNU libstdc++ and PBDS. GCC works; Clang works with that library. Plain MSVC does not provide these GNU headers. Keep the includes before macros such as <code>#define endl '\n'</code>.</p>
+<h2 id="two-operations-behind-the-interface">Two operations behind the interface</h2>
+<p><code>order_of_key(x)</code> counts keys strictly before <code>x</code>. <code>find_by_order(i)</code> finds sorted rank <code>i</code>. PBDS maintains subtree sizes, which makes both operations logarithmic. <a href="https://gcc.gnu.org/onlinedocs/gcc-10.4.0/libstdc++/api/a10587.html">GCC documents these order-statistics operations here</a>.</p>
+<p>For ascending values <code>{2, 5, 7, 7}</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Expression</th>
+<th style="text-align:right">Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>s[0]</code></td>
+<td style="text-align:right"><code>2</code></td>
+</tr>
+<tr>
+<td><code>s.order_of_key(7)</code></td>
+<td style="text-align:right"><code>2</code></td>
+</tr>
+<tr>
+<td><code>s.order_of_key_upper(7)</code></td>
+<td style="text-align:right"><code>4</code></td>
+</tr>
+<tr>
+<td><code>s.count(7)</code></td>
+<td style="text-align:right"><code>2</code></td>
+</tr>
+<tr>
+<td><code>s.first_index(7)</code></td>
+<td style="text-align:right"><code>2</code></td>
+</tr>
+<tr>
+<td><code>s.last_index(7)</code></td>
+<td style="text-align:right"><code>3</code></td>
+</tr>
+</tbody>
+</table>
+<p>An upper-rank operation is useful because <code>order_of_key(x + 1)</code> can overflow and does not generalize to strings or custom keys.</p>
+<h2 id="duplicates-without-less_equal">Duplicates without <code>less_equal</code></h2>
+<p>Please do not replace <code>less</code> with <code>less_equal</code> in a PBDS tree. The comparator must define a strict weak ordering; in particular, comparing a key with itself must return false. <a href="https://eel.is/c++draft/associative.reqmts">The standard associative-container requirements use the same rule</a>.</p>
+<p>The multiset stores <code>(value, insertion ID)</code>. It compares values first and IDs only when the values are comparator-equivalent. The IDs are deterministic counters, not random priorities or hashes. Public iterators and indexed access expose only the value.</p>
+<p>For example, inserting <code>7, 2, 7, 5</code> creates <code>(7,0), (2,1), (7,2), (5,3)</code>. In sorted order they become <code>(2,1), (5,3), (7,0), (7,2)</code>.</p>
+<p>Bounds and value-rank queries walk through the existing tree metadata directly. They do not copy the searched key or manufacture sentinel pairs. The default ID is <code>uint64_t</code>; exhaustion is checked before wraparound. <code>clear()</code> resets the counter, while ordinary erasure does not.</p>
+<h2 id="interface-and-complexity">Interface and complexity</h2>
+<p>Let <span class="math" title="n">n</span> count stored occurrences, including duplicates. Let <span class="math" title="q">q</span> be the number erased and <span class="math" title="m">m</span> the number inserted in a batch. Comparisons, key operations, and comparator operations are assumed constant-cost below.</p>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>Meaning</th>
+<th>Time</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>insert(x)</code>, <code>emplace(args...)</code></td>
+<td>Unique set returns <code>{iterator, inserted}</code>; multiset returns the new occurrence’s iterator</td>
+<td><span class="math" title="O(\log(n+1))">O(log(n+1))</span></td>
+</tr>
+<tr>
+<td><code>find(x)</code>, <code>contains(x)</code>, <code>count(x)</code></td>
+<td>Normal value lookup; count is logarithmic even with many duplicates</td>
+<td><span class="math" title="O(\log(n+1))">O(log(n+1))</span></td>
+</tr>
+<tr>
+<td><code>lower_bound(x)</code>, <code>upper_bound(x)</code>, <code>equal_range(x)</code></td>
+<td>Normal bounds in comparator order</td>
+<td><span class="math" title="O(\log(n+1))">O(log(n+1))</span></td>
+</tr>
+<tr>
+<td><code>order_of_key(x)</code>, <code>order_of_key_upper(x)</code></td>
+<td>Number before / before-or-equivalent to <code>x</code></td>
+<td><span class="math" title="O(\log(n+1))">O(log(n+1))</span></td>
+</tr>
+<tr>
+<td><code>find_by_order(i)</code>, <code>s[i]</code>, <code>at(i)</code></td>
+<td>Zero-based selection</td>
+<td><span class="math" title="O(\log(n+1))">O(log(n+1))</span></td>
+</tr>
+<tr>
+<td><code>first_index(x)</code>, <code>last_index(x)</code></td>
+<td>First/last equivalent rank, or <code>-1</code></td>
+<td><span class="math" title="O(\log(n+1))">O(log(n+1))</span></td>
+</tr>
+<tr>
+<td><code>index_of(it)</code></td>
+<td>Rank of this exact occurrence; <code>end()</code> maps to <code>size()</code></td>
+<td><span class="math" title="O(\log(n+1))">O(log(n+1))</span></td>
+</tr>
+<tr>
+<td><code>count_range(a, b)</code></td>
+<td>Inclusive value range; reversed bounds return zero</td>
+<td><span class="math" title="O(\log(n+1))">O(log(n+1))</span></td>
+</tr>
+<tr>
+<td><code>erase_one(x)</code>, <code>erase(it)</code>, <code>erase_by_order(i)</code></td>
+<td>Remove one occurrence</td>
+<td><span class="math" title="O(\log(n+1))">O(log(n+1))</span></td>
+</tr>
+<tr>
+<td><code>erase(x)</code></td>
+<td>Remove all equivalent occurrences</td>
+<td>Unique: <span class="math" title="O(\log(n+1))">O(log(n+1))</span>; multi: <span class="math" title="O((q+1)\log(n+1))">O((q+1)log(n+1))</span></td>
+</tr>
+<tr>
+<td><code>erase(first, last)</code></td>
+<td>Half-open iterator range</td>
+<td><span class="math" title="O(1+q\log(n+1))">O(1+qlog(n+1))</span></td>
+</tr>
+<tr>
+<td><code>insert(first, last)</code>, <code>insert({a, b})</code></td>
+<td>Insert a batch</td>
+<td><span class="math" title="O(1+m\log(n+m+1))">O(1+mlog(n+m+1))</span></td>
+</tr>
+<tr>
+<td><code>size()</code>, <code>empty()</code>, <code>front()</code>, <code>back()</code></td>
+<td>Size and cached endpoints; empty endpoints throw</td>
+<td><span class="math" title="O(1)">O(1)</span></td>
+</tr>
+<tr>
+<td><code>clear()</code></td>
+<td>Remove all entries and reset multiset IDs</td>
+<td><span class="math" title="O(n)">O(n)</span></td>
+</tr>
+<tr>
+<td>Forward/reverse traversal</td>
+<td>Read-only bidirectional iteration</td>
+<td><span class="math" title="O(n)">O(n)</span> for a full traversal</td>
+</tr>
+</tbody>
+</table>
+<p>Bulk erasure uses individual PBDS node erasures. It does not inherit <code>std::multiset</code>’s <span class="math" title="O(\log(n+1)+q)">O(log(n+1)+q)</span> erase-by-value bound. <code>emplace</code> constructs a key and inserts it; PBDS still copies that key into its node.</p>
+<p>Both classes support range/initializer-list construction, copying, moving, and swapping. Moves allocate an empty PBDS sentinel, so they are not <code>noexcept</code>; move assignment also destroys the destination’s previous contents. Swapping is constant-time when the comparator swap is constant-time. The repository’s API reference documents every overload, iterator rule, and exception.</p>
+<h2 id="a-sliding-window-example">A sliding-window example</h2>
+<p>The outgoing value might have duplicates, so remove <strong>one</strong> copy. For a lower median, use rank <code>(k - 1) / 2</code>:</p>
+<pre><code class="language-c++"><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">SlidingMedian</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">k</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">k</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="p">)</span><span class="n">k</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">v</span><span class="p">.</span><span class="n">size</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">throw</span><span class="w"> </span><span class="n">invalid_argument</span><span class="p">(</span><span class="s">&quot;Invalid window size&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">ordered_multiset</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">s</span><span class="p">;</span>
+<span class="w">    </span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ans</span><span class="p">;</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">v</span><span class="p">.</span><span class="n">size</span><span class="p">();</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">s</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="p">)</span><span class="n">k</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">s</span><span class="p">.</span><span class="n">erase_one</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">k</span><span class="p">]);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="p">)</span><span class="n">k</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">ans</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">s</span><span class="p">[(</span><span class="n">k</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">2</span><span class="p">]);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">ans</span><span class="p">;</span>
+
+<span class="p">}</span>
+</code></pre>
+<p>For <code>{5, 1, 5, 2, 9, 2}</code> and <code>k = 3</code>, this returns <code>{5, 2, 5, 2}</code>. Time is <span class="math" title="O(n\log(k+1))">O(nlog(k+1))</span>. The tree uses <span class="math" title="O(k)">O(k)</span> space, apart from the returned answers.</p>
+<h2 id="details-that-can-cost-a-submission">Details that can cost a submission</h2>
+<ul>
+<li><code>erase(x)</code> removes every copy. <code>erase_one(x)</code> removes one.</li>
+<li><code>greater&lt;T&gt;</code> changes the meaning of “before.” Rank zero becomes the largest key, and an inclusive descending range is written in that order, such as <code>count_range(9, 3)</code>.</li>
+<li>Stored keys are immutable through iterators and indexing. Erase and reinsert to change a key.</li>
+<li>Check for <code>end()</code> before dereferencing a bound or an invalid selection.</li>
+<li>Use the unique set when duplicates are unnecessary. The multiset stores one ID per occurrence.</li>
+</ul>
+<h2 id="validation">Validation</h2>
+<p>The included reference suite exercises 384,000 randomized operations, 265,720 bounded exhaustive trace states, and 27,073,587 checks per successful full run. It compares against standard sets/multisets in both sort directions, including custom keys, numeric limits, iterator stability, copy/move/swap, and checked ID exhaustion.</p>
+<p>The article examples and recipe algorithms are checked separately. Current compiler results and any execution restrictions are recorded in the repository’s validation report. Finite tests help find bugs; they do not turn an invalid comparator into a valid one. :)</p>
+<h2 id="complete-implementation">Complete implementation</h2>
+<p>Copy this above your solution functions. The code has no custom-header dependency when pasted as a whole.</p>
+<details><summary>Ordered set + multiset implementation (C++17)</summary>
+<pre><code class="language-c++"><span class="cm">/*</span>
+<span class="cm">MIT License</span>
+
+<span class="cm">Copyright (c) 2026 Tareq Ali</span>
+
+<span class="cm">Permission is hereby granted, free of charge, to any person obtaining a copy</span>
+<span class="cm">of this software and associated documentation files (the &quot;Software&quot;), to deal</span>
+<span class="cm">in the Software without restriction, including without limitation the rights</span>
+<span class="cm">to use, copy, modify, merge, publish, distribute, sublicense, and/or sell</span>
+<span class="cm">copies of the Software, and to permit persons to whom the Software is</span>
+<span class="cm">furnished to do so, subject to the following conditions:</span>
+
+<span class="cm">The above copyright notice and this permission notice shall be included in all</span>
+<span class="cm">copies or substantial portions of the Software.</span>
+
+<span class="cm">THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR</span>
+<span class="cm">IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,</span>
+<span class="cm">FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE</span>
+<span class="cm">AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER</span>
+<span class="cm">LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,</span>
+<span class="cm">OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE</span>
+<span class="cm">SOFTWARE.</span>
+<span class="cm">*/</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;ext/pb_ds/assoc_container.hpp&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;ext/pb_ds/tree_policy.hpp&gt;</span>
+
+<span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
+
+
+<span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="p">,</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">Compare</span><span class="o">&gt;</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">OrderedSet</span><span class="p">;</span>
+
+<span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="p">,</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">Compare</span><span class="p">,</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">IdType</span><span class="o">&gt;</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">OrderedMultiSet</span><span class="p">;</span>
+
+
+<span class="c1">// Shared read-only iterator: multiset users see T, never its hidden insertion ID.</span>
+<span class="k">namespace</span><span class="w"> </span><span class="nn">ordered_detail</span><span class="w"> </span><span class="p">{</span>
+
+<span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="p">,</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">BaseIterator</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">Multi</span><span class="o">&gt;</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Iterator</span><span class="w"> </span><span class="p">{</span>
+
+<span class="k">private</span><span class="o">:</span>
+<span class="w">    </span><span class="n">BaseIterator</span><span class="w"> </span><span class="n">current</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">explicit</span><span class="w"> </span><span class="n">Iterator</span><span class="p">(</span><span class="n">BaseIterator</span><span class="w"> </span><span class="n">it</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">current</span><span class="p">(</span><span class="n">it</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="p">,</span><span class="w"> </span><span class="k">typename</span><span class="o">&gt;</span>
+<span class="w">    </span><span class="k">friend</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="o">::</span><span class="n">OrderedSet</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="p">,</span><span class="w"> </span><span class="k">typename</span><span class="p">,</span><span class="w"> </span><span class="k">typename</span><span class="o">&gt;</span>
+<span class="w">    </span><span class="k">friend</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="o">::</span><span class="n">OrderedMultiSet</span><span class="p">;</span>
+
+<span class="k">public</span><span class="o">:</span>
+<span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="n">iterator_category</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bidirectional_iterator_tag</span><span class="p">;</span>
+<span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="n">value_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">T</span><span class="p">;</span>
+<span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="n">difference_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">ptrdiff_t</span><span class="p">;</span>
+<span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="n">pointer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="o">*</span><span class="p">;</span>
+<span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="n">reference</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="o">&amp;</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">Iterator</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">reference</span><span class="w"> </span><span class="k">operator</span><span class="o">*</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="p">(</span><span class="n">Multi</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">current</span><span class="o">-&gt;</span><span class="n">first</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="o">*</span><span class="n">current</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">pointer</span><span class="w"> </span><span class="k">operator</span><span class="o">-&gt;</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">addressof</span><span class="p">(</span><span class="o">**</span><span class="k">this</span><span class="p">);</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">Iterator</span><span class="o">&amp;</span><span class="w"> </span><span class="k">operator</span><span class="o">++</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="o">++</span><span class="n">current</span><span class="p">;</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="o">*</span><span class="k">this</span><span class="p">;</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">Iterator</span><span class="w"> </span><span class="k">operator</span><span class="o">++</span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="n">Iterator</span><span class="w"> </span><span class="n">old</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">*</span><span class="k">this</span><span class="p">;</span>
+<span class="w">        </span><span class="o">++*</span><span class="k">this</span><span class="p">;</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">old</span><span class="p">;</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">Iterator</span><span class="o">&amp;</span><span class="w"> </span><span class="k">operator</span><span class="o">--</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="o">--</span><span class="n">current</span><span class="p">;</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="o">*</span><span class="k">this</span><span class="p">;</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">Iterator</span><span class="w"> </span><span class="k">operator</span><span class="o">--</span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="n">Iterator</span><span class="w"> </span><span class="n">old</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">*</span><span class="k">this</span><span class="p">;</span>
+<span class="w">        </span><span class="o">--*</span><span class="k">this</span><span class="p">;</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">old</span><span class="p">;</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">friend</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="k">operator</span><span class="o">==</span><span class="p">(</span><span class="n">Iterator</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">Iterator</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">a</span><span class="p">.</span><span class="n">current</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">current</span><span class="p">;</span>
+
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">friend</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="k">operator</span><span class="o">!=</span><span class="p">(</span><span class="n">Iterator</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">Iterator</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="o">!</span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">b</span><span class="p">);</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="p">};</span>
+
+<span class="p">}</span>
+
+
+<span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="p">,</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">Compare</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">less</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&gt;</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">OrderedSet</span><span class="w"> </span><span class="p">{</span>
+
+<span class="k">private</span><span class="o">:</span>
+<span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="n">Tree</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">__gnu_pbds</span><span class="o">::</span><span class="n">tree</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">__gnu_pbds</span><span class="o">::</span><span class="n">null_type</span><span class="p">,</span><span class="w"> </span><span class="n">Compare</span><span class="p">,</span>
+<span class="w">                                </span><span class="n">__gnu_pbds</span><span class="o">::</span><span class="n">rb_tree_tag</span><span class="p">,</span>
+<span class="w">                                </span><span class="n">__gnu_pbds</span><span class="o">::</span><span class="n">tree_order_statistics_node_update</span><span class="o">&gt;</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">Tree</span><span class="w"> </span><span class="n">tree</span><span class="p">;</span>
+
+<span class="k">public</span><span class="o">:</span>
+<span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="n">value_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">T</span><span class="p">;</span>
+<span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="n">key_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">T</span><span class="p">;</span>
+<span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="n">key_compare</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Compare</span><span class="p">;</span>
+<span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="n">size_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">Tree</span><span class="o">::</span><span class="n">size_type</span><span class="p">;</span>
+<span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="n">difference_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">ptrdiff_t</span><span class="p">;</span>
+<span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="n">iterator</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ordered_detail</span><span class="o">::</span><span class="n">Iterator</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">Tree</span><span class="o">::</span><span class="n">const_iterator</span><span class="p">,</span><span class="w"> </span><span class="nb">false</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="n">const_iterator</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">iterator</span><span class="p">;</span>
+<span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="n">reverse_iterator</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">reverse_iterator</span><span class="o">&lt;</span><span class="n">iterator</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="n">const_reverse_iterator</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">reverse_iterator</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">explicit</span><span class="w"> </span><span class="n">OrderedSet</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Compare</span><span class="o">&amp;</span><span class="w"> </span><span class="n">compare</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Compare</span><span class="p">())</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">tree</span><span class="p">(</span><span class="n">compare</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">Iterator</span><span class="o">&gt;</span>
+<span class="w">    </span><span class="n">OrderedSet</span><span class="p">(</span><span class="n">Iterator</span><span class="w"> </span><span class="n">first</span><span class="p">,</span><span class="w"> </span><span class="n">Iterator</span><span class="w"> </span><span class="n">last</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">Compare</span><span class="o">&amp;</span><span class="w"> </span><span class="n">compare</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Compare</span><span class="p">())</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">tree</span><span class="p">(</span><span class="n">compare</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="n">insert</span><span class="p">(</span><span class="n">first</span><span class="p">,</span><span class="w"> </span><span class="n">last</span><span class="p">);</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">OrderedSet</span><span class="p">(</span><span class="n">initializer_list</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">values</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">Compare</span><span class="o">&amp;</span><span class="w"> </span><span class="n">compare</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Compare</span><span class="p">())</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">tree</span><span class="p">(</span><span class="n">compare</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="n">insert</span><span class="p">(</span><span class="n">values</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">values</span><span class="p">.</span><span class="n">end</span><span class="p">());</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">OrderedSet</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">OrderedSet</span><span class="o">&amp;</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="p">;</span>
+<span class="w">    </span><span class="n">OrderedSet</span><span class="o">&amp;</span><span class="w"> </span><span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">OrderedSet</span><span class="o">&amp;</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// PBDS needs a new empty sentinel, so moving may allocate and is not noexcept.</span>
+<span class="w">    </span><span class="n">OrderedSet</span><span class="p">(</span><span class="n">OrderedSet</span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">other</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">tree</span><span class="p">(</span><span class="n">other</span><span class="p">.</span><span class="n">key_comp</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="n">swap</span><span class="p">(</span><span class="n">other</span><span class="p">);</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">OrderedSet</span><span class="o">&amp;</span><span class="w"> </span><span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="n">OrderedSet</span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">other</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="k">this</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">other</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">OrderedSet</span><span class="w"> </span><span class="nf">current</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">other</span><span class="p">));</span>
+<span class="w">            </span><span class="n">swap</span><span class="p">(</span><span class="n">current</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="o">*</span><span class="k">this</span><span class="p">;</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">empty</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">tree</span><span class="p">.</span><span class="n">empty</span><span class="p">();</span>
+
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">size_type</span><span class="w"> </span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">tree</span><span class="p">.</span><span class="n">size</span><span class="p">();</span>
+
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">Compare</span><span class="w"> </span><span class="n">key_comp</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">tree</span><span class="p">.</span><span class="n">get_cmp_fn</span><span class="p">();</span>
+
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">iterator</span><span class="w"> </span><span class="n">begin</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">iterator</span><span class="p">(</span><span class="n">tree</span><span class="p">.</span><span class="n">begin</span><span class="p">());</span>
+
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">iterator</span><span class="w"> </span><span class="n">end</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">iterator</span><span class="p">(</span><span class="n">tree</span><span class="p">.</span><span class="n">end</span><span class="p">());</span>
+
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">iterator</span><span class="w"> </span><span class="n">cbegin</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">begin</span><span class="p">();</span>
+
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">iterator</span><span class="w"> </span><span class="n">cend</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">end</span><span class="p">();</span>
+
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">reverse_iterator</span><span class="w"> </span><span class="n">rbegin</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">reverse_iterator</span><span class="p">(</span><span class="n">end</span><span class="p">());</span>
+
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">reverse_iterator</span><span class="w"> </span><span class="n">rend</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">reverse_iterator</span><span class="p">(</span><span class="n">begin</span><span class="p">());</span>
+
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">const_reverse_iterator</span><span class="w"> </span><span class="n">crbegin</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">rbegin</span><span class="p">();</span>
+
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">const_reverse_iterator</span><span class="w"> </span><span class="n">crend</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">rend</span><span class="p">();</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// Unique keys: return the existing/new iterator and whether insertion happened.</span>
+<span class="w">    </span><span class="n">pair</span><span class="o">&lt;</span><span class="n">iterator</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="o">&gt;</span><span class="w"> </span><span class="n">insert</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="o">&amp;</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">auto</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tree</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="n">value</span><span class="p">);</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="p">{</span><span class="n">iterator</span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">first</span><span class="p">),</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">second</span><span class="p">};</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="n">insert</span><span class="p">(</span><span class="n">initializer_list</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">values</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="n">insert</span><span class="p">(</span><span class="n">values</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">values</span><span class="p">.</span><span class="n">end</span><span class="p">());</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="p">...</span><span class="w"> </span><span class="n">Args</span><span class="o">&gt;</span>
+<span class="w">    </span><span class="n">pair</span><span class="o">&lt;</span><span class="n">iterator</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="o">&gt;</span><span class="w"> </span><span class="n">emplace</span><span class="p">(</span><span class="n">Args</span><span class="o">&amp;&amp;</span><span class="p">...</span><span class="w"> </span><span class="n">args</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">insert</span><span class="p">(</span><span class="n">T</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">forward</span><span class="o">&lt;</span><span class="n">Args</span><span class="o">&gt;</span><span class="p">(</span><span class="n">args</span><span class="p">)...));</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">Iterator</span><span class="o">&gt;</span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="n">insert</span><span class="p">(</span><span class="n">Iterator</span><span class="w"> </span><span class="n">first</span><span class="p">,</span><span class="w"> </span><span class="n">Iterator</span><span class="w"> </span><span class="n">last</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(;</span><span class="w"> </span><span class="n">first</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">last</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">first</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">insert</span><span class="p">(</span><span class="o">*</span><span class="n">first</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">iterator</span><span class="w"> </span><span class="n">find</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="o">&amp;</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">iterator</span><span class="p">(</span><span class="n">tree</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="n">value</span><span class="p">));</span>
+
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">contains</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="o">&amp;</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">find</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">end</span><span class="p">();</span>
+
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">size_type</span><span class="w"> </span><span class="n">count</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="o">&amp;</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">contains</span><span class="p">(</span><span class="n">value</span><span class="p">);</span>
+
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">iterator</span><span class="w"> </span><span class="n">lower_bound</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="o">&amp;</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">iterator</span><span class="p">(</span><span class="n">tree</span><span class="p">.</span><span class="n">lower_bound</span><span class="p">(</span><span class="n">value</span><span class="p">));</span>
+
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">iterator</span><span class="w"> </span><span class="n">upper_bound</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="o">&amp;</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">iterator</span><span class="p">(</span><span class="n">tree</span><span class="p">.</span><span class="n">upper_bound</span><span class="p">(</span><span class="n">value</span><span class="p">));</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">pair</span><span class="o">&lt;</span><span class="n">iterator</span><span class="p">,</span><span class="w"> </span><span class="n">iterator</span><span class="o">&gt;</span><span class="w"> </span><span class="n">equal_range</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="o">&amp;</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="p">{</span><span class="n">lower_bound</span><span class="p">(</span><span class="n">value</span><span class="p">),</span><span class="w"> </span><span class="n">upper_bound</span><span class="p">(</span><span class="n">value</span><span class="p">)};</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// Like multiset::erase(value), remove all equivalent occurrences and count them.</span>
+<span class="w">    </span><span class="n">size_type</span><span class="w"> </span><span class="n">erase</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="o">&amp;</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">tree</span><span class="p">.</span><span class="n">erase</span><span class="p">(</span><span class="n">value</span><span class="p">);</span>
+
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="c1">// Remove one equivalent occurrence; useful when a sliding window has duplicates.</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">erase_one</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="o">&amp;</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">tree</span><span class="p">.</span><span class="n">erase</span><span class="p">(</span><span class="n">value</span><span class="p">);</span>
+
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">iterator</span><span class="w"> </span><span class="n">erase</span><span class="p">(</span><span class="n">iterator</span><span class="w"> </span><span class="n">it</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">iterator</span><span class="p">(</span><span class="n">tree</span><span class="p">.</span><span class="n">erase</span><span class="p">(</span><span class="n">it</span><span class="p">.</span><span class="n">current</span><span class="p">));</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// Half-open iterator range. Each PBDS node erase costs O(log(size() + 1)).</span>
+<span class="w">    </span><span class="n">iterator</span><span class="w"> </span><span class="n">erase</span><span class="p">(</span><span class="n">iterator</span><span class="w"> </span><span class="n">first</span><span class="p">,</span><span class="w"> </span><span class="n">iterator</span><span class="w"> </span><span class="n">last</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">first</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">last</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">first</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">erase</span><span class="p">(</span><span class="n">first</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">last</span><span class="p">;</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">erase_by_order</span><span class="p">(</span><span class="n">size_type</span><span class="w"> </span><span class="n">idx</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="n">iterator</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">find_by_order</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">it</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">end</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="n">erase</span><span class="p">(</span><span class="n">it</span><span class="p">);</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// Zero-based sorted rank. Invalid ranks return end(), not an element.</span>
+<span class="w">    </span><span class="n">iterator</span><span class="w"> </span><span class="n">find_by_order</span><span class="p">(</span><span class="n">size_type</span><span class="w"> </span><span class="n">idx</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">iterator</span><span class="p">(</span><span class="n">tree</span><span class="p">.</span><span class="n">find_by_order</span><span class="p">(</span><span class="n">idx</span><span class="p">));</span>
+
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">size_type</span><span class="w"> </span><span class="n">order_of_key</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="o">&amp;</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">tree</span><span class="p">.</span><span class="n">order_of_key</span><span class="p">(</span><span class="n">value</span><span class="p">);</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// Count keys before or equivalent to value without computing value + 1.</span>
+<span class="w">    </span><span class="n">size_type</span><span class="w"> </span><span class="n">order_of_key_upper</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="o">&amp;</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">auto</span><span class="w"> </span><span class="n">node</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tree</span><span class="p">.</span><span class="n">node_begin</span><span class="p">();</span>
+<span class="w">        </span><span class="k">auto</span><span class="w"> </span><span class="n">last</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tree</span><span class="p">.</span><span class="n">node_end</span><span class="p">();</span>
+<span class="w">        </span><span class="k">const</span><span class="w"> </span><span class="n">Compare</span><span class="o">&amp;</span><span class="w"> </span><span class="n">compare</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tree</span><span class="p">.</span><span class="n">get_cmp_fn</span><span class="p">();</span>
+<span class="w">        </span><span class="n">size_type</span><span class="w"> </span><span class="n">ans</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">        </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">node</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">last</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">compare</span><span class="p">(</span><span class="n">value</span><span class="p">,</span><span class="w"> </span><span class="o">**</span><span class="n">node</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="n">node</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">node</span><span class="p">.</span><span class="n">get_l_child</span><span class="p">();</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">            </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="k">auto</span><span class="w"> </span><span class="n">left</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">node</span><span class="p">.</span><span class="n">get_l_child</span><span class="p">();</span>
+<span class="w">                </span><span class="n">ans</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="n">left</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">last</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">left</span><span class="p">.</span><span class="n">get_metadata</span><span class="p">());</span>
+<span class="w">                </span><span class="n">node</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">node</span><span class="p">.</span><span class="n">get_r_child</span><span class="p">();</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">ans</span><span class="p">;</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// Inclusive VALUE range in comparator order; this is not an iterator range.</span>
+<span class="w">    </span><span class="n">size_type</span><span class="w"> </span><span class="n">count_range</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="o">&amp;</span><span class="w"> </span><span class="n">first</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="o">&amp;</span><span class="w"> </span><span class="n">last</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">tree</span><span class="p">.</span><span class="n">get_cmp_fn</span><span class="p">()(</span><span class="n">last</span><span class="p">,</span><span class="w"> </span><span class="n">first</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">order_of_key_upper</span><span class="p">(</span><span class="n">last</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">order_of_key</span><span class="p">(</span><span class="n">first</span><span class="p">);</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// end() maps to size(); a multiset iterator identifies one exact occurrence.</span>
+<span class="w">    </span><span class="n">size_type</span><span class="w"> </span><span class="n">index_of</span><span class="p">(</span><span class="n">iterator</span><span class="w"> </span><span class="n">it</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">end</span><span class="p">()</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">order_of_key</span><span class="p">(</span><span class="o">*</span><span class="n">it</span><span class="p">);</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">difference_type</span><span class="w"> </span><span class="n">first_index</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="o">&amp;</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="n">iterator</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">find</span><span class="p">(</span><span class="n">value</span><span class="p">);</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">end</span><span class="p">()</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="mi">-1</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="n">difference_type</span><span class="p">)</span><span class="n">order_of_key</span><span class="p">(</span><span class="n">value</span><span class="p">);</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">difference_type</span><span class="w"> </span><span class="n">last_index</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="o">&amp;</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">first_index</span><span class="p">(</span><span class="n">value</span><span class="p">);</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// Checked, read-only rank access. Its logarithmic cost also applies to operator[].</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="o">&amp;</span><span class="w"> </span><span class="n">at</span><span class="p">(</span><span class="n">size_type</span><span class="w"> </span><span class="n">idx</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">idx</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">size</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">throw</span><span class="w"> </span><span class="n">out_of_range</span><span class="p">(</span><span class="s">&quot;OrderedSet index is out of range&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="o">*</span><span class="n">find_by_order</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="o">&amp;</span><span class="w"> </span><span class="k">operator</span><span class="p">[](</span><span class="n">size_type</span><span class="w"> </span><span class="n">idx</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">at</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="o">&amp;</span><span class="w"> </span><span class="n">front</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">empty</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">throw</span><span class="w"> </span><span class="n">out_of_range</span><span class="p">(</span><span class="s">&quot;OrderedSet is empty&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="o">*</span><span class="n">begin</span><span class="p">();</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="o">&amp;</span><span class="w"> </span><span class="n">back</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">empty</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">throw</span><span class="w"> </span><span class="n">out_of_range</span><span class="p">(</span><span class="s">&quot;OrderedSet is empty&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="o">*</span><span class="n">rbegin</span><span class="p">();</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="n">clear</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="n">tree</span><span class="p">.</span><span class="n">clear</span><span class="p">();</span>
+
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="n">swap</span><span class="p">(</span><span class="n">OrderedSet</span><span class="o">&amp;</span><span class="w"> </span><span class="n">other</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="n">tree</span><span class="p">.</span><span class="n">swap</span><span class="p">(</span><span class="n">other</span><span class="p">.</span><span class="n">tree</span><span class="p">);</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">friend</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="n">swap</span><span class="p">(</span><span class="n">OrderedSet</span><span class="o">&amp;</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">OrderedSet</span><span class="o">&amp;</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="n">a</span><span class="p">.</span><span class="n">swap</span><span class="p">(</span><span class="n">b</span><span class="p">);</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="p">};</span>
+
+
+<span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="p">,</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">Compare</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">less</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">IdType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">uint64_t</span><span class="o">&gt;</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">OrderedMultiSet</span><span class="w"> </span><span class="p">{</span>
+
+<span class="k">private</span><span class="o">:</span>
+<span class="w">    </span><span class="k">static_assert</span><span class="p">(</span><span class="n">is_integral_v</span><span class="o">&lt;</span><span class="n">IdType</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">is_unsigned_v</span><span class="o">&lt;</span><span class="n">IdType</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&amp;&amp;</span>
+<span class="w">                  </span><span class="o">!</span><span class="n">is_same_v</span><span class="o">&lt;</span><span class="n">IdType</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Insertion IDs must be unsigned integers&quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="n">Id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">IdType</span><span class="p">;</span>
+<span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="n">Entry</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pair</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">Id</span><span class="o">&gt;</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// Keep a strict ordering: compare values first, then insertion IDs for ties.</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">EntryCompare</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="n">Compare</span><span class="w"> </span><span class="n">compare</span><span class="p">;</span>
+
+<span class="w">        </span><span class="k">explicit</span><span class="w"> </span><span class="n">EntryCompare</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Compare</span><span class="o">&amp;</span><span class="w"> </span><span class="n">valueCompare</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">compare</span><span class="p">(</span><span class="n">valueCompare</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="kt">bool</span><span class="w"> </span><span class="k">operator</span><span class="p">()(</span><span class="k">const</span><span class="w"> </span><span class="n">Entry</span><span class="o">&amp;</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">Entry</span><span class="o">&amp;</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">compare</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">first</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">first</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">compare</span><span class="p">(</span><span class="n">b</span><span class="p">.</span><span class="n">first</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">.</span><span class="n">first</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">a</span><span class="p">.</span><span class="n">second</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">second</span><span class="p">;</span>
+
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">    </span><span class="p">};</span>
+
+<span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="n">Tree</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">__gnu_pbds</span><span class="o">::</span><span class="n">tree</span><span class="o">&lt;</span><span class="n">Entry</span><span class="p">,</span><span class="w"> </span><span class="n">__gnu_pbds</span><span class="o">::</span><span class="n">null_type</span><span class="p">,</span><span class="w"> </span><span class="n">EntryCompare</span><span class="p">,</span>
+<span class="w">                                </span><span class="n">__gnu_pbds</span><span class="o">::</span><span class="n">rb_tree_tag</span><span class="p">,</span>
+<span class="w">                                </span><span class="n">__gnu_pbds</span><span class="o">::</span><span class="n">tree_order_statistics_node_update</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="n">BaseIterator</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">Tree</span><span class="o">::</span><span class="n">const_iterator</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">Tree</span><span class="w"> </span><span class="n">tree</span><span class="p">;</span>
+<span class="w">    </span><span class="n">Id</span><span class="w"> </span><span class="n">nextId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// One root-to-leaf walk. Upper selects &lt; value or &lt;= value in comparator order.</span>
+<span class="w">    </span><span class="k">template</span><span class="o">&lt;</span><span class="kt">bool</span><span class="w"> </span><span class="n">Upper</span><span class="o">&gt;</span>
+<span class="w">    </span><span class="k">typename</span><span class="w"> </span><span class="nc">Tree</span><span class="o">::</span><span class="n">size_type</span><span class="w"> </span><span class="n">GetOrder</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="o">&amp;</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">auto</span><span class="w"> </span><span class="n">node</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tree</span><span class="p">.</span><span class="n">node_begin</span><span class="p">();</span>
+<span class="w">        </span><span class="k">auto</span><span class="w"> </span><span class="n">last</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tree</span><span class="p">.</span><span class="n">node_end</span><span class="p">();</span>
+<span class="w">        </span><span class="k">const</span><span class="w"> </span><span class="n">Compare</span><span class="o">&amp;</span><span class="w"> </span><span class="n">compare</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tree</span><span class="p">.</span><span class="n">get_cmp_fn</span><span class="p">().</span><span class="n">compare</span><span class="p">;</span>
+<span class="w">        </span><span class="k">typename</span><span class="w"> </span><span class="nc">Tree</span><span class="o">::</span><span class="n">size_type</span><span class="w"> </span><span class="n">ans</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">        </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">node</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">last</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="o">&amp;</span><span class="w"> </span><span class="n">current</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="o">**</span><span class="n">node</span><span class="p">).</span><span class="n">first</span><span class="p">;</span>
+<span class="w">            </span><span class="kt">bool</span><span class="w"> </span><span class="n">before</span><span class="p">;</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="p">(</span><span class="n">Upper</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="n">before</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">!</span><span class="n">compare</span><span class="p">(</span><span class="n">value</span><span class="p">,</span><span class="w"> </span><span class="n">current</span><span class="p">);</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">            </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="n">before</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">compare</span><span class="p">(</span><span class="n">current</span><span class="p">,</span><span class="w"> </span><span class="n">value</span><span class="p">);</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">before</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="k">auto</span><span class="w"> </span><span class="n">left</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">node</span><span class="p">.</span><span class="n">get_l_child</span><span class="p">();</span>
+<span class="w">                </span><span class="n">ans</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="n">left</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">last</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">left</span><span class="p">.</span><span class="n">get_metadata</span><span class="p">());</span>
+<span class="w">                </span><span class="n">node</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">node</span><span class="p">.</span><span class="n">get_r_child</span><span class="p">();</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">            </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="n">node</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">node</span><span class="p">.</span><span class="n">get_l_child</span><span class="p">();</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">ans</span><span class="p">;</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// Search using T directly; no temporary pair, sentinel key, or key copy is needed.</span>
+<span class="w">    </span><span class="k">template</span><span class="o">&lt;</span><span class="kt">bool</span><span class="w"> </span><span class="n">Upper</span><span class="o">&gt;</span>
+<span class="w">    </span><span class="n">BaseIterator</span><span class="w"> </span><span class="n">GetBound</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="o">&amp;</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">auto</span><span class="w"> </span><span class="n">node</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tree</span><span class="p">.</span><span class="n">node_begin</span><span class="p">();</span>
+<span class="w">        </span><span class="k">auto</span><span class="w"> </span><span class="n">last</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tree</span><span class="p">.</span><span class="n">node_end</span><span class="p">();</span>
+<span class="w">        </span><span class="k">const</span><span class="w"> </span><span class="n">Compare</span><span class="o">&amp;</span><span class="w"> </span><span class="n">compare</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tree</span><span class="p">.</span><span class="n">get_cmp_fn</span><span class="p">().</span><span class="n">compare</span><span class="p">;</span>
+<span class="w">        </span><span class="n">BaseIterator</span><span class="w"> </span><span class="n">ans</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tree</span><span class="p">.</span><span class="n">end</span><span class="p">();</span>
+<span class="w">        </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">node</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">last</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="o">&amp;</span><span class="w"> </span><span class="n">current</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="o">**</span><span class="n">node</span><span class="p">).</span><span class="n">first</span><span class="p">;</span>
+<span class="w">            </span><span class="kt">bool</span><span class="w"> </span><span class="n">before</span><span class="p">;</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="p">(</span><span class="n">Upper</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="n">before</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">!</span><span class="n">compare</span><span class="p">(</span><span class="n">value</span><span class="p">,</span><span class="w"> </span><span class="n">current</span><span class="p">);</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">            </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="n">before</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">compare</span><span class="p">(</span><span class="n">current</span><span class="p">,</span><span class="w"> </span><span class="n">value</span><span class="p">);</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">before</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="n">node</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">node</span><span class="p">.</span><span class="n">get_r_child</span><span class="p">();</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">            </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="n">ans</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">*</span><span class="n">node</span><span class="p">;</span>
+<span class="w">                </span><span class="n">node</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">node</span><span class="p">.</span><span class="n">get_l_child</span><span class="p">();</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">ans</span><span class="p">;</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="k">public</span><span class="o">:</span>
+<span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="n">value_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">T</span><span class="p">;</span>
+<span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="n">key_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">T</span><span class="p">;</span>
+<span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="n">key_compare</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Compare</span><span class="p">;</span>
+<span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="n">size_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">Tree</span><span class="o">::</span><span class="n">size_type</span><span class="p">;</span>
+<span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="n">difference_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">ptrdiff_t</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="n">iterator</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ordered_detail</span><span class="o">::</span><span class="n">Iterator</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">BaseIterator</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="n">const_iterator</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">iterator</span><span class="p">;</span>
+<span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="n">reverse_iterator</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">reverse_iterator</span><span class="o">&lt;</span><span class="n">iterator</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="n">const_reverse_iterator</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">reverse_iterator</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">explicit</span><span class="w"> </span><span class="n">OrderedMultiSet</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Compare</span><span class="o">&amp;</span><span class="w"> </span><span class="n">compare</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Compare</span><span class="p">())</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">tree</span><span class="p">(</span><span class="n">EntryCompare</span><span class="p">(</span><span class="n">compare</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">Iterator</span><span class="o">&gt;</span>
+<span class="w">    </span><span class="n">OrderedMultiSet</span><span class="p">(</span><span class="n">Iterator</span><span class="w"> </span><span class="n">first</span><span class="p">,</span><span class="w"> </span><span class="n">Iterator</span><span class="w"> </span><span class="n">last</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">Compare</span><span class="o">&amp;</span><span class="w"> </span><span class="n">compare</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Compare</span><span class="p">())</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">tree</span><span class="p">(</span><span class="n">EntryCompare</span><span class="p">(</span><span class="n">compare</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="n">insert</span><span class="p">(</span><span class="n">first</span><span class="p">,</span><span class="w"> </span><span class="n">last</span><span class="p">);</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">OrderedMultiSet</span><span class="p">(</span><span class="n">initializer_list</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">values</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">Compare</span><span class="o">&amp;</span><span class="w"> </span><span class="n">compare</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Compare</span><span class="p">())</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">tree</span><span class="p">(</span><span class="n">EntryCompare</span><span class="p">(</span><span class="n">compare</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="n">insert</span><span class="p">(</span><span class="n">values</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">values</span><span class="p">.</span><span class="n">end</span><span class="p">());</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">OrderedMultiSet</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">OrderedMultiSet</span><span class="o">&amp;</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">OrderedMultiSet</span><span class="o">&amp;</span><span class="w"> </span><span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">OrderedMultiSet</span><span class="o">&amp;</span><span class="w"> </span><span class="n">other</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="k">this</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">other</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">OrderedMultiSet</span><span class="w"> </span><span class="nf">current</span><span class="p">(</span><span class="n">other</span><span class="p">);</span>
+<span class="w">            </span><span class="n">swap</span><span class="p">(</span><span class="n">current</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="o">*</span><span class="k">this</span><span class="p">;</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// Transfer the tree and ID state together; the source becomes empty and reusable.</span>
+<span class="w">    </span><span class="n">OrderedMultiSet</span><span class="p">(</span><span class="n">OrderedMultiSet</span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">other</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">tree</span><span class="p">(</span><span class="n">EntryCompare</span><span class="p">(</span><span class="n">other</span><span class="p">.</span><span class="n">key_comp</span><span class="p">()))</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="n">swap</span><span class="p">(</span><span class="n">other</span><span class="p">);</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">OrderedMultiSet</span><span class="o">&amp;</span><span class="w"> </span><span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="n">OrderedMultiSet</span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">other</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="k">this</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">other</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">OrderedMultiSet</span><span class="w"> </span><span class="nf">current</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">other</span><span class="p">));</span>
+<span class="w">            </span><span class="n">swap</span><span class="p">(</span><span class="n">current</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="o">*</span><span class="k">this</span><span class="p">;</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">empty</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">tree</span><span class="p">.</span><span class="n">empty</span><span class="p">();</span>
+
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">size_type</span><span class="w"> </span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">tree</span><span class="p">.</span><span class="n">size</span><span class="p">();</span>
+
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">Compare</span><span class="w"> </span><span class="n">key_comp</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">tree</span><span class="p">.</span><span class="n">get_cmp_fn</span><span class="p">().</span><span class="n">compare</span><span class="p">;</span>
+
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">iterator</span><span class="w"> </span><span class="n">begin</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">iterator</span><span class="p">(</span><span class="n">tree</span><span class="p">.</span><span class="n">begin</span><span class="p">());</span>
+
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">iterator</span><span class="w"> </span><span class="n">end</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">iterator</span><span class="p">(</span><span class="n">tree</span><span class="p">.</span><span class="n">end</span><span class="p">());</span>
+
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">iterator</span><span class="w"> </span><span class="n">cbegin</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">begin</span><span class="p">();</span>
+
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">iterator</span><span class="w"> </span><span class="n">cend</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">end</span><span class="p">();</span>
+
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">reverse_iterator</span><span class="w"> </span><span class="n">rbegin</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">reverse_iterator</span><span class="p">(</span><span class="n">end</span><span class="p">());</span>
+
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">reverse_iterator</span><span class="w"> </span><span class="n">rend</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">reverse_iterator</span><span class="p">(</span><span class="n">begin</span><span class="p">());</span>
+
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">const_reverse_iterator</span><span class="w"> </span><span class="n">crbegin</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">rbegin</span><span class="p">();</span>
+
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">const_reverse_iterator</span><span class="w"> </span><span class="n">crend</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">rend</span><span class="p">();</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// Every occurrence gets a distinct ID; reject exhaustion before any wraparound.</span>
+<span class="w">    </span><span class="n">iterator</span><span class="w"> </span><span class="n">insert</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="o">&amp;</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">nextId</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">numeric_limits</span><span class="o">&lt;</span><span class="n">Id</span><span class="o">&gt;::</span><span class="n">max</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">throw</span><span class="w"> </span><span class="n">length_error</span><span class="p">(</span><span class="s">&quot;OrderedMultiSet insertion IDs are exhausted&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">auto</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tree</span><span class="p">.</span><span class="n">insert</span><span class="p">({</span><span class="n">value</span><span class="p">,</span><span class="w"> </span><span class="n">nextId</span><span class="p">});</span>
+<span class="w">        </span><span class="n">nextId</span><span class="o">++</span><span class="p">;</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">iterator</span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">first</span><span class="p">);</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="n">insert</span><span class="p">(</span><span class="n">initializer_list</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">values</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="n">insert</span><span class="p">(</span><span class="n">values</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">values</span><span class="p">.</span><span class="n">end</span><span class="p">());</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="p">...</span><span class="w"> </span><span class="n">Args</span><span class="o">&gt;</span>
+<span class="w">    </span><span class="n">iterator</span><span class="w"> </span><span class="n">emplace</span><span class="p">(</span><span class="n">Args</span><span class="o">&amp;&amp;</span><span class="p">...</span><span class="w"> </span><span class="n">args</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">insert</span><span class="p">(</span><span class="n">T</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">forward</span><span class="o">&lt;</span><span class="n">Args</span><span class="o">&gt;</span><span class="p">(</span><span class="n">args</span><span class="p">)...));</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">Iterator</span><span class="o">&gt;</span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="n">insert</span><span class="p">(</span><span class="n">Iterator</span><span class="w"> </span><span class="n">first</span><span class="p">,</span><span class="w"> </span><span class="n">Iterator</span><span class="w"> </span><span class="n">last</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(;</span><span class="w"> </span><span class="n">first</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">last</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">first</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">insert</span><span class="p">(</span><span class="o">*</span><span class="n">first</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">iterator</span><span class="w"> </span><span class="n">lower_bound</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="o">&amp;</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">iterator</span><span class="p">(</span><span class="n">GetBound</span><span class="o">&lt;</span><span class="nb">false</span><span class="o">&gt;</span><span class="p">(</span><span class="n">value</span><span class="p">));</span>
+
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">iterator</span><span class="w"> </span><span class="n">upper_bound</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="o">&amp;</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">iterator</span><span class="p">(</span><span class="n">GetBound</span><span class="o">&lt;</span><span class="nb">true</span><span class="o">&gt;</span><span class="p">(</span><span class="n">value</span><span class="p">));</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">iterator</span><span class="w"> </span><span class="n">find</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="o">&amp;</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="n">iterator</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lower_bound</span><span class="p">(</span><span class="n">value</span><span class="p">);</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">it</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">end</span><span class="p">()</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">tree</span><span class="p">.</span><span class="n">get_cmp_fn</span><span class="p">().</span><span class="n">compare</span><span class="p">(</span><span class="n">value</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">it</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">end</span><span class="p">();</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">it</span><span class="p">;</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">contains</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="o">&amp;</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">find</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">end</span><span class="p">();</span>
+
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">size_type</span><span class="w"> </span><span class="n">order_of_key</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="o">&amp;</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">GetOrder</span><span class="o">&lt;</span><span class="nb">false</span><span class="o">&gt;</span><span class="p">(</span><span class="n">value</span><span class="p">);</span>
+
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="c1">// Count keys before or equivalent to value without computing value + 1.</span>
+<span class="w">    </span><span class="n">size_type</span><span class="w"> </span><span class="n">order_of_key_upper</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="o">&amp;</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">GetOrder</span><span class="o">&lt;</span><span class="nb">true</span><span class="o">&gt;</span><span class="p">(</span><span class="n">value</span><span class="p">);</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">size_type</span><span class="w"> </span><span class="n">count</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="o">&amp;</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">order_of_key_upper</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">order_of_key</span><span class="p">(</span><span class="n">value</span><span class="p">);</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// Inclusive VALUE range in comparator order; this is not an iterator range.</span>
+<span class="w">    </span><span class="n">size_type</span><span class="w"> </span><span class="n">count_range</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="o">&amp;</span><span class="w"> </span><span class="n">first</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="o">&amp;</span><span class="w"> </span><span class="n">last</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">tree</span><span class="p">.</span><span class="n">get_cmp_fn</span><span class="p">().</span><span class="n">compare</span><span class="p">(</span><span class="n">last</span><span class="p">,</span><span class="w"> </span><span class="n">first</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">order_of_key_upper</span><span class="p">(</span><span class="n">last</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">order_of_key</span><span class="p">(</span><span class="n">first</span><span class="p">);</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">pair</span><span class="o">&lt;</span><span class="n">iterator</span><span class="p">,</span><span class="w"> </span><span class="n">iterator</span><span class="o">&gt;</span><span class="w"> </span><span class="n">equal_range</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="o">&amp;</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="p">{</span><span class="n">lower_bound</span><span class="p">(</span><span class="n">value</span><span class="p">),</span><span class="w"> </span><span class="n">upper_bound</span><span class="p">(</span><span class="n">value</span><span class="p">)};</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">iterator</span><span class="w"> </span><span class="n">erase</span><span class="p">(</span><span class="n">iterator</span><span class="w"> </span><span class="n">it</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">iterator</span><span class="p">(</span><span class="n">tree</span><span class="p">.</span><span class="n">erase</span><span class="p">(</span><span class="n">it</span><span class="p">.</span><span class="n">current</span><span class="p">));</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// Half-open iterator range. Each PBDS node erase costs O(log(size() + 1)).</span>
+<span class="w">    </span><span class="n">iterator</span><span class="w"> </span><span class="n">erase</span><span class="p">(</span><span class="n">iterator</span><span class="w"> </span><span class="n">first</span><span class="p">,</span><span class="w"> </span><span class="n">iterator</span><span class="w"> </span><span class="n">last</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">first</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">last</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">first</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">erase</span><span class="p">(</span><span class="n">first</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">last</span><span class="p">;</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// Remove one equivalent occurrence; useful when a sliding window has duplicates.</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">erase_one</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="o">&amp;</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="n">iterator</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">find</span><span class="p">(</span><span class="n">value</span><span class="p">);</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">it</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">end</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="n">erase</span><span class="p">(</span><span class="n">it</span><span class="p">);</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// Like multiset::erase(value), remove all equivalent occurrences and count them.</span>
+<span class="w">    </span><span class="n">size_type</span><span class="w"> </span><span class="n">erase</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="o">&amp;</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">auto</span><span class="w"> </span><span class="n">range</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">equal_range</span><span class="p">(</span><span class="n">value</span><span class="p">);</span>
+<span class="w">        </span><span class="n">size_type</span><span class="w"> </span><span class="n">ans</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">        </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">range</span><span class="p">.</span><span class="n">first</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">range</span><span class="p">.</span><span class="n">second</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">range</span><span class="p">.</span><span class="n">first</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">erase</span><span class="p">(</span><span class="n">range</span><span class="p">.</span><span class="n">first</span><span class="p">);</span>
+<span class="w">            </span><span class="n">ans</span><span class="o">++</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">ans</span><span class="p">;</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">erase_by_order</span><span class="p">(</span><span class="n">size_type</span><span class="w"> </span><span class="n">idx</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="n">iterator</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">find_by_order</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">it</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">end</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="n">erase</span><span class="p">(</span><span class="n">it</span><span class="p">);</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// Zero-based sorted rank. Invalid ranks return end(), not an element.</span>
+<span class="w">    </span><span class="n">iterator</span><span class="w"> </span><span class="n">find_by_order</span><span class="p">(</span><span class="n">size_type</span><span class="w"> </span><span class="n">idx</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">iterator</span><span class="p">(</span><span class="n">tree</span><span class="p">.</span><span class="n">find_by_order</span><span class="p">(</span><span class="n">idx</span><span class="p">));</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// end() maps to size(); a multiset iterator identifies one exact occurrence.</span>
+<span class="w">    </span><span class="n">size_type</span><span class="w"> </span><span class="n">index_of</span><span class="p">(</span><span class="n">iterator</span><span class="w"> </span><span class="n">it</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">end</span><span class="p">()</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">tree</span><span class="p">.</span><span class="n">order_of_key</span><span class="p">(</span><span class="o">*</span><span class="n">it</span><span class="p">.</span><span class="n">current</span><span class="p">);</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">difference_type</span><span class="w"> </span><span class="n">first_index</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="o">&amp;</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="n">iterator</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">find</span><span class="p">(</span><span class="n">value</span><span class="p">);</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">end</span><span class="p">()</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="mi">-1</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="n">difference_type</span><span class="p">)</span><span class="n">order_of_key</span><span class="p">(</span><span class="n">value</span><span class="p">);</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">difference_type</span><span class="w"> </span><span class="n">last_index</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="o">&amp;</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="n">iterator</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">find</span><span class="p">(</span><span class="n">value</span><span class="p">);</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">end</span><span class="p">()</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="mi">-1</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="n">difference_type</span><span class="p">)</span><span class="n">order_of_key_upper</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// Checked, read-only rank access. Its logarithmic cost also applies to operator[].</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="o">&amp;</span><span class="w"> </span><span class="n">at</span><span class="p">(</span><span class="n">size_type</span><span class="w"> </span><span class="n">idx</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">idx</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">size</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">throw</span><span class="w"> </span><span class="n">out_of_range</span><span class="p">(</span><span class="s">&quot;OrderedMultiSet index is out of range&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="o">*</span><span class="n">find_by_order</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="o">&amp;</span><span class="w"> </span><span class="k">operator</span><span class="p">[](</span><span class="n">size_type</span><span class="w"> </span><span class="n">idx</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">at</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="o">&amp;</span><span class="w"> </span><span class="n">front</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">empty</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">throw</span><span class="w"> </span><span class="n">out_of_range</span><span class="p">(</span><span class="s">&quot;OrderedMultiSet is empty&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="o">*</span><span class="n">begin</span><span class="p">();</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="o">&amp;</span><span class="w"> </span><span class="n">back</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">empty</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">throw</span><span class="w"> </span><span class="n">out_of_range</span><span class="p">(</span><span class="s">&quot;OrderedMultiSet is empty&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="o">*</span><span class="n">rbegin</span><span class="p">();</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="n">clear</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="n">tree</span><span class="p">.</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">        </span><span class="n">nextId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="n">swap</span><span class="p">(</span><span class="n">OrderedMultiSet</span><span class="o">&amp;</span><span class="w"> </span><span class="n">other</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="n">tree</span><span class="p">.</span><span class="n">swap</span><span class="p">(</span><span class="n">other</span><span class="p">.</span><span class="n">tree</span><span class="p">);</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">swap</span><span class="p">(</span><span class="n">nextId</span><span class="p">,</span><span class="w"> </span><span class="n">other</span><span class="p">.</span><span class="n">nextId</span><span class="p">);</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">friend</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="n">swap</span><span class="p">(</span><span class="n">OrderedMultiSet</span><span class="o">&amp;</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">OrderedMultiSet</span><span class="o">&amp;</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="n">a</span><span class="p">.</span><span class="n">swap</span><span class="p">(</span><span class="n">b</span><span class="p">);</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="p">};</span>
+
+
+<span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="p">,</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">Compare</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">less</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&gt;</span>
+<span class="k">using</span><span class="w"> </span><span class="n">ordered_set</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">OrderedSet</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">Compare</span><span class="o">&gt;</span><span class="p">;</span>
+
+<span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="p">,</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">Compare</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">less</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">IdType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">uint64_t</span><span class="o">&gt;</span>
+<span class="k">using</span><span class="w"> </span><span class="n">ordered_multiset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">OrderedMultiSet</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">Compare</span><span class="p">,</span><span class="w"> </span><span class="n">IdType</span><span class="o">&gt;</span><span class="p">;</span>
+
+<span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="p">,</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">Compare</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">less</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">IdType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">uint64_t</span><span class="o">&gt;</span>
+<span class="k">using</span><span class="w"> </span><span class="n">multi_ordered_set</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">OrderedMultiSet</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">Compare</span><span class="p">,</span><span class="w"> </span><span class="n">IdType</span><span class="o">&gt;</span><span class="p">;</span>
+</code></pre>
+</details>
+<p><strong>Detailed Medium walkthrough: publication URL pending.</strong></p>
+<p>Thanks for reading. If you find a counterexample, please share the smallest reproducing case so it can become a regression test. &lt;3</p>
+<p><em>By Tareq Ali. This article was organized with AI assistance.</em></p>
+</article></div></body></html>
