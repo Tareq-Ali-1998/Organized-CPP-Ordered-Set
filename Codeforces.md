@@ -4,7 +4,7 @@ After a long break from competitive programming, I’m back with something I wan
 
 The project is **Organized C++ Ordered Set**. You can write `ordered_set<int>` or `ordered_multiset<int>`, access sorted ranks with `s[i]`, and use normal-looking bounds and erasure functions. It uses GNU PBDS with a strict comparator, including when duplicates are present.
 
-**Repository: publication URL pending.**
+[Code, examples, and complete API reference](https://github.com/Tareq-Ali-1998/Organized-CPP-Ordered-Set)
 
 ## Usage first
 

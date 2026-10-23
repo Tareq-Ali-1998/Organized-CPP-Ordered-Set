@@ -2,19 +2,21 @@
 
 ## Links to add later
 
-The owner has not created the repository or published the Medium story yet. Keep this checklist with the project:
+The project has been pushed to [GitHub](https://github.com/Tareq-Ali-1998/Organized-CPP-Ordered-Set) and [GitLab](https://gitlab.com/tareqali591998/organized-cpp-ordered-set). GitHub is the primary repository linked from the articles. The Medium story and hosted interactive-guide URLs are still pending:
 
-- [ ] Create the GitHub and/or GitLab repositories. Add the primary repository's actual URL to `repository_url` in `publishing.json`.
+- [x] Create both repositories and add the actual GitHub URL to `repository_url` in `publishing.json`.
 - [ ] Add the actual Medium story URL to `medium_url`.
 - [ ] Add the hosted interactive HTML URL to `interactive_url`.
 - [ ] Run `python build.py` to put those links into both articles.
-- [ ] Run `python build.py --release-check` before posting. It rejects missing or invalid URLs and stale outputs.
+- [ ] After the Medium story and hosted guide exist, run `python build.py --release-check` before posting the Codeforces article. It rejects missing or invalid URLs and stale outputs.
 
-The Codeforces draft intentionally displays a pending Medium link until that real URL exists. No made-up repository or article link is used. This checklist is the reminder to finish the links before publication.
+Draft the Medium story first, arrange hosting for the interactive guide, and publish the story when its content and outgoing links are ready. Then save its actual public story URL in `publishing.json`, rebuild, and finish Codeforces last. The release check is the final cross-platform link check; it does not prevent starting a Medium draft before that story has a public URL.
+
+The Codeforces draft intentionally displays a pending Medium link until that real URL exists. The repository links point to the projects' default-branch views, so readers reach the current code as new commits are pushed. No unpublished article or hosting URL is guessed.
 
 ## GitHub and GitLab
 
-Use `organized-cpp-ordered-set` as the proposed repository name. Publish the **contents of this folder** as that repository’s root. The parent coding-session repository, `DS`, and `Contributions` are separate work and are not dependencies of this project.
+The GitHub repository is named `Organized-CPP-Ordered-Set`; the GitLab project path is `organized-cpp-ordered-set`. The **contents of this folder** form each repository's root. The parent coding-session repository, `DS`, and `Contributions` are separate work and are not dependencies of this project.
 
 The README has a fenced `mermaid` diagram, which [GitHub renders in Markdown files](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/creating-diagrams). [GitLab Flavored Markdown also supports Mermaid](https://docs.gitlab.com/user/markdown/#mermaid). No screenshot is needed for that README diagram. The exported SVG and PNG versions are included for other platforms.
 
@@ -42,9 +44,13 @@ The introduction mentions returning after a long competitive-programming break. 
 
 ## Medium
 
-Title: **The Missing Index in C++ Sets**.
+Title: **C++ Ordered Set and Multiset: A Practical Guide to GNU PBDS**.
 
-Subtitle: **Building an ordered set you can read, query, and actually enjoy using**.
+Subtitle: **Rank queries, duplicate handling, and a reusable C++17 interface**.
+
+A post on Medium is called a **story**. Clicking **Write** creates a draft; Medium saves drafts automatically. Its [first-story guide](https://help.medium.com/hc/en-us/articles/225168768-Writing-and-publishing-your-first-story) explains the editor and the separate final publishing step.
+
+The story editor is a visual document editor. Write normal text, then select it to apply bold, headings, and links. The title is the first title line; select the line below it and use the smaller **T** to make the subtitle if needed. Medium's [editor guide](https://help.medium.com/hc/en-us/articles/215194537-Using-the-story-editor) documents these controls. Medium does not natively render LaTeX expressions; this story already writes complexities such as `O(log(n + 1))` as ordinary inline code, so no math extension is needed.
 
 Use `Medium.publish.md` as the publishing copy and `Medium.publish.html` as a formatted reading/copying aid. `Medium.md` is the source version that keeps Mermaid diagrams available on GitHub. Medium is a rich-text editor; copying a Markdown file is not a guarantee that every formatting element will be imported automatically.
 

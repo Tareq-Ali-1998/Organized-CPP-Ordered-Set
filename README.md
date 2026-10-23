@@ -2,6 +2,8 @@
 
 Generic, set-like C++ containers with sorted-rank access, correct duplicate handling, and a documented interface.
 
+[GitHub repository](https://github.com/Tareq-Ali-1998/Organized-CPP-Ordered-Set) · [GitLab mirror](https://gitlab.com/tareqali591998/organized-cpp-ordered-set)
+
 ```cpp
 ordered_set<int> s = {7, 2, 7, 5};
 ordered_multiset<int> ms = {7, 2, 7, 5};

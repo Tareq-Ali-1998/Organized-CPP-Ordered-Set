@@ -1,6 +1,6 @@
-# The Missing Index in C++ Sets
+# C++ Ordered Set and Multiset: A Practical Guide to GNU PBDS
 
-## Building an ordered set you can read, query, and actually enjoy using
+## Rank queries, duplicate handling, and a reusable C++17 interface
 
 You are keeping a collection of numbers. New values arrive, old values leave, and the collection needs to stay sorted. Then someone asks a slightly different question:
 

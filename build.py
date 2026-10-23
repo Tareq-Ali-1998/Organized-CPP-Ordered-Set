@@ -232,12 +232,13 @@ def make_files(config=None):
     examples_doc = '# Examples\n\nInclude `OrderedSet.hpp` first. Body snippets go inside a function; recipe function definitions go above `main`. All indices are zero-based.\n\n'
     for name, snippet in examples.items():
         examples_doc += f'## {name}\n\n<!-- example: {name} -->\n```cpp\n{snippet}\n```\n\n'
-    medium_html = render_html(diagram_images(medium), 'The Missing Index in C++ Sets', interactive=True)
+    medium_title = medium.splitlines()[0].removeprefix('# ')
+    medium_html = render_html(diagram_images(medium), medium_title, interactive=True)
     files = {
         'README.md': readme, 'OrderedSet.cpp': standalone,
         'Medium.md': medium, 'Medium.publish.md': publish, 'Codeforces.md': cf,
         'Medium.html': medium_html, 'index.html': medium_html,
-        'Medium.publish.html': render_html(publish, 'The Missing Index in C++ Sets — publishing copy'),
+        'Medium.publish.html': render_html(publish, medium_title + ' — publishing copy'),
         'Codeforces.html': render_html(cf, 'Organized C++ Ordered Set — Codeforces preview'),
         'docs/Examples.md': examples_doc,
         'docs/API.html': render_html((ROOT/'docs/API.md').read_text(encoding='utf-8'), 'Ordered set API', prefix='../'),
