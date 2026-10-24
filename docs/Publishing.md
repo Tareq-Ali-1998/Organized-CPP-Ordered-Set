@@ -60,15 +60,17 @@ Pasting HTML source into Medium will not install the website or execute the tuto
 
 The article importer does not transfer working JavaScript. It produces a Medium story with readable content. This is different from a supported third-party embed: Medium explicitly lists [CodePen among its embed providers](https://help.medium.com/hc/en-us/articles/214981378-Using-embeds), and [CodePen documents URL-based embedding in Medium](https://blog.codepen.io/docs/embeds/). That route can put the working tree inside a story while Medium keeps its own surrounding article layout.
 
-1. Open [embeds/CodePen.html](../embeds/CodePen.html) in a browser. The local tree preview uses the existing tested demo files.
-2. Click **Open the prepared demo in CodePen**. The launcher uses CodePen's [documented prefill form](https://blog.codepen.io/docs/api/post-to-prefill-pen/) to open a prepared draft, with the existing markup, styling, and JavaScript. It does not save or publish anything automatically.
-3. Sign in to CodePen if needed and save the demo as a public Pen under your account. Confirm the tree controls work in that saved Pen.
+1. Open the local [embeds/CodePen.html](../embeds/CodePen.html) in a browser. The local tree preview uses the existing tested demo files. This does not require another push.
+2. Sign in to CodePen, then [open a blank Pen](https://codepen.io/pen/). Click **Copy demo HTML** on the local setup page. Replace everything in the Pen's **HTML** editor (Classic) or **index.html** (new editor) with that code. Leave the CSS and JS editors empty. If clipboard access is denied, the setup page selects all the code; press **Ctrl+C** (**Cmd+C** on Mac) yourself. You can also open [CodePenDemo.html](../embeds/CodePenDemo.html) in a text editor and copy the entire file. CodePen's [editor migration guide](https://blog.codepen.io/docs/what-changed/) explains the Classic editor and the new full-HTML `index.html`.
+3. Confirm the tree controls work in the preview, then save the demo as a public Pen under your account. Check the saved Pen too.
 4. Copy its public Pen URL. In the Medium story, paste that URL on an otherwise empty line and press **Enter**. Paste the URL, not CodePen's HTML/iframe embed code.
-5. Check that Medium expands the URL to an interactive Pen. Some CMS embeds are interactive only after publication, as the provider documentation notes. Verify the actual result; the local browser checks do not establish that Medium has accepted an embed.
+5. Check that Medium expands the URL into a Pen embed. Medium says its embeds become interactive after publication; the draft may show a preview. Verify the actual published result too. The local browser checks do not establish that Medium has accepted an embed.
 
 This adds the tree's interactive controls; it does not reproduce the full website as Medium's native page layout. If Medium shows only a link card, keep the existing direct website link and investigate the saved Pen's embed rather than claiming the story is interactive.
 
-The launcher's exported model and UI are copied from the canonical local JavaScript; the renderer is referenced through the configured public website URL. Local launcher controls, form serialization, and a reconstructed Pen payload are tested separately from the external CodePen/Medium publishing step. The C++ library is independent of this publication workflow.
+The complete demo HTML copies its styling, model, and UI from the canonical local files; its only external asset is the renderer at the configured public website URL. A saved Pen needs internet access to load that renderer. The setup page's own preview remains local and works offline. Local preview controls, copy success/failure, form serialization, and the complete exported HTML are tested separately from the external CodePen/Medium publishing step. The C++ library is independent of this publication workflow.
+
+The **Optional automatic setup** section retains CodePen's [documented prefill form](https://blog.codepen.io/docs/api/post-to-prefill-pen/). That endpoint returned **Something Went Wrong** during the publisher's attempt; its error page did not identify a cause. The manual setup above bypasses the endpoint, and the page does not save or publish anything automatically. Do not keep retrying the failed form or mistake its failure for a failure of the demo itself.
 
 ### Recommended: import the hosted article
 

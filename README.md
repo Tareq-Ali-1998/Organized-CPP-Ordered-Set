@@ -65,7 +65,7 @@ On GitHub or GitLab, an HTML file link normally opens the repository's source vi
 | [Examples](docs/Examples.md) | Strings, pairs, custom comparators, inversion counting, and sliding medians |
 | [Medium.md](Medium.md) | The detailed visual article, with Mermaid sources |
 | [Interactive visual guide](index.html) | Colored article with rendered diagrams and an interactive rank/select walkthrough; opens locally |
-| [CodePen launcher for Medium](embeds/CodePen.html) | Preview the tree and open a prefilled Pen that can be saved and embedded in a Medium story |
+| [CodePen setup for Medium](embeds/CodePen.html) | Preview the tree and copy the complete demo into a blank Pen; automatic setup is optional |
 | [Medium.publish.md](Medium.publish.md) | Medium publishing copy using PNG diagrams instead of Mermaid fences |
 | [Codeforces.md](Codeforces.md) | A separate contest-focused article with LaTeX math and collapsible full code |
 | [Codeforces.html](Codeforces.html) | Local reading preview of the Codeforces draft |
@@ -73,7 +73,7 @@ On GitHub or GitLab, an HTML file link normally opens the repository's source vi
 | [Project guide](docs/ProjectGuide.md) | What each helper does, which files to edit, and how to fix stale-file messages |
 | [Validation](docs/Validation.md) | Actual test results and their limits |
 
-GitHub and GitLab render fenced Mermaid diagrams in Markdown. The HTML copies use diagrams rendered from those Mermaid sources, with a pinned local renderer for interactive updates. Medium stories use PNG images and a link to the interactive version; they do not execute this project's JavaScript.
+GitHub and GitLab render fenced Mermaid diagrams in Markdown. The HTML copies use diagrams rendered from those Mermaid sources, with a pinned local renderer for interactive updates. Medium stories use PNG images and can include a supported CodePen embed for the tree controls; importing the article does not transfer its JavaScript.
 
 `Medium.html` and `index.html` are identical interactive guides; `index.html` is the website entry point. `Medium.publish.html` is a static preparation copy with PNG diagrams, which makes copying prose and preparing Medium uploads easier. Publish `Codeforces.md` through the Codeforces editor and prepare the Medium story from `Medium.publish.md`; neither platform is a destination for pasting the complete HTML application.
 

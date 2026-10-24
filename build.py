@@ -222,8 +222,20 @@ def codepen_payload(config):
             'head': '<meta name="viewport" content="width=device-width, initial-scale=1">'}
 
 
+def render_codepen_demo(config):
+    payload = codepen_payload(config)
+    renderer = payload['js_external'] or '../assets/vendor/mermaid.min.js'
+    javascript = re.sub(r'</script', r'<\\/script', payload['js'], flags=re.I)
+    return ('<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n'
+            + payload['head'] + '\n<title>' + html.escape(payload['title']) + '</title>\n'
+            + '<style>\n' + payload['css'] + '</style>\n</head>\n<body>\n'
+            + LAB + '\n<script src="' + html.escape(renderer, quote=True) + '"></script>\n'
+            + '<script>\n' + javascript + '\n</script>\n</body>\n</html>\n')
+
+
 def render_codepen_launcher(config):
     payload = html.escape(json.dumps(codepen_payload(config), ensure_ascii=False), quote=True)
+    manual_source = html.escape(render_codepen_demo(config), quote=False)
     disabled = '' if config.get('interactive_url') else ' disabled'
     notice = '' if not disabled else '<p>Set the confirmed hosted website URL in publishing.json and rebuild before exporting.</p>'
     return ('<!doctype html>\n<html lang="en"><head><meta charset="utf-8">\n'
@@ -231,20 +243,48 @@ def render_codepen_launcher(config):
             '<title>Interactive tree for Medium through CodePen</title>\n'
             '<link rel="stylesheet" href="../assets/article.css">\n'
             '<style>body{padding:20px}.embed-intro{max-width:900px;margin:0 auto 24px}'
-            '.embed-intro h1{font-size:2rem}.lab{max-width:900px;margin:0 auto}</style>\n'
+            '.embed-intro h1{font-size:2rem}.lab{max-width:900px;margin:0 auto}'
+            '#codepen-source{display:block;width:100%;height:180px;margin:14px 0;'
+            'font:13px/1.5 Consolas,monospace;white-space:pre;overflow:auto}'
+            '#codepen-copy-status{min-height:1.75em}</style>\n'
             '</head><body><main><div class="embed-intro">\n'
             '<h1>Put the interactive tree inside Medium</h1>\n'
             '<p>Medium can display a supported CodePen embed. The demo below is prepared from the same files as the website.</p>\n'
-            '<ol><li>Open the prepared Pen with the button below.</li>'
-            '<li>Sign in to CodePen if needed and save it as a public Pen.</li>'
+            '<ol><li>Sign in to CodePen and <a href="https://codepen.io/pen/" target="_blank" rel="noopener">open a blank Pen</a>.</li>'
+            '<li>Click <strong>Copy demo HTML</strong> below. Replace everything in the '
+            '<strong>HTML</strong> editor (Classic), or <strong>index.html</strong> (new editor), '
+            'with the copied code. Leave the CSS and JS editors empty.</li>'
+            '<li>Test the tree in the preview, then save the Pen as public.</li>'
             '<li>Copy the saved Pen URL, paste it on its own line in Medium, and press Enter.</li></ol>\n'
-            '<p>This opens a draft on CodePen; it does not save or publish a Pen automatically. '
-            'The embed contains the interactive tree; Medium keeps its own article layout. '
-            'Check the saved Pen in Medium before publishing the story.</p>\n'
+            '<p>The HTML contains the demo styling and query scripts. It loads the diagram renderer from '
+            'the configured public website, so the Pen needs an internet connection. '
+            'Medium keeps its own article layout, and its embeds become interactive after publication.</p>\n'
+            f'<button type="button" id="codepen-copy"{disabled}>Copy demo HTML</button>\n'
+            '<p id="codepen-copy-status" role="status" aria-live="polite"></p>\n'
+            '<label for="codepen-source">Complete demo HTML (read-only; also available in '
+            '<a href="CodePenDemo.html">CodePenDemo.html</a>)</label>\n'
+            f'<textarea id="codepen-source" readonly spellcheck="false">{manual_source}</textarea>\n'
+            '<details><summary>Optional automatic setup</summary>\n'
+            '<p>The automatic form can fail with “Something Went Wrong” on CodePen. '
+            'Use the copy instructions above if it fails. This opens a draft; it does not save or publish a Pen automatically.</p>\n'
             '<form data-codepen action="https://codepen.io/cpe/pen/define/" method="post" target="_blank" rel="noopener">\n'
             f'<input type="hidden" name="data" value="{payload}">\n'
             f'<button type="submit"{disabled}>Open the prepared demo in CodePen</button>\n'
-            f'</form>{notice}\n<p>Live local preview:</p></div>\n{LAB}\n</main>\n'
+            f'</form></details>{notice}\n<p>Live local preview:</p></div>\n{LAB}\n</main>\n'
+            '<script>\n'
+            'document.getElementById("codepen-copy").addEventListener("click", async () => {\n'
+            '    const source = document.getElementById("codepen-source");\n'
+            '    const status = document.getElementById("codepen-copy-status");\n'
+            '    source.focus();\n'
+            '    source.select();\n'
+            '    try {\n'
+            '        await navigator.clipboard.writeText(source.value);\n'
+            '        status.textContent = "Copied. Paste into the HTML editor or index.html in CodePen.";\n'
+            '    }\n'
+            '    catch (error) {\n'
+            '        status.textContent = "The code is selected. Press Ctrl+C (Cmd+C on Mac), then paste into CodePen.";\n'
+            '    }\n'
+            '});\n</script>\n'
             '<script defer src="../assets/vendor/mermaid.min.js"></script>\n'
             '<script defer src="../assets/demo-model.js"></script>\n'
             '<script defer src="../assets/demo-ui.js"></script>\n'
@@ -285,6 +325,7 @@ def make_files(config=None):
         'docs/Examples.md': examples_doc,
         'docs/API.html': render_html((ROOT/'docs/API.md').read_text(encoding='utf-8'), 'Ordered set API', prefix='../'),
         'embeds/CodePen.html': render_codepen_launcher(config),
+        'embeds/CodePenDemo.html': render_codepen_demo(config),
     }
     return files
 

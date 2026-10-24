@@ -65,6 +65,44 @@ class DocumentationTests(unittest.TestCase):
         self.assertIn('does not save or publish', build.render_codepen_launcher(config))
         self.assertIn('disabled', build.render_codepen_launcher({}))
 
+    def test_manual_codepen_html_preserves_the_demo_and_script_order(self):
+        config = {'interactive_url':'https://example.github.io/ordered-set/'}
+        source = build.render_codepen_demo(config)
+        self.assertTrue(source.startswith('<!doctype html>'))
+        self.assertIn('<meta charset="utf-8">', source)
+        self.assertIn(build.LAB, source)
+        self.assertIn((build.ROOT/'assets/article.css').read_text(encoding='utf-8'), source)
+        renderer = '<script src="https://example.github.io/ordered-set/assets/vendor/mermaid.min.js"></script>'
+        model = (build.ROOT/'assets/demo-model.js').read_text(encoding='utf-8')
+        ui = (build.ROOT/'assets/demo-ui.js').read_text(encoding='utf-8')
+        self.assertLess(source.index(renderer), source.index(model))
+        self.assertLess(source.index(model), source.index(ui))
+        self.assertIn('../assets/vendor/mermaid.min.js', build.render_codepen_demo({}))
+
+    def test_manual_copy_box_round_trips_the_complete_html(self):
+        class CopyBox(HTMLParser):
+            def __init__(self):
+                super().__init__()
+                self.active = False
+                self.source = []
+                self.attrs = {}
+            def handle_starttag(self, tag, attrs):
+                if tag == 'textarea':
+                    self.active = True
+                    self.attrs = dict(attrs)
+            def handle_data(self, data):
+                if self.active:
+                    self.source.append(data)
+            def handle_endtag(self, tag):
+                if tag == 'textarea':
+                    self.active = False
+        config = {'interactive_url':'https://example.github.io/ordered-set/'}
+        page = CopyBox()
+        page.feed(build.render_codepen_launcher(config))
+        self.assertEqual(''.join(page.source), build.render_codepen_demo(config))
+        self.assertEqual(page.attrs['id'], 'codepen-source')
+        self.assertIn('readonly', page.attrs)
+
     def test_comment_alignment_keeps_cpp_tokens_and_literal_slashes(self):
         source = ('cout << "https://example.com"; // URL\n'
                   "char slash = '/';    // slash\n"

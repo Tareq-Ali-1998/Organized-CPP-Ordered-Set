@@ -11,6 +11,10 @@
             "Export uses the documented CodePen prefill endpoint",
             "Prefill contains the interactive markup and code",
             "Public renderer and export button are configured",
+            "Manual setup contains the complete demo HTML",
+            "Copy button passes the exact HTML to the clipboard",
+            "Clipboard denial leaves all code selected for manual copying",
+            "Missing Clipboard API also supports manual copying",
             "Rank 4 contains 6.",
             "No Mermaid error: Rank 4 contains 6.",
             "Select trace has the expected three decisions",
@@ -34,7 +38,7 @@
             "No Mermaid error: Rank 4 contains 6.",
             "No duplicate HTML/SVG IDs",
             "No page-width overflow",
-            "All scripts are local",
+            "Scripts use local files or the explicitly configured export renderer",
             "No browser script or resource errors"
         ]
     },
@@ -50,6 +54,10 @@
             "Export uses the documented CodePen prefill endpoint",
             "Prefill contains the interactive markup and code",
             "Public renderer and export button are configured",
+            "Manual setup contains the complete demo HTML",
+            "Copy button passes the exact HTML to the clipboard",
+            "Clipboard denial leaves all code selected for manual copying",
+            "Missing Clipboard API also supports manual copying",
             "Rank 4 contains 6.",
             "No Mermaid error: Rank 4 contains 6.",
             "Select trace has the expected three decisions",
@@ -73,7 +81,7 @@
             "No Mermaid error: Rank 4 contains 6.",
             "No duplicate HTML/SVG IDs",
             "No page-width overflow",
-            "All scripts are local",
+            "Scripts use local files or the explicitly configured export renderer",
             "No browser script or resource errors"
         ]
     }

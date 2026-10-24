@@ -3,16 +3,364 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Interactive tree for Medium through CodePen</title>
 <link rel="stylesheet" href="../assets/article.css">
-<style>body{padding:20px}.embed-intro{max-width:900px;margin:0 auto 24px}.embed-intro h1{font-size:2rem}.lab{max-width:900px;margin:0 auto}</style>
+<style>body{padding:20px}.embed-intro{max-width:900px;margin:0 auto 24px}.embed-intro h1{font-size:2rem}.lab{max-width:900px;margin:0 auto}#codepen-source{display:block;width:100%;height:180px;margin:14px 0;font:13px/1.5 Consolas,monospace;white-space:pre;overflow:auto}#codepen-copy-status{min-height:1.75em}</style>
 </head><body><main><div class="embed-intro">
 <h1>Put the interactive tree inside Medium</h1>
 <p>Medium can display a supported CodePen embed. The demo below is prepared from the same files as the website.</p>
-<ol><li>Open the prepared Pen with the button below.</li><li>Sign in to CodePen if needed and save it as a public Pen.</li><li>Copy the saved Pen URL, paste it on its own line in Medium, and press Enter.</li></ol>
-<p>This opens a draft on CodePen; it does not save or publish a Pen automatically. The embed contains the interactive tree; Medium keeps its own article layout. Check the saved Pen in Medium before publishing the story.</p>
+<ol><li>Sign in to CodePen and <a href="https://codepen.io/pen/" target="_blank" rel="noopener">open a blank Pen</a>.</li><li>Click <strong>Copy demo HTML</strong> below. Replace everything in the <strong>HTML</strong> editor (Classic), or <strong>index.html</strong> (new editor), with the copied code. Leave the CSS and JS editors empty.</li><li>Test the tree in the preview, then save the Pen as public.</li><li>Copy the saved Pen URL, paste it on its own line in Medium, and press Enter.</li></ol>
+<p>The HTML contains the demo styling and query scripts. It loads the diagram renderer from the configured public website, so the Pen needs an internet connection. Medium keeps its own article layout, and its embeds become interactive after publication.</p>
+<button type="button" id="codepen-copy">Copy demo HTML</button>
+<p id="codepen-copy-status" role="status" aria-live="polite"></p>
+<label for="codepen-source">Complete demo HTML (read-only; also available in <a href="CodePenDemo.html">CodePenDemo.html</a>)</label>
+<textarea id="codepen-source" readonly spellcheck="false">&lt;!doctype html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+&lt;title&gt;Ordered Set: Interactive Rank and Selection&lt;/title&gt;
+&lt;style&gt;
+:root { color-scheme: light; --ink: #182d44; --muted: #526479; --teal: #087f78; }
+* { box-sizing: border-box; }
+body { margin: 0; color: var(--ink); background: #f7f8fa; font-family: "Segoe UI", Arial, sans-serif; line-height: 1.75; }
+.topbar { padding: 18px max(24px, calc((100vw - 1150px) / 2)); background: #132c45; color: #fff; display: flex; justify-content: space-between; gap: 18px; flex-wrap: wrap; }
+.brand { font-weight: 700; letter-spacing: .02em; }
+.topbar a { color: #e2f8f3; margin-left: 20px; }
+.layout { display: grid; grid-template-columns: 190px minmax(0, 850px); gap: 35px; max-width: 1150px; margin: 45px auto; padding: 0 24px; }
+.toc { position: sticky; top: 25px; align-self: start; font-size: 13px; line-height: 1.5; }
+.toc strong { color: var(--teal); }
+.toc a { display: block; padding: 7px 0; color: var(--muted); text-decoration: none; }
+article { min-width: 0; background: #fff; padding: 38px 48px; border: 1px solid #e1e7ec; border-radius: 12px; }
+h1, h2, h3 { line-height: 1.25; color: #132c45; scroll-margin-top: 25px; break-after: avoid; }
+h1 { font-size: clamp(2.2rem, 5vw, 3.4rem); letter-spacing: -.035em; margin-top: 5px; }
+.subtitle { font-size: 1.25rem; line-height: 1.5; color: var(--muted); margin: .5em 0 1.6em; }
+h2 { font-size: 1.55rem; margin-top: 2.4em; padding-top: .3em; }
+h3 { font-size: 1.15rem; margin-top: 1.8em; }
+a { color: #086f89; text-underline-offset: 3px; }
+p, li { font-size: 16px; }
+strong { color: #112f46; }
+figure { margin: 28px 0; background: #fafcfd; padding: 18px; border: 1px solid #dce6eb; border-radius: 10px; overflow: auto; }
+figure svg { display: block; max-width: 100%; height: auto; margin: auto; }
+figure img { width: 100%; height: auto; }
+figure figcaption { color: var(--muted); font-size: 13px; margin-top: 10px; }
+pre, code { font-family: Consolas, "Cascadia Mono", monospace; }
+pre { padding: 18px; background: #f4f7fa; border: 1px solid #dce5ec; border-left: 3px solid var(--teal); border-radius: 6px; font-size: 13px; line-height: 1.6; overflow: auto; tab-size: 4; }
+:not(pre) &gt; code { background: #edf3f7; border-radius: 3px; padding: 1px 4px; overflow-wrap: anywhere; font-size: .92em; }
+table { width: 100%; border-collapse: collapse; margin: 24px 0; font-size: 13px; }
+th, td { padding: 9px; border: 1px solid #d9e2ea; text-align: left; vertical-align: top; overflow-wrap: anywhere; }
+th { background: #e9f2f4; }
+details { margin: 24px 0; }
+summary { cursor: pointer; font-weight: 700; padding: 14px; background: #eaf3f4; border-radius: 6px; }
+.math { font-family: Georgia, serif; white-space: normal; }
+.draft-link { border-left: 3px solid #c9841d; padding: 8px 12px; background: #fff8e8; color: #795515; font-size: 14px; }
+.lab { margin: 30px 0; padding: 22px; border: 2px solid #9acfc7; border-radius: 12px; background: #fbfefd; }
+.lab h2 { margin-top: 0; }
+.lab label { display: block; font-weight: 600; font-size: 14px; }
+.lab input, .lab select { width: 100%; padding: 9px; border: 1px solid #abbfc9; border-radius: 5px; background: white; font: inherit; }
+.lab-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 12px; }
+.lab-buttons { display: flex; gap: 10px; flex-wrap: wrap; margin: 15px 0; }
+button { font: inherit; cursor: pointer; border: 1px solid #087f78; border-radius: 5px; padding: 8px 14px; background: #087f78; color: white; }
+button.secondary { background: white; color: #087f78; }
+button:disabled { cursor: default; opacity: .55; }
+button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible { outline: 3px solid #cf8b15; outline-offset: 3px; }
+.legend { font-size: 13px; color: var(--muted); }
+.legend span { display: inline-block; margin-right: 12px; padding: 2px 6px; border-radius: 3px; }
+.blue { background: #dbeafe; } .green { background: #dcfce7; } .amber { background: #fff1d6; }
+.tree-panel { overflow: auto; min-height: 130px; margin: 14px 0; }
+.tree-panel svg { display: block; max-width: none !important; height: auto; margin: auto; }
+.trace { font-size: 14px; padding-left: 24px; }
+.lab-note { color: var(--muted); font-size: 13px; }
+.status { min-height: 26px; font-weight: 600; }
+@media (max-width: 950px) { .layout { display: block; margin: 22px auto; } .toc { display: none; } article { padding: 26px; } .lab-grid { grid-template-columns: 1fr; } }
+@media print { @page { size: A4; margin: 16mm; } body { background: white; } .topbar, .toc, .lab { display: none; } .layout { display: block; margin: 0; padding: 0; } article { border: 0; padding: 0; } p, li { font-size: 10pt; } h1 { font-size: 27pt; } h2 { font-size: 17pt; } pre { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 8pt; } figure { break-inside: avoid; } tr { break-inside: avoid; } thead { display: table-header-group; } }
+
+body { padding: 16px; background: white; }
+.lab { max-width: 900px; margin: 0 auto; }
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;section id="ordered-set-lab" class="lab" aria-labelledby="lab-title"&gt;
+&lt;h2 id="lab-title"&gt;Try the counting idea&lt;/h2&gt;
+&lt;p class="lab-note"&gt;A schematic balanced search tree for learning rank and selection.
+PBDS can choose a different balanced shape. This walkthrough uses ascending integer order.&lt;/p&gt;
+&lt;p class="lab-note"&gt;On a small screen, swipe horizontally across the tree to read its nodes.&lt;/p&gt;
+&lt;label for="lab-values"&gt;Values (up to 15 integers, separated by spaces or commas)&lt;/label&gt;
+&lt;input id="lab-values" value="1, 2, 3, 5, 6, 7, 9" autocomplete="off"&gt;
+&lt;div class="lab-grid"&gt;
+&lt;label for="lab-mode"&gt;Container&lt;select id="lab-mode"&gt;&lt;option value="multi"&gt;Multiset: keep duplicates&lt;/option&gt;&lt;option value="unique"&gt;Unique set&lt;/option&gt;&lt;/select&gt;&lt;/label&gt;
+&lt;label for="lab-operation"&gt;Query&lt;select id="lab-operation"&gt;&lt;option value="select"&gt;Select sorted rank&lt;/option&gt;&lt;option value="rank"&gt;Count values &amp;lt; x&lt;/option&gt;&lt;option value="upper"&gt;Count values &amp;lt;= x&lt;/option&gt;&lt;/select&gt;&lt;/label&gt;
+&lt;label for="lab-query"&gt;Rank or threshold&lt;input id="lab-query" value="4" inputmode="numeric"&gt;&lt;/label&gt;
+&lt;/div&gt;
+&lt;div class="lab-buttons"&gt;&lt;button id="lab-run"&gt;Start query&lt;/button&gt;&lt;button id="lab-next" disabled&gt;Next step&lt;/button&gt;&lt;button id="lab-all" class="secondary"&gt;Show all steps&lt;/button&gt;&lt;button id="lab-reset" class="secondary"&gt;Rebuild tree&lt;/button&gt;&lt;/div&gt;
+&lt;p id="lab-sorted" class="lab-note"&gt;&lt;/p&gt;
+&lt;p class="legend"&gt;&lt;span class="blue"&gt;Current node&lt;/span&gt;&lt;span class="green"&gt;Counted or skipped group&lt;/span&gt;&lt;span class="amber"&gt;Earlier path&lt;/span&gt;&lt;/p&gt;
+&lt;p id="lab-status" class="status" role="status" aria-live="polite"&gt;Loading the local walkthrough…&lt;/p&gt;
+&lt;div id="lab-tree" class="tree-panel" aria-label="Query tree diagram"&gt;&lt;/div&gt;
+&lt;ol id="lab-trace" class="trace"&gt;&lt;/ol&gt;
+&lt;noscript&gt;The diagrams above remain readable. Enable JavaScript to step through a query.&lt;/noscript&gt;
+&lt;/section&gt;
+&lt;script src="https://tareq-ali-1998.github.io/Organized-CPP-Ordered-Set/assets/vendor/mermaid.min.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+(function(root) {
+    "use strict";
+
+    function ParseValues(text) {
+        if (!text.trim()) {
+            return [];
+        }
+        const tokens = text.trim().split(/[\s,]+/);
+        if (tokens.length &gt; 15) {
+            throw new Error("Use at most 15 values so the tree stays readable.");
+        }
+        return tokens.map(token =&gt; {
+            if (!/^-?\d+$/.test(token)) {
+                throw new Error("Use whole numbers separated by spaces or commas.");
+            }
+            const value = Number(token);
+            if (!Number.isSafeInteger(value) || Math.abs(value) &gt; 1000000) {
+                throw new Error("Choose integers between -1000000 and 1000000.");
+            }
+            return value;
+        });
+    }
+
+    function BuildTree(values, multi = true) {
+        let entries = values.map((value, insertionId) =&gt; ({value, insertionId}));
+        entries.sort((a, b) =&gt; a.value - b.value || a.insertionId - b.insertionId);
+        if (!multi) {
+            entries = entries.filter((entry, idx) =&gt; idx === 0 || entry.value !== entries[idx - 1].value);
+        }
+        function Build(left, right) {
+            if (left &gt;= right) {
+                return null;
+            }
+            const mid = Math.floor((left + right) / 2);
+            const node = {...entries[mid], id: "n" + mid, index: mid};
+            node.left = Build(left, mid);
+            node.right = Build(mid + 1, right);
+            node.size = 1 + Size(node.left) + Size(node.right);
+            return node;
+        }
+        return {root: Build(0, entries.length), entries, multi};
+    }
+
+    function Size(node) {
+        return node ? node.size : 0;
+    }
+
+    function NodeIds(node) {
+        return node ? [node.id, ...NodeIds(node.left), ...NodeIds(node.right)] : [];
+    }
+
+    function SelectTrace(tree, rank) {
+        if (!Number.isInteger(rank) || rank &lt; 0 || rank &gt;= tree.entries.length) {
+            return {steps: [], result: null, message: "No such rank: find_by_order returns end()."};
+        }
+        const steps = [];
+        let node = tree.root;
+        let remaining = rank;
+        while (node) {
+            const leftSize = Size(node.left);
+            if (remaining &lt; leftSize) {
+                steps.push({nodeId: node.id, action: "left", skipped: [],
+                    text: `At ${node.value}: rank ${remaining} is below left size ${leftSize}. Go left.`});
+                node = node.left;
+            }
+            else if (remaining === leftSize) {
+                steps.push({nodeId: node.id, action: "found", skipped: [],
+                    text: `At ${node.value}: rank ${remaining} equals left size ${leftSize}. Found ${node.value}.`});
+                return {steps, result: node.value, message: `Rank ${rank} contains ${node.value}.`};
+            }
+            else {
+                const next = remaining - leftSize - 1;
+                steps.push({nodeId: node.id, action: "right", skipped: [node.id, ...NodeIds(node.left)],
+                    text: `At ${node.value}: skip ${leftSize} left entries and this node. Rank ${remaining} becomes ${next}; go right.`});
+                remaining = next;
+                node = node.right;
+            }
+        }
+        throw new Error("Selection invariant failed.");
+    }
+
+    function RankTrace(tree, value, upper = false) {
+        const steps = [];
+        let node = tree.root;
+        let result = 0;
+        while (node) {
+            const before = upper ? node.value &lt;= value : node.value &lt; value;
+            if (before) {
+                const added = Size(node.left) + 1;
+                result += added;
+                steps.push({nodeId: node.id, action: "right", skipped: [node.id, ...NodeIds(node.left)],
+                    text: `At ${node.value}: count ${added} entries (left subtree + node). Total ${result}; go right.`});
+                node = node.right;
+            }
+            else {
+                steps.push({nodeId: node.id, action: "left", skipped: [],
+                    text: `At ${node.value}: this node does not qualify. Total ${result}; go left.`});
+                node = node.left;
+            }
+        }
+        const relation = upper ? "before or equal to" : "strictly before";
+        return {steps, result, message: `${result} entries are ${relation} ${value}.`};
+    }
+
+    function Diagram(tree, steps = []) {
+        if (!tree.root) {
+            return 'flowchart TD\n    Empty["Empty container | size = 0"]';
+        }
+        const lines = ["flowchart TD"];
+        const skipped = new Set(steps.flatMap(step =&gt; step.skipped));
+        const visited = new Set(steps.map(step =&gt; step.nodeId));
+        const current = steps.length ? steps[steps.length - 1].nodeId : null;
+        function Walk(node) {
+            if (!node) {
+                return;
+            }
+            const id = tree.multi ? ` | ID ${node.insertionId}` : "";
+            lines.push(`    ${node.id}["${node.value}${id} | size ${node.size}"]`);
+            for (const child of [node.left, node.right]) {
+                if (child) {
+                    lines.push(`    ${node.id} --&gt; ${child.id}`);
+                }
+            }
+            const color = node.id === current ? "current" : skipped.has(node.id) ? "counted" : visited.has(node.id) ? "visited" : "quiet";
+            lines.push(`    class ${node.id} ${color};`);
+            Walk(node.left);
+            Walk(node.right);
+        }
+        Walk(tree.root);
+        lines.push("    classDef current fill:#dbeafe,stroke:#1d4ed8,stroke-width:3px,color:#172554;");
+        lines.push("    classDef counted fill:#dcfce7,stroke:#15803d,color:#14532d;");
+        lines.push("    classDef visited fill:#fff1d6,stroke:#b45309,color:#78350f;");
+        lines.push("    classDef quiet fill:#f1f5f9,stroke:#94a3b8,color:#334155;");
+        return lines.join("\n");
+    }
+
+    const api = {ParseValues, BuildTree, Size, NodeIds, SelectTrace, RankTrace, Diagram};
+    if (typeof module !== "undefined" &amp;&amp; module.exports) {
+        module.exports = api;
+    }
+    root.OrderedSetDemo = api;
+})(typeof globalThis !== "undefined" ? globalThis : this);
+
+
+(function() {
+    "use strict";
+    const panel = document.getElementById("ordered-set-lab");
+    if (!panel) {
+        return;
+    }
+    const model = window.OrderedSetDemo;
+    const status = document.getElementById("lab-status");
+    const graph = document.getElementById("lab-tree");
+    const traceList = document.getElementById("lab-trace");
+    const nextButton = document.getElementById("lab-next");
+    let tree;
+    let trace;
+    let progress = 0;
+    let rendering = Promise.resolve();
+    let revision = 0;
+
+    function Render() {
+        const code = model.Diagram(tree, trace ? trace.steps.slice(0, progress) : []);
+        const request = ++revision;
+        rendering = rendering.catch(() =&gt; {}).then(async () =&gt; {
+            const output = await mermaid.render("lab-diagram-" + request, code);
+            if (request === revision) {
+                graph.innerHTML = output.svg;
+                const svg = graph.querySelector('svg');
+                if (svg &amp;&amp; svg.viewBox.baseVal.width) {
+                    svg.style.width = Math.max(380, svg.viewBox.baseVal.width) + 'px';
+                }
+                graph.setAttribute("data-rendered", "true");
+                graph.setAttribute("data-render-revision", String(request));
+            }
+        }).catch(error =&gt; {
+            status.textContent = "The diagram could not render. The text trace is still available.";
+            graph.setAttribute("data-render-error", String(error));
+        });
+        traceList.replaceChildren();
+        if (trace) {
+            for (const step of trace.steps.slice(0, progress)) {
+                const item = document.createElement("li");
+                item.textContent = step.text;
+                traceList.appendChild(item);
+            }
+            status.textContent = progress === trace.steps.length ? trace.message : `Step ${progress} of ${trace.steps.length}. Choose Next step.`;
+        }
+        nextButton.disabled = !trace || progress &gt;= trace.steps.length;
+    }
+
+    function Build() {
+        const values = model.ParseValues(document.getElementById("lab-values").value);
+        const multi = document.getElementById("lab-mode").value === "multi";
+        tree = model.BuildTree(values, multi);
+        trace = null;
+        progress = 0;
+        document.getElementById("lab-sorted").textContent = "Sorted values: [" + tree.entries.map(entry =&gt; entry.value).join(", ") + "]";
+        status.textContent = "Choose a query, then step through its decisions.";
+        Render();
+    }
+
+    function Query() {
+        Build();
+        const input = document.getElementById("lab-query").value.trim();
+        if (!/^-?\d+$/.test(input) || !Number.isSafeInteger(Number(input))) {
+            throw new Error("Choose a whole-number rank or threshold.");
+        }
+        const value = Number(input);
+        const operation = document.getElementById("lab-operation").value;
+        trace = operation === "select" ? model.SelectTrace(tree, value) : model.RankTrace(tree, value, operation === "upper");
+        progress = 0;
+        Render();
+    }
+
+    function Safely(action) {
+        return () =&gt; {
+            try {
+                action();
+            }
+            catch (error) {
+                status.textContent = error.message;
+            }
+        };
+    }
+
+    if (!window.mermaid || !model) {
+        status.textContent = "The interactive files could not load. The static diagrams and article remain readable.";
+        panel.querySelectorAll("button").forEach(button =&gt; button.disabled = true);
+        return;
+    }
+    mermaid.initialize({startOnLoad:false, securityLevel:"strict", theme:"base",
+        themeVariables:{fontFamily:"Arial"}, flowchart:{htmlLabels:false}});
+    document.getElementById("lab-run").addEventListener("click", Safely(Query));
+    document.getElementById("lab-reset").addEventListener("click", Safely(Build));
+    nextButton.addEventListener("click", Safely(() =&gt; {
+        if (trace &amp;&amp; progress &lt; trace.steps.length) {
+            progress++;
+            Render();
+        }
+    }));
+    document.getElementById("lab-all").addEventListener("click", Safely(() =&gt; {
+        if (!trace) {
+            Query();
+        }
+        progress = trace.steps.length;
+        Render();
+    }));
+    Safely(Build)();
+})();
+
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</textarea>
+<details><summary>Optional automatic setup</summary>
+<p>The automatic form can fail with “Something Went Wrong” on CodePen. Use the copy instructions above if it fails. This opens a draft; it does not save or publish a Pen automatically.</p>
 <form data-codepen action="https://codepen.io/cpe/pen/define/" method="post" target="_blank" rel="noopener">
 <input type="hidden" name="data" value="{&quot;title&quot;: &quot;Ordered Set: Interactive Rank and Selection&quot;, &quot;description&quot;: &quot;By Tareq Ali. A schematic tree walkthrough for sorted ranks, duplicates, and lower/upper counts.&quot;, &quot;private&quot;: false, &quot;html&quot;: &quot;&lt;section id=\&quot;ordered-set-lab\&quot; class=\&quot;lab\&quot; aria-labelledby=\&quot;lab-title\&quot;&gt;\n&lt;h2 id=\&quot;lab-title\&quot;&gt;Try the counting idea&lt;/h2&gt;\n&lt;p class=\&quot;lab-note\&quot;&gt;A schematic balanced search tree for learning rank and selection.\nPBDS can choose a different balanced shape. This walkthrough uses ascending integer order.&lt;/p&gt;\n&lt;p class=\&quot;lab-note\&quot;&gt;On a small screen, swipe horizontally across the tree to read its nodes.&lt;/p&gt;\n&lt;label for=\&quot;lab-values\&quot;&gt;Values (up to 15 integers, separated by spaces or commas)&lt;/label&gt;\n&lt;input id=\&quot;lab-values\&quot; value=\&quot;1, 2, 3, 5, 6, 7, 9\&quot; autocomplete=\&quot;off\&quot;&gt;\n&lt;div class=\&quot;lab-grid\&quot;&gt;\n&lt;label for=\&quot;lab-mode\&quot;&gt;Container&lt;select id=\&quot;lab-mode\&quot;&gt;&lt;option value=\&quot;multi\&quot;&gt;Multiset: keep duplicates&lt;/option&gt;&lt;option value=\&quot;unique\&quot;&gt;Unique set&lt;/option&gt;&lt;/select&gt;&lt;/label&gt;\n&lt;label for=\&quot;lab-operation\&quot;&gt;Query&lt;select id=\&quot;lab-operation\&quot;&gt;&lt;option value=\&quot;select\&quot;&gt;Select sorted rank&lt;/option&gt;&lt;option value=\&quot;rank\&quot;&gt;Count values &amp;lt; x&lt;/option&gt;&lt;option value=\&quot;upper\&quot;&gt;Count values &amp;lt;= x&lt;/option&gt;&lt;/select&gt;&lt;/label&gt;\n&lt;label for=\&quot;lab-query\&quot;&gt;Rank or threshold&lt;input id=\&quot;lab-query\&quot; value=\&quot;4\&quot; inputmode=\&quot;numeric\&quot;&gt;&lt;/label&gt;\n&lt;/div&gt;\n&lt;div class=\&quot;lab-buttons\&quot;&gt;&lt;button id=\&quot;lab-run\&quot;&gt;Start query&lt;/button&gt;&lt;button id=\&quot;lab-next\&quot; disabled&gt;Next step&lt;/button&gt;&lt;button id=\&quot;lab-all\&quot; class=\&quot;secondary\&quot;&gt;Show all steps&lt;/button&gt;&lt;button id=\&quot;lab-reset\&quot; class=\&quot;secondary\&quot;&gt;Rebuild tree&lt;/button&gt;&lt;/div&gt;\n&lt;p id=\&quot;lab-sorted\&quot; class=\&quot;lab-note\&quot;&gt;&lt;/p&gt;\n&lt;p class=\&quot;legend\&quot;&gt;&lt;span class=\&quot;blue\&quot;&gt;Current node&lt;/span&gt;&lt;span class=\&quot;green\&quot;&gt;Counted or skipped group&lt;/span&gt;&lt;span class=\&quot;amber\&quot;&gt;Earlier path&lt;/span&gt;&lt;/p&gt;\n&lt;p id=\&quot;lab-status\&quot; class=\&quot;status\&quot; role=\&quot;status\&quot; aria-live=\&quot;polite\&quot;&gt;Loading the local walkthrough…&lt;/p&gt;\n&lt;div id=\&quot;lab-tree\&quot; class=\&quot;tree-panel\&quot; aria-label=\&quot;Query tree diagram\&quot;&gt;&lt;/div&gt;\n&lt;ol id=\&quot;lab-trace\&quot; class=\&quot;trace\&quot;&gt;&lt;/ol&gt;\n&lt;noscript&gt;The diagrams above remain readable. Enable JavaScript to step through a query.&lt;/noscript&gt;\n&lt;/section&gt;&quot;, &quot;css&quot;: &quot;:root { color-scheme: light; --ink: #182d44; --muted: #526479; --teal: #087f78; }\n* { box-sizing: border-box; }\nbody { margin: 0; color: var(--ink); background: #f7f8fa; font-family: \&quot;Segoe UI\&quot;, Arial, sans-serif; line-height: 1.75; }\n.topbar { padding: 18px max(24px, calc((100vw - 1150px) / 2)); background: #132c45; color: #fff; display: flex; justify-content: space-between; gap: 18px; flex-wrap: wrap; }\n.brand { font-weight: 700; letter-spacing: .02em; }\n.topbar a { color: #e2f8f3; margin-left: 20px; }\n.layout { display: grid; grid-template-columns: 190px minmax(0, 850px); gap: 35px; max-width: 1150px; margin: 45px auto; padding: 0 24px; }\n.toc { position: sticky; top: 25px; align-self: start; font-size: 13px; line-height: 1.5; }\n.toc strong { color: var(--teal); }\n.toc a { display: block; padding: 7px 0; color: var(--muted); text-decoration: none; }\narticle { min-width: 0; background: #fff; padding: 38px 48px; border: 1px solid #e1e7ec; border-radius: 12px; }\nh1, h2, h3 { line-height: 1.25; color: #132c45; scroll-margin-top: 25px; break-after: avoid; }\nh1 { font-size: clamp(2.2rem, 5vw, 3.4rem); letter-spacing: -.035em; margin-top: 5px; }\n.subtitle { font-size: 1.25rem; line-height: 1.5; color: var(--muted); margin: .5em 0 1.6em; }\nh2 { font-size: 1.55rem; margin-top: 2.4em; padding-top: .3em; }\nh3 { font-size: 1.15rem; margin-top: 1.8em; }\na { color: #086f89; text-underline-offset: 3px; }\np, li { font-size: 16px; }\nstrong { color: #112f46; }\nfigure { margin: 28px 0; background: #fafcfd; padding: 18px; border: 1px solid #dce6eb; border-radius: 10px; overflow: auto; }\nfigure svg { display: block; max-width: 100%; height: auto; margin: auto; }\nfigure img { width: 100%; height: auto; }\nfigure figcaption { color: var(--muted); font-size: 13px; margin-top: 10px; }\npre, code { font-family: Consolas, \&quot;Cascadia Mono\&quot;, monospace; }\npre { padding: 18px; background: #f4f7fa; border: 1px solid #dce5ec; border-left: 3px solid var(--teal); border-radius: 6px; font-size: 13px; line-height: 1.6; overflow: auto; tab-size: 4; }\n:not(pre) &gt; code { background: #edf3f7; border-radius: 3px; padding: 1px 4px; overflow-wrap: anywhere; font-size: .92em; }\ntable { width: 100%; border-collapse: collapse; margin: 24px 0; font-size: 13px; }\nth, td { padding: 9px; border: 1px solid #d9e2ea; text-align: left; vertical-align: top; overflow-wrap: anywhere; }\nth { background: #e9f2f4; }\ndetails { margin: 24px 0; }\nsummary { cursor: pointer; font-weight: 700; padding: 14px; background: #eaf3f4; border-radius: 6px; }\n.math { font-family: Georgia, serif; white-space: normal; }\n.draft-link { border-left: 3px solid #c9841d; padding: 8px 12px; background: #fff8e8; color: #795515; font-size: 14px; }\n.lab { margin: 30px 0; padding: 22px; border: 2px solid #9acfc7; border-radius: 12px; background: #fbfefd; }\n.lab h2 { margin-top: 0; }\n.lab label { display: block; font-weight: 600; font-size: 14px; }\n.lab input, .lab select { width: 100%; padding: 9px; border: 1px solid #abbfc9; border-radius: 5px; background: white; font: inherit; }\n.lab-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 12px; }\n.lab-buttons { display: flex; gap: 10px; flex-wrap: wrap; margin: 15px 0; }\nbutton { font: inherit; cursor: pointer; border: 1px solid #087f78; border-radius: 5px; padding: 8px 14px; background: #087f78; color: white; }\nbutton.secondary { background: white; color: #087f78; }\nbutton:disabled { cursor: default; opacity: .55; }\nbutton:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible { outline: 3px solid #cf8b15; outline-offset: 3px; }\n.legend { font-size: 13px; color: var(--muted); }\n.legend span { display: inline-block; margin-right: 12px; padding: 2px 6px; border-radius: 3px; }\n.blue { background: #dbeafe; } .green { background: #dcfce7; } .amber { background: #fff1d6; }\n.tree-panel { overflow: auto; min-height: 130px; margin: 14px 0; }\n.tree-panel svg { display: block; max-width: none !important; height: auto; margin: auto; }\n.trace { font-size: 14px; padding-left: 24px; }\n.lab-note { color: var(--muted); font-size: 13px; }\n.status { min-height: 26px; font-weight: 600; }\n@media (max-width: 950px) { .layout { display: block; margin: 22px auto; } .toc { display: none; } article { padding: 26px; } .lab-grid { grid-template-columns: 1fr; } }\n@media print { @page { size: A4; margin: 16mm; } body { background: white; } .topbar, .toc, .lab { display: none; } .layout { display: block; margin: 0; padding: 0; } article { border: 0; padding: 0; } p, li { font-size: 10pt; } h1 { font-size: 27pt; } h2 { font-size: 17pt; } pre { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 8pt; } figure { break-inside: avoid; } tr { break-inside: avoid; } thead { display: table-header-group; } }\n\nbody { padding: 16px; background: white; }\n.lab { max-width: 900px; margin: 0 auto; }\n&quot;, &quot;js&quot;: &quot;(function(root) {\n    \&quot;use strict\&quot;;\n\n    function ParseValues(text) {\n        if (!text.trim()) {\n            return [];\n        }\n        const tokens = text.trim().split(/[\\s,]+/);\n        if (tokens.length &gt; 15) {\n            throw new Error(\&quot;Use at most 15 values so the tree stays readable.\&quot;);\n        }\n        return tokens.map(token =&gt; {\n            if (!/^-?\\d+$/.test(token)) {\n                throw new Error(\&quot;Use whole numbers separated by spaces or commas.\&quot;);\n            }\n            const value = Number(token);\n            if (!Number.isSafeInteger(value) || Math.abs(value) &gt; 1000000) {\n                throw new Error(\&quot;Choose integers between -1000000 and 1000000.\&quot;);\n            }\n            return value;\n        });\n    }\n\n    function BuildTree(values, multi = true) {\n        let entries = values.map((value, insertionId) =&gt; ({value, insertionId}));\n        entries.sort((a, b) =&gt; a.value - b.value || a.insertionId - b.insertionId);\n        if (!multi) {\n            entries = entries.filter((entry, idx) =&gt; idx === 0 || entry.value !== entries[idx - 1].value);\n        }\n        function Build(left, right) {\n            if (left &gt;= right) {\n                return null;\n            }\n            const mid = Math.floor((left + right) / 2);\n            const node = {...entries[mid], id: \&quot;n\&quot; + mid, index: mid};\n            node.left = Build(left, mid);\n            node.right = Build(mid + 1, right);\n            node.size = 1 + Size(node.left) + Size(node.right);\n            return node;\n        }\n        return {root: Build(0, entries.length), entries, multi};\n    }\n\n    function Size(node) {\n        return node ? node.size : 0;\n    }\n\n    function NodeIds(node) {\n        return node ? [node.id, ...NodeIds(node.left), ...NodeIds(node.right)] : [];\n    }\n\n    function SelectTrace(tree, rank) {\n        if (!Number.isInteger(rank) || rank &lt; 0 || rank &gt;= tree.entries.length) {\n            return {steps: [], result: null, message: \&quot;No such rank: find_by_order returns end().\&quot;};\n        }\n        const steps = [];\n        let node = tree.root;\n        let remaining = rank;\n        while (node) {\n            const leftSize = Size(node.left);\n            if (remaining &lt; leftSize) {\n                steps.push({nodeId: node.id, action: \&quot;left\&quot;, skipped: [],\n                    text: `At ${node.value}: rank ${remaining} is below left size ${leftSize}. Go left.`});\n                node = node.left;\n            }\n            else if (remaining === leftSize) {\n                steps.push({nodeId: node.id, action: \&quot;found\&quot;, skipped: [],\n                    text: `At ${node.value}: rank ${remaining} equals left size ${leftSize}. Found ${node.value}.`});\n                return {steps, result: node.value, message: `Rank ${rank} contains ${node.value}.`};\n            }\n            else {\n                const next = remaining - leftSize - 1;\n                steps.push({nodeId: node.id, action: \&quot;right\&quot;, skipped: [node.id, ...NodeIds(node.left)],\n                    text: `At ${node.value}: skip ${leftSize} left entries and this node. Rank ${remaining} becomes ${next}; go right.`});\n                remaining = next;\n                node = node.right;\n            }\n        }\n        throw new Error(\&quot;Selection invariant failed.\&quot;);\n    }\n\n    function RankTrace(tree, value, upper = false) {\n        const steps = [];\n        let node = tree.root;\n        let result = 0;\n        while (node) {\n            const before = upper ? node.value &lt;= value : node.value &lt; value;\n            if (before) {\n                const added = Size(node.left) + 1;\n                result += added;\n                steps.push({nodeId: node.id, action: \&quot;right\&quot;, skipped: [node.id, ...NodeIds(node.left)],\n                    text: `At ${node.value}: count ${added} entries (left subtree + node). Total ${result}; go right.`});\n                node = node.right;\n            }\n            else {\n                steps.push({nodeId: node.id, action: \&quot;left\&quot;, skipped: [],\n                    text: `At ${node.value}: this node does not qualify. Total ${result}; go left.`});\n                node = node.left;\n            }\n        }\n        const relation = upper ? \&quot;before or equal to\&quot; : \&quot;strictly before\&quot;;\n        return {steps, result, message: `${result} entries are ${relation} ${value}.`};\n    }\n\n    function Diagram(tree, steps = []) {\n        if (!tree.root) {\n            return &#x27;flowchart TD\\n    Empty[\&quot;Empty container | size = 0\&quot;]&#x27;;\n        }\n        const lines = [\&quot;flowchart TD\&quot;];\n        const skipped = new Set(steps.flatMap(step =&gt; step.skipped));\n        const visited = new Set(steps.map(step =&gt; step.nodeId));\n        const current = steps.length ? steps[steps.length - 1].nodeId : null;\n        function Walk(node) {\n            if (!node) {\n                return;\n            }\n            const id = tree.multi ? ` | ID ${node.insertionId}` : \&quot;\&quot;;\n            lines.push(`    ${node.id}[\&quot;${node.value}${id} | size ${node.size}\&quot;]`);\n            for (const child of [node.left, node.right]) {\n                if (child) {\n                    lines.push(`    ${node.id} --&gt; ${child.id}`);\n                }\n            }\n            const color = node.id === current ? \&quot;current\&quot; : skipped.has(node.id) ? \&quot;counted\&quot; : visited.has(node.id) ? \&quot;visited\&quot; : \&quot;quiet\&quot;;\n            lines.push(`    class ${node.id} ${color};`);\n            Walk(node.left);\n            Walk(node.right);\n        }\n        Walk(tree.root);\n        lines.push(\&quot;    classDef current fill:#dbeafe,stroke:#1d4ed8,stroke-width:3px,color:#172554;\&quot;);\n        lines.push(\&quot;    classDef counted fill:#dcfce7,stroke:#15803d,color:#14532d;\&quot;);\n        lines.push(\&quot;    classDef visited fill:#fff1d6,stroke:#b45309,color:#78350f;\&quot;);\n        lines.push(\&quot;    classDef quiet fill:#f1f5f9,stroke:#94a3b8,color:#334155;\&quot;);\n        return lines.join(\&quot;\\n\&quot;);\n    }\n\n    const api = {ParseValues, BuildTree, Size, NodeIds, SelectTrace, RankTrace, Diagram};\n    if (typeof module !== \&quot;undefined\&quot; &amp;&amp; module.exports) {\n        module.exports = api;\n    }\n    root.OrderedSetDemo = api;\n})(typeof globalThis !== \&quot;undefined\&quot; ? globalThis : this);\n\n\n(function() {\n    \&quot;use strict\&quot;;\n    const panel = document.getElementById(\&quot;ordered-set-lab\&quot;);\n    if (!panel) {\n        return;\n    }\n    const model = window.OrderedSetDemo;\n    const status = document.getElementById(\&quot;lab-status\&quot;);\n    const graph = document.getElementById(\&quot;lab-tree\&quot;);\n    const traceList = document.getElementById(\&quot;lab-trace\&quot;);\n    const nextButton = document.getElementById(\&quot;lab-next\&quot;);\n    let tree;\n    let trace;\n    let progress = 0;\n    let rendering = Promise.resolve();\n    let revision = 0;\n\n    function Render() {\n        const code = model.Diagram(tree, trace ? trace.steps.slice(0, progress) : []);\n        const request = ++revision;\n        rendering = rendering.catch(() =&gt; {}).then(async () =&gt; {\n            const output = await mermaid.render(\&quot;lab-diagram-\&quot; + request, code);\n            if (request === revision) {\n                graph.innerHTML = output.svg;\n                const svg = graph.querySelector(&#x27;svg&#x27;);\n                if (svg &amp;&amp; svg.viewBox.baseVal.width) {\n                    svg.style.width = Math.max(380, svg.viewBox.baseVal.width) + &#x27;px&#x27;;\n                }\n                graph.setAttribute(\&quot;data-rendered\&quot;, \&quot;true\&quot;);\n                graph.setAttribute(\&quot;data-render-revision\&quot;, String(request));\n            }\n        }).catch(error =&gt; {\n            status.textContent = \&quot;The diagram could not render. The text trace is still available.\&quot;;\n            graph.setAttribute(\&quot;data-render-error\&quot;, String(error));\n        });\n        traceList.replaceChildren();\n        if (trace) {\n            for (const step of trace.steps.slice(0, progress)) {\n                const item = document.createElement(\&quot;li\&quot;);\n                item.textContent = step.text;\n                traceList.appendChild(item);\n            }\n            status.textContent = progress === trace.steps.length ? trace.message : `Step ${progress} of ${trace.steps.length}. Choose Next step.`;\n        }\n        nextButton.disabled = !trace || progress &gt;= trace.steps.length;\n    }\n\n    function Build() {\n        const values = model.ParseValues(document.getElementById(\&quot;lab-values\&quot;).value);\n        const multi = document.getElementById(\&quot;lab-mode\&quot;).value === \&quot;multi\&quot;;\n        tree = model.BuildTree(values, multi);\n        trace = null;\n        progress = 0;\n        document.getElementById(\&quot;lab-sorted\&quot;).textContent = \&quot;Sorted values: [\&quot; + tree.entries.map(entry =&gt; entry.value).join(\&quot;, \&quot;) + \&quot;]\&quot;;\n        status.textContent = \&quot;Choose a query, then step through its decisions.\&quot;;\n        Render();\n    }\n\n    function Query() {\n        Build();\n        const input = document.getElementById(\&quot;lab-query\&quot;).value.trim();\n        if (!/^-?\\d+$/.test(input) || !Number.isSafeInteger(Number(input))) {\n            throw new Error(\&quot;Choose a whole-number rank or threshold.\&quot;);\n        }\n        const value = Number(input);\n        const operation = document.getElementById(\&quot;lab-operation\&quot;).value;\n        trace = operation === \&quot;select\&quot; ? model.SelectTrace(tree, value) : model.RankTrace(tree, value, operation === \&quot;upper\&quot;);\n        progress = 0;\n        Render();\n    }\n\n    function Safely(action) {\n        return () =&gt; {\n            try {\n                action();\n            }\n            catch (error) {\n                status.textContent = error.message;\n            }\n        };\n    }\n\n    if (!window.mermaid || !model) {\n        status.textContent = \&quot;The interactive files could not load. The static diagrams and article remain readable.\&quot;;\n        panel.querySelectorAll(\&quot;button\&quot;).forEach(button =&gt; button.disabled = true);\n        return;\n    }\n    mermaid.initialize({startOnLoad:false, securityLevel:\&quot;strict\&quot;, theme:\&quot;base\&quot;,\n        themeVariables:{fontFamily:\&quot;Arial\&quot;}, flowchart:{htmlLabels:false}});\n    document.getElementById(\&quot;lab-run\&quot;).addEventListener(\&quot;click\&quot;, Safely(Query));\n    document.getElementById(\&quot;lab-reset\&quot;).addEventListener(\&quot;click\&quot;, Safely(Build));\n    nextButton.addEventListener(\&quot;click\&quot;, Safely(() =&gt; {\n        if (trace &amp;&amp; progress &lt; trace.steps.length) {\n            progress++;\n            Render();\n        }\n    }));\n    document.getElementById(\&quot;lab-all\&quot;).addEventListener(\&quot;click\&quot;, Safely(() =&gt; {\n        if (!trace) {\n            Query();\n        }\n        progress = trace.steps.length;\n        Render();\n    }));\n    Safely(Build)();\n})();\n&quot;, &quot;js_external&quot;: &quot;https://tareq-ali-1998.github.io/Organized-CPP-Ordered-Set/assets/vendor/mermaid.min.js&quot;, &quot;head&quot;: &quot;&lt;meta name=\&quot;viewport\&quot; content=\&quot;width=device-width, initial-scale=1\&quot;&gt;&quot;}">
 <button type="submit">Open the prepared demo in CodePen</button>
-</form>
+</form></details>
 <p>Live local preview:</p></div>
 <section id="ordered-set-lab" class="lab" aria-labelledby="lab-title">
 <h2 id="lab-title">Try the counting idea</h2>
@@ -35,6 +383,21 @@ PBDS can choose a different balanced shape. This walkthrough uses ascending inte
 <noscript>The diagrams above remain readable. Enable JavaScript to step through a query.</noscript>
 </section>
 </main>
+<script>
+document.getElementById("codepen-copy").addEventListener("click", async () => {
+    const source = document.getElementById("codepen-source");
+    const status = document.getElementById("codepen-copy-status");
+    source.focus();
+    source.select();
+    try {
+        await navigator.clipboard.writeText(source.value);
+        status.textContent = "Copied. Paste into the HTML editor or index.html in CodePen.";
+    }
+    catch (error) {
+        status.textContent = "The code is selected. Press Ctrl+C (Cmd+C on Mac), then paste into CodePen.";
+    }
+});
+</script>
 <script defer src="../assets/vendor/mermaid.min.js"></script>
 <script defer src="../assets/demo-model.js"></script>
 <script defer src="../assets/demo-ui.js"></script>
