@@ -7,18 +7,12 @@
 </head><body><main><div class="embed-intro">
 <h1>Put the interactive tree inside Medium</h1>
 <p>Medium can display a supported CodePen embed. The demo below is prepared from the same files as the website.</p>
-<ol><li>Sign in to CodePen and <a href="https://codepen.io/pen/" target="_blank" rel="noopener">open a blank Pen</a>.</li><li>Click <strong>Copy demo HTML</strong> below. Replace everything in the <strong>HTML</strong> editor (Classic), or <strong>index.html</strong> (new editor), with the copied code. Leave the CSS and JS editors empty.</li><li>Test the tree in the preview, then save the Pen as public.</li><li>Copy the saved Pen URL, paste it on its own line in Medium, and press Enter.</li></ol>
+<ol><li>Sign in to CodePen and <a href="https://codepen.io/pen/" target="_blank" rel="noopener">open a blank Pen</a>.</li><li>Click <strong>Copy demo HTML</strong> below. Replace everything in the Classic editor’s <strong>HTML</strong> panel with the copied code. Leave the CSS and JS editors empty.</li><li>Test the tree in the preview, then save the Pen as public.</li><li>Copy the saved Pen URL, paste it on its own line in Medium, and press Enter.</li></ol>
 <p>The HTML contains the demo styling and query scripts. It loads the diagram renderer from the configured public website, so the Pen needs an internet connection. Medium keeps its own article layout, and its embeds become interactive after publication.</p>
 <button type="button" id="codepen-copy">Copy demo HTML</button>
 <p id="codepen-copy-status" role="status" aria-live="polite"></p>
-<label for="codepen-source">Complete demo HTML (read-only; also available in <a href="CodePenDemo.html">CodePenDemo.html</a>)</label>
-<textarea id="codepen-source" readonly spellcheck="false">&lt;!doctype html&gt;
-&lt;html lang="en"&gt;
-&lt;head&gt;
-&lt;meta charset="utf-8"&gt;
-&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
-&lt;title&gt;Ordered Set: Interactive Rank and Selection&lt;/title&gt;
-&lt;style&gt;
+<label for="codepen-source">Classic HTML-panel code (styling and scripts included; no document wrappers)</label>
+<textarea id="codepen-source" readonly spellcheck="false">&lt;style&gt;
 :root { color-scheme: light; --ink: #182d44; --muted: #526479; --teal: #087f78; }
 * { box-sizing: border-box; }
 body { margin: 0; color: var(--ink); background: #f7f8fa; font-family: "Segoe UI", Arial, sans-serif; line-height: 1.75; }
@@ -76,8 +70,6 @@ button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible
 body { padding: 16px; background: white; }
 .lab { max-width: 900px; margin: 0 auto; }
 &lt;/style&gt;
-&lt;/head&gt;
-&lt;body&gt;
 &lt;section id="ordered-set-lab" class="lab" aria-labelledby="lab-title"&gt;
 &lt;h2 id="lab-title"&gt;Try the counting idea&lt;/h2&gt;
 &lt;p class="lab-note"&gt;A schematic balanced search tree for learning rank and selection.
@@ -352,9 +344,8 @@ PBDS can choose a different balanced shape. This walkthrough uses ascending inte
 })();
 
 &lt;/script&gt;
-&lt;/body&gt;
-&lt;/html&gt;
 </textarea>
+<p>Using the new editor with an <strong>index.html</strong> file? Open <a href="CodePenDemo.html">CodePenDemo.html</a> in a text editor and copy the entire file instead. That version includes the document wrappers.</p>
 <details><summary>Optional automatic setup</summary>
 <p>The automatic form can fail with “Something Went Wrong” on CodePen. Use the copy instructions above if it fails. This opens a draft; it does not save or publish a Pen automatically.</p>
 <form data-codepen action="https://codepen.io/cpe/pen/define/" method="post" target="_blank" rel="noopener">
@@ -391,7 +382,7 @@ document.getElementById("codepen-copy").addEventListener("click", async () => {
     source.select();
     try {
         await navigator.clipboard.writeText(source.value);
-        status.textContent = "Copied. Paste into the HTML editor or index.html in CodePen.";
+        status.textContent = "Copied. Replace the Classic editor’s HTML-panel contents with this code.";
     }
     catch (error) {
         status.textContent = "The code is selected. Press Ctrl+C (Cmd+C on Mac), then paste into CodePen.";

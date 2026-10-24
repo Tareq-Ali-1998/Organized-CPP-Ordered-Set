@@ -11,8 +11,8 @@ To use the C++ container, take `OrderedSet.hpp`. To explore the tree, open `inde
 | `Medium.md` | The long article in Markdown, retaining editable Mermaid diagram blocks. |
 | `Medium.publish.md` | The story-preparation copy with PNG diagrams instead of Mermaid source. |
 | `Medium.publish.html` | The complete static article with PNG diagrams. Copy its rendered content, or host it and give its public URL to Medium's importer. It is not a local file attachment to upload in Write. |
-| `embeds/CodePen.html` | A working tree preview and a copy button for setting up a blank Pen. The automatic form is optional because it can fail on CodePen. |
-| `embeds/CodePenDemo.html` | Complete demo HTML for a Pen's HTML editor or `index.html`. Styling and query scripts are included; the diagram renderer loads from the configured public website. Save the Pen, then paste its URL into Medium. |
+| `embeds/CodePen.html` | A working tree preview and a copy button for a Classic Pen's HTML panel. The copied markup omits document wrappers. The automatic form is optional because it can fail on CodePen. |
+| `embeds/CodePenDemo.html` | Complete demo HTML for the new editor's `index.html` or a normal browser. Styling and query scripts are included; the diagram renderer loads from the configured public website. The Classic HTML panel uses the copy button above instead. |
 | `Codeforces.md` | The shorter contest article in Codeforces Markdown, including math and a full-code spoiler. Paste this version into the Codeforces editor. |
 | `Codeforces.html` | A local preview for reading. Codeforces itself renders the final math and spoiler. |
 

@@ -222,20 +222,25 @@ def codepen_payload(config):
             'head': '<meta name="viewport" content="width=device-width, initial-scale=1">'}
 
 
-def render_codepen_demo(config):
-    payload = codepen_payload(config)
+def codepen_body(payload):
     renderer = payload['js_external'] or '../assets/vendor/mermaid.min.js'
     javascript = re.sub(r'</script', r'<\\/script', payload['js'], flags=re.I)
+    return ('<style>\n' + payload['css'] + '</style>\n' + payload['html']
+            + '\n<script src="' + html.escape(renderer, quote=True) + '"></script>\n'
+            + '<script>\n' + javascript + '\n</script>\n')
+
+
+def render_codepen_demo(config):
+    payload = codepen_payload(config)
     return ('<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n'
             + payload['head'] + '\n<title>' + html.escape(payload['title']) + '</title>\n'
-            + '<style>\n' + payload['css'] + '</style>\n</head>\n<body>\n'
-            + LAB + '\n<script src="' + html.escape(renderer, quote=True) + '"></script>\n'
-            + '<script>\n' + javascript + '\n</script>\n</body>\n</html>\n')
+            + '</head>\n<body>\n' + codepen_body(payload) + '</body>\n</html>\n')
 
 
 def render_codepen_launcher(config):
-    payload = html.escape(json.dumps(codepen_payload(config), ensure_ascii=False), quote=True)
-    manual_source = html.escape(render_codepen_demo(config), quote=False)
+    export = codepen_payload(config)
+    payload = html.escape(json.dumps(export, ensure_ascii=False), quote=True)
+    manual_source = html.escape(codepen_body(export), quote=False)
     disabled = '' if config.get('interactive_url') else ' disabled'
     notice = '' if not disabled else '<p>Set the confirmed hosted website URL in publishing.json and rebuild before exporting.</p>'
     return ('<!doctype html>\n<html lang="en"><head><meta charset="utf-8">\n'
@@ -252,7 +257,7 @@ def render_codepen_launcher(config):
             '<p>Medium can display a supported CodePen embed. The demo below is prepared from the same files as the website.</p>\n'
             '<ol><li>Sign in to CodePen and <a href="https://codepen.io/pen/" target="_blank" rel="noopener">open a blank Pen</a>.</li>'
             '<li>Click <strong>Copy demo HTML</strong> below. Replace everything in the '
-            '<strong>HTML</strong> editor (Classic), or <strong>index.html</strong> (new editor), '
+            'Classic editor’s <strong>HTML</strong> panel '
             'with the copied code. Leave the CSS and JS editors empty.</li>'
             '<li>Test the tree in the preview, then save the Pen as public.</li>'
             '<li>Copy the saved Pen URL, paste it on its own line in Medium, and press Enter.</li></ol>\n'
@@ -261,9 +266,12 @@ def render_codepen_launcher(config):
             'Medium keeps its own article layout, and its embeds become interactive after publication.</p>\n'
             f'<button type="button" id="codepen-copy"{disabled}>Copy demo HTML</button>\n'
             '<p id="codepen-copy-status" role="status" aria-live="polite"></p>\n'
-            '<label for="codepen-source">Complete demo HTML (read-only; also available in '
-            '<a href="CodePenDemo.html">CodePenDemo.html</a>)</label>\n'
+            '<label for="codepen-source">Classic HTML-panel code (styling and scripts included; '
+            'no document wrappers)</label>\n'
             f'<textarea id="codepen-source" readonly spellcheck="false">{manual_source}</textarea>\n'
+            '<p>Using the new editor with an <strong>index.html</strong> file? Open '
+            '<a href="CodePenDemo.html">CodePenDemo.html</a> in a text editor and copy the '
+            'entire file instead. That version includes the document wrappers.</p>\n'
             '<details><summary>Optional automatic setup</summary>\n'
             '<p>The automatic form can fail with “Something Went Wrong” on CodePen. '
             'Use the copy instructions above if it fails. This opens a draft; it does not save or publish a Pen automatically.</p>\n'
@@ -279,7 +287,7 @@ def render_codepen_launcher(config):
             '    source.select();\n'
             '    try {\n'
             '        await navigator.clipboard.writeText(source.value);\n'
-            '        status.textContent = "Copied. Paste into the HTML editor or index.html in CodePen.";\n'
+            '        status.textContent = "Copied. Replace the Classic editor’s HTML-panel contents with this code.";\n'
             '    }\n'
             '    catch (error) {\n'
             '        status.textContent = "The code is selected. Press Ctrl+C (Cmd+C on Mac), then paste into CodePen.";\n'

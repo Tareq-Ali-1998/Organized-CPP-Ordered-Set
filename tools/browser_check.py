@@ -59,7 +59,7 @@ window.addEventListener('load', async () => {
         }
         const source = document.getElementById('codepen-source');
         if (source) {
-            Check(source.readOnly && source.value.startsWith('<!doctype html>') && source.value.includes('OrderedSetDemo'), 'Manual setup contains the complete demo HTML');
+            Check(source.readOnly && source.value.startsWith('<style>') && !/<\/?(?:html|head|body)\b/i.test(source.value) && source.value.includes('OrderedSetDemo'), 'Classic copy contains styling and scripts without document wrappers');
             const previousClipboard = Object.getOwnPropertyDescriptor(navigator, 'clipboard');
             try {
                 let copied;

@@ -79,7 +79,7 @@ class DocumentationTests(unittest.TestCase):
         self.assertLess(source.index(model), source.index(ui))
         self.assertIn('../assets/vendor/mermaid.min.js', build.render_codepen_demo({}))
 
-    def test_manual_copy_box_round_trips_the_complete_html(self):
+    def test_manual_copy_box_round_trips_the_classic_html(self):
         class CopyBox(HTMLParser):
             def __init__(self):
                 super().__init__()
@@ -99,9 +99,30 @@ class DocumentationTests(unittest.TestCase):
         config = {'interactive_url':'https://example.github.io/ordered-set/'}
         page = CopyBox()
         page.feed(build.render_codepen_launcher(config))
-        self.assertEqual(''.join(page.source), build.render_codepen_demo(config))
+        self.assertEqual(''.join(page.source), build.codepen_body(build.codepen_payload(config)))
         self.assertEqual(page.attrs['id'], 'codepen-source')
         self.assertIn('readonly', page.attrs)
+
+    def test_classic_copy_has_no_document_wrappers(self):
+        class Tags(HTMLParser):
+            def __init__(self):
+                super().__init__()
+                self.tags = []
+                self.declarations = []
+            def handle_starttag(self, tag, attrs):
+                self.tags.append(tag)
+            def handle_decl(self, declaration):
+                self.declarations.append(declaration)
+        config = {'interactive_url':'https://example.github.io/ordered-set/'}
+        source = build.codepen_body(build.codepen_payload(config))
+        parsed = Tags()
+        parsed.feed(source)
+        self.assertEqual(parsed.declarations, [])
+        self.assertFalse({'html', 'head', 'body', 'meta', 'title'} & set(parsed.tags))
+        self.assertIn('style', parsed.tags)
+        self.assertIn('section', parsed.tags)
+        self.assertEqual(parsed.tags.count('script'), 2)
+        self.assertIn(source, build.render_codepen_demo(config))
 
     def test_comment_alignment_keeps_cpp_tokens_and_literal_slashes(self):
         source = ('cout << "https://example.com"; // URL\n'
