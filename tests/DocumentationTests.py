@@ -39,6 +39,32 @@ class CodeBlocks(HTMLParser):
 
 
 class DocumentationTests(unittest.TestCase):
+    def test_codepen_form_preserves_payload_and_does_not_publish(self):
+        class Export(HTMLParser):
+            def __init__(self):
+                super().__init__()
+                self.form = None
+                self.payload = None
+            def handle_starttag(self, tag, attrs):
+                attrs = dict(attrs)
+                if tag == 'form':
+                    self.form = attrs
+                if tag == 'input' and attrs.get('name') == 'data':
+                    self.payload = json.loads(attrs['value'])
+        page = Export()
+        config = {'interactive_url':'https://example.github.io/ordered-set/'}
+        page.feed(build.render_codepen_launcher(config))
+        self.assertEqual(page.form['action'], 'https://codepen.io/cpe/pen/define/')
+        self.assertEqual(page.form['method'], 'post')
+        self.assertEqual(page.form['target'], '_blank')
+        self.assertEqual(page.payload, build.codepen_payload(config))
+        self.assertEqual(page.payload['html'], build.LAB)
+        self.assertEqual(page.payload['js_external'], 'https://example.github.io/ordered-set/assets/vendor/mermaid.min.js')
+        for name in ['demo-model.js', 'demo-ui.js']:
+            self.assertIn((build.ROOT/'assets'/name).read_text(encoding='utf-8'), page.payload['js'])
+        self.assertIn('does not save or publish', build.render_codepen_launcher(config))
+        self.assertIn('disabled', build.render_codepen_launcher({}))
+
     def test_comment_alignment_keeps_cpp_tokens_and_literal_slashes(self):
         source = ('cout << "https://example.com"; // URL\n'
                   "char slash = '/';    // slash\n"

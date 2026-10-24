@@ -12,6 +12,8 @@ The original compiler matrix remains in `validation/Results.json`. After the pub
 
 The polish also passed five publishing-link tests and eight documentation/tool regressions, including comment alignment in rendered code blocks, freshness checks without file writes, and launching verification from the parent directory. [PublicationPolish.json](../validation/PublicationPolish.json) records those checks and editor diagnostics. VS Code's built-in HTML/CSS service originally reported 30 errors and 25 warnings from empty Mermaid style attributes in `index.html`; all five generated HTML pages now report zero errors and zero warnings. This fixes the generated markup instead of disabling validation.
 
+The subsequent CodePen launcher passed nine documentation/tool regressions, including exact form-payload serialization. Its tree controls and prefill data passed 30 browser checks at each of the desktop/mobile viewports; see [CodePenBrowser.json](../validation/CodePenBrowser.json). The exact exported HTML/CSS/JavaScript payload also passed 27 checks per viewport in a reconstructed Pen page using the same pinned renderer; see [CodePenPayloadBrowser.json](../validation/CodePenPayloadBrowser.json). These checks do not publish a Pen or prove that Medium has accepted its embed. Saving a Pen and verifying it inside the actual story remain external publishing steps.
+
 <!-- BEGIN RESULTS -->
 | Profile | Container suite | Article checks | Standalone example |
 |---|---|---|---|

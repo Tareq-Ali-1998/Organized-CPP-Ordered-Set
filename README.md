@@ -65,6 +65,7 @@ On GitHub or GitLab, an HTML file link normally opens the repository's source vi
 | [Examples](docs/Examples.md) | Strings, pairs, custom comparators, inversion counting, and sliding medians |
 | [Medium.md](Medium.md) | The detailed visual article, with Mermaid sources |
 | [Interactive visual guide](index.html) | Colored article with rendered diagrams and an interactive rank/select walkthrough; opens locally |
+| [CodePen launcher for Medium](embeds/CodePen.html) | Preview the tree and open a prefilled Pen that can be saved and embedded in a Medium story |
 | [Medium.publish.md](Medium.publish.md) | Medium publishing copy using PNG diagrams instead of Mermaid fences |
 | [Codeforces.md](Codeforces.md) | A separate contest-focused article with LaTeX math and collapsible full code |
 | [Codeforces.html](Codeforces.html) | Local reading preview of the Codeforces draft |

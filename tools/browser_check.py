@@ -1,12 +1,15 @@
 """Exercise the real HTML walkthrough in a browser and save desktop/mobile previews."""
 
 import json
+import argparse
 import base64
+import re
 import subprocess
 from pathlib import Path
 import tempfile
 import time
 import websocket
+from urllib.parse import urlsplit
 
 from render_diagrams import ROOT, browser_path
 
@@ -46,7 +49,14 @@ window.addEventListener('load', async () => {
     try {
         await WaitFor(() => document.querySelector('#lab-tree svg'));
         Check(innerWidth === EXPECT_WIDTH, 'Viewport matches requested width');
-        Check(document.querySelectorAll('figure[data-diagram] svg').length === 3, 'All three article diagrams rendered');
+        Check(document.querySelectorAll('figure[data-diagram] svg').length === EXPECT_FIGURES, 'Static diagram count matches the page');
+        const exportForm = document.querySelector('form[data-codepen]');
+        if (exportForm) {
+            const payload = JSON.parse(exportForm.elements.data.value);
+            Check(exportForm.action === 'https://codepen.io/cpe/pen/define/', 'Export uses the documented CodePen prefill endpoint');
+            Check(payload.html.includes('ordered-set-lab') && payload.js.includes('OrderedSetDemo'), 'Prefill contains the interactive markup and code');
+            Check(payload.js_external.startsWith('https://') && !exportForm.querySelector('button').disabled, 'Public renderer and export button are configured');
+        }
         await Query('1,2,3,5,6,7,9', 'multi', 'select', '4', 'Rank 4 contains 6.');
         Check(document.getElementById('lab-trace').children.length === 3, 'Select trace has the expected three decisions');
         await Query('1,2,3,5,6,7,9', 'multi', 'rank', '6', '4 entries are strictly before 6.');
@@ -77,10 +87,22 @@ window.addEventListener('load', async () => {
 
 
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--page', default='index.html')
+    parser.add_argument('--report', default='validation/Browser.json')
+    parser.add_argument('--screenshot-prefix', default='validation/Medium')
+    parser.add_argument('--no-screenshots', action='store_true')
+    args = parser.parse_args()
     browser = browser_path(None)
-    original = (ROOT/'index.html').read_text(encoding='utf-8')
-    for name in ['vendor/mermaid.min.js', 'demo-model.js', 'demo-ui.js']:
-        original = original.replace('src="assets/'+name+'"', 'src="'+(ROOT/'assets'/name).as_uri()+'"')
+    source = ROOT/args.page
+    original = source.read_text(encoding='utf-8')
+    figures = original.count('<figure data-diagram=')
+    def local_resource(match):
+        value = match[2]
+        if urlsplit(value).scheme or value.startswith(('#', '//')):
+            return match.group()
+        return match[1]+'="'+(source.parent/value).resolve().as_uri()+'"'
+    original = re.sub(r'\b(src|href)="([^"]+)"', local_resource, original)
     reports = {}
     with tempfile.TemporaryDirectory(prefix='organized-ordered-set-browser-') as temporary:
         work = Path(temporary)
@@ -134,7 +156,8 @@ def main():
                 call('Emulation.setDeviceMetricsOverride', {'width':width, 'height':height,
                     'deviceScaleFactor':1, 'mobile':name=='mobile'})
                 page = work/(name+'-check.html')
-                harness = original.replace('</body>', '<script>'+TEST_SCRIPT.replace('EXPECT_WIDTH',str(width))+'</script></body>')
+                checks = TEST_SCRIPT.replace('EXPECT_WIDTH',str(width)).replace('EXPECT_FIGURES',str(figures))
+                harness = original.replace('</body>', '<script>'+checks+'</script></body>')
                 page.write_text(harness, encoding='utf-8')
                 call('Page.navigate', {'url':page.as_uri()})
                 payload = wait("document.getElementById('render-result')?.textContent")
@@ -142,19 +165,20 @@ def main():
                 reports[name] = result
                 if result['status'] != 'passed':
                     raise RuntimeError(json.dumps(result))
-                preview = work/(name+'.html')
-                preview.write_text(original, encoding='utf-8')
-                call('Page.navigate', {'url':preview.as_uri()})
-                wait("document.querySelector('#lab-tree svg') && document.readyState === 'complete'")
-                png = call('Page.captureScreenshot', {'format':'png', 'captureBeyondViewport':False})['data']
-                (ROOT/f'validation/Medium-{name}.png').write_bytes(base64.b64decode(png))
+                if not args.no_screenshots:
+                    preview = work/(name+'.html')
+                    preview.write_text(original, encoding='utf-8')
+                    call('Page.navigate', {'url':preview.as_uri()})
+                    wait("document.querySelector('#lab-tree svg') && document.readyState === 'complete'")
+                    png = call('Page.captureScreenshot', {'format':'png', 'captureBeyondViewport':False})['data']
+                    (ROOT/f'{args.screenshot_prefix}-{name}.png').write_bytes(base64.b64decode(png))
                 print(name+': passed '+str(len(result['checks']))+' real-browser checks at '+str(width)+'px.', flush=True)
         finally:
             if connection:
                 connection.close()
             process.terminate()
             process.wait(timeout=10)
-    (ROOT/'validation/Browser.json').write_text(json.dumps(reports, indent=4)+'\n', encoding='utf-8')
+    (ROOT/args.report).write_text(json.dumps(reports, indent=4)+'\n', encoding='utf-8', newline='\n')
 
 
 if __name__ == '__main__':

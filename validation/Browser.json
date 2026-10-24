@@ -7,7 +7,7 @@
         ],
         "checks": [
             "Viewport matches requested width",
-            "All three article diagrams rendered",
+            "Static diagram count matches the page",
             "Rank 4 contains 6.",
             "No Mermaid error: Rank 4 contains 6.",
             "Select trace has the expected three decisions",
@@ -43,7 +43,7 @@
         ],
         "checks": [
             "Viewport matches requested width",
-            "All three article diagrams rendered",
+            "Static diagram count matches the page",
             "Rank 4 contains 6.",
             "No Mermaid error: Rank 4 contains 6.",
             "Select trace has the expected three decisions",

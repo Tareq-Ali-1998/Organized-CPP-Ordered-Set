@@ -94,7 +94,7 @@ def check_documents():
                             ('svg_sha256', ROOT/f'assets/diagrams/{name}.svg'),
                             ('png_sha256', ROOT/f'assets/medium/{name}.png')]:
             require(sha(path) == record[field], 'Stale diagram export: '+name)
-    for name in ['index.html', 'Medium.html', 'Codeforces.html', 'Medium.publish.html', 'docs/API.html']:
+    for name in [relative for relative in generated if relative.endswith('.html')]:
         parser = PageParser()
         parser.feed(generated[name])
         require(len(parser.ids) == len(set(parser.ids)), 'Duplicate HTML IDs in '+name)

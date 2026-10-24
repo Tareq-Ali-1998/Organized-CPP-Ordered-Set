@@ -1,0 +1,80 @@
+{
+    "desktop": {
+        "status": "passed",
+        "viewport": [
+            1440,
+            1080
+        ],
+        "checks": [
+            "Viewport matches requested width",
+            "Static diagram count matches the page",
+            "Export uses the documented CodePen prefill endpoint",
+            "Prefill contains the interactive markup and code",
+            "Public renderer and export button are configured",
+            "Rank 4 contains 6.",
+            "No Mermaid error: Rank 4 contains 6.",
+            "Select trace has the expected three decisions",
+            "4 entries are strictly before 6.",
+            "No Mermaid error: 4 entries are strictly before 6.",
+            "2 entries are strictly before 7.",
+            "No Mermaid error: 2 entries are strictly before 7.",
+            "4 entries are before or equal to 7.",
+            "No Mermaid error: 4 entries are before or equal to 7.",
+            "No such rank: find_by_order returns end().",
+            "No Mermaid error: No such rank: find_by_order returns end().",
+            "Rank 2 contains 7.",
+            "No Mermaid error: Rank 2 contains 7.",
+            "Unique mode removes equivalent values",
+            "No such rank: find_by_order returns end().",
+            "No Mermaid error: No such rank: find_by_order returns end().",
+            "Empty container is drawn",
+            "Invalid input is explained",
+            "Markup input is rejected as data",
+            "Rank 4 contains 6.",
+            "No Mermaid error: Rank 4 contains 6.",
+            "No duplicate HTML/SVG IDs",
+            "No page-width overflow",
+            "All scripts are local",
+            "No browser script or resource errors"
+        ]
+    },
+    "mobile": {
+        "status": "passed",
+        "viewport": [
+            390,
+            844
+        ],
+        "checks": [
+            "Viewport matches requested width",
+            "Static diagram count matches the page",
+            "Export uses the documented CodePen prefill endpoint",
+            "Prefill contains the interactive markup and code",
+            "Public renderer and export button are configured",
+            "Rank 4 contains 6.",
+            "No Mermaid error: Rank 4 contains 6.",
+            "Select trace has the expected three decisions",
+            "4 entries are strictly before 6.",
+            "No Mermaid error: 4 entries are strictly before 6.",
+            "2 entries are strictly before 7.",
+            "No Mermaid error: 2 entries are strictly before 7.",
+            "4 entries are before or equal to 7.",
+            "No Mermaid error: 4 entries are before or equal to 7.",
+            "No such rank: find_by_order returns end().",
+            "No Mermaid error: No such rank: find_by_order returns end().",
+            "Rank 2 contains 7.",
+            "No Mermaid error: Rank 2 contains 7.",
+            "Unique mode removes equivalent values",
+            "No such rank: find_by_order returns end().",
+            "No Mermaid error: No such rank: find_by_order returns end().",
+            "Empty container is drawn",
+            "Invalid input is explained",
+            "Markup input is rejected as data",
+            "Rank 4 contains 6.",
+            "No Mermaid error: Rank 4 contains 6.",
+            "No duplicate HTML/SVG IDs",
+            "No page-width overflow",
+            "All scripts are local",
+            "No browser script or resource errors"
+        ]
+    }
+}

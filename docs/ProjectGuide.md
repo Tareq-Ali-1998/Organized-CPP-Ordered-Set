@@ -11,10 +11,13 @@ To use the C++ container, take `OrderedSet.hpp`. To explore the tree, open `inde
 | `Medium.md` | The long article in Markdown, retaining editable Mermaid diagram blocks. |
 | `Medium.publish.md` | The story-preparation copy with PNG diagrams instead of Mermaid source. |
 | `Medium.publish.html` | The complete static article with PNG diagrams. Copy its rendered content, or host it and give its public URL to Medium's importer. It is not a local file attachment to upload in Write. |
+| `embeds/CodePen.html` | A working tree preview and a button that opens a prepared CodePen draft. Save that Pen under your account, then paste its URL into Medium to add a supported interactive embed. |
 | `Codeforces.md` | The shorter contest article in Codeforces Markdown, including math and a full-code spoiler. Paste this version into the Codeforces editor. |
 | `Codeforces.html` | A local preview for reading. Codeforces itself renders the final math and spoiler. |
 
 The HTML pages are already generated and committed. Readers do **not** need to run `build.py` to make links or buttons work. Public repository/story/demo links stay visibly pending until their real URLs are added to `publishing.json`.
+
+Importing the article into Medium transfers readable content, not its JavaScript. Medium can display a supported CodePen embed separately. The launcher prepares the existing tree demo for that route; a live Pen and its behavior inside Medium still require saving and checking with the publisher's account. It does not transfer the complete website layout into Medium.
 
 ## Code, helpers, and inputs
 

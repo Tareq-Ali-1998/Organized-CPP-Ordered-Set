@@ -5,7 +5,7 @@ import html
 import json
 from pathlib import Path
 import re
-from urllib.parse import urlparse
+from urllib.parse import urlparse, urljoin
 
 from markdown_it import MarkdownIt
 from pygments import highlight
@@ -209,6 +209,48 @@ def render_html(text, title, interactive=False, prefix=''):
             + ''.join(toc) + f'</aside><article>{body}</article></div></body></html>\n')
 
 
+def codepen_payload(config):
+    website = config.get('interactive_url', '')
+    css = (ROOT/'assets/article.css').read_text(encoding='utf-8')
+    css += '\nbody { padding: 16px; background: white; }\n.lab { max-width: 900px; margin: 0 auto; }\n'
+    javascript = '\n\n'.join((ROOT/f'assets/{name}').read_text(encoding='utf-8')
+                             for name in ['demo-model.js', 'demo-ui.js'])
+    return {'title': 'Ordered Set: Interactive Rank and Selection',
+            'description': 'By Tareq Ali. A schematic tree walkthrough for sorted ranks, duplicates, and lower/upper counts.',
+            'private': False, 'html': LAB, 'css': css, 'js': javascript,
+            'js_external': urljoin(website, 'assets/vendor/mermaid.min.js') if website else '',
+            'head': '<meta name="viewport" content="width=device-width, initial-scale=1">'}
+
+
+def render_codepen_launcher(config):
+    payload = html.escape(json.dumps(codepen_payload(config), ensure_ascii=False), quote=True)
+    disabled = '' if config.get('interactive_url') else ' disabled'
+    notice = '' if not disabled else '<p>Set the confirmed hosted website URL in publishing.json and rebuild before exporting.</p>'
+    return ('<!doctype html>\n<html lang="en"><head><meta charset="utf-8">\n'
+            '<meta name="viewport" content="width=device-width, initial-scale=1">\n'
+            '<title>Interactive tree for Medium through CodePen</title>\n'
+            '<link rel="stylesheet" href="../assets/article.css">\n'
+            '<style>body{padding:20px}.embed-intro{max-width:900px;margin:0 auto 24px}'
+            '.embed-intro h1{font-size:2rem}.lab{max-width:900px;margin:0 auto}</style>\n'
+            '</head><body><main><div class="embed-intro">\n'
+            '<h1>Put the interactive tree inside Medium</h1>\n'
+            '<p>Medium can display a supported CodePen embed. The demo below is prepared from the same files as the website.</p>\n'
+            '<ol><li>Open the prepared Pen with the button below.</li>'
+            '<li>Sign in to CodePen if needed and save it as a public Pen.</li>'
+            '<li>Copy the saved Pen URL, paste it on its own line in Medium, and press Enter.</li></ol>\n'
+            '<p>This opens a draft on CodePen; it does not save or publish a Pen automatically. '
+            'The embed contains the interactive tree; Medium keeps its own article layout. '
+            'Check the saved Pen in Medium before publishing the story.</p>\n'
+            '<form data-codepen action="https://codepen.io/cpe/pen/define/" method="post" target="_blank" rel="noopener">\n'
+            f'<input type="hidden" name="data" value="{payload}">\n'
+            f'<button type="submit"{disabled}>Open the prepared demo in CodePen</button>\n'
+            f'</form>{notice}\n<p>Live local preview:</p></div>\n{LAB}\n</main>\n'
+            '<script defer src="../assets/vendor/mermaid.min.js"></script>\n'
+            '<script defer src="../assets/demo-model.js"></script>\n'
+            '<script defer src="../assets/demo-ui.js"></script>\n'
+            '</body></html>\n')
+
+
 def make_files(config=None):
     config = config or json.loads((ROOT/'publishing.json').read_text(encoding='utf-8'))
     validate_urls(config)
@@ -242,6 +284,7 @@ def make_files(config=None):
         'Codeforces.html': render_html(cf, 'Organized C++ Ordered Set — Codeforces preview'),
         'docs/Examples.md': examples_doc,
         'docs/API.html': render_html((ROOT/'docs/API.md').read_text(encoding='utf-8'), 'Ordered set API', prefix='../'),
+        'embeds/CodePen.html': render_codepen_launcher(config),
     }
     return files
 

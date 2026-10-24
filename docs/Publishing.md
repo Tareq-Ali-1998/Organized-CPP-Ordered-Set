@@ -56,6 +56,20 @@ Use `Medium.publish.md` as the publishing source and `Medium.publish.html` as th
 
 Pasting HTML source into Medium will not install the website or execute the tutorial's JavaScript. Copying rendered text can help transfer prose, but images and code blocks still need checking in Medium's own editor. Colors, layout, and custom CSS from the local preview are not promised to survive. The PNG diagrams retain their colors because those colors are part of the images.
 
+### Put the interactive tree inside Medium with a supported embed
+
+The article importer does not transfer working JavaScript. It produces a Medium story with readable content. This is different from a supported third-party embed: Medium explicitly lists [CodePen among its embed providers](https://help.medium.com/hc/en-us/articles/214981378-Using-embeds), and [CodePen documents URL-based embedding in Medium](https://blog.codepen.io/docs/embeds/). That route can put the working tree inside a story while Medium keeps its own surrounding article layout.
+
+1. Open [embeds/CodePen.html](../embeds/CodePen.html) in a browser. The local tree preview uses the existing tested demo files.
+2. Click **Open the prepared demo in CodePen**. The launcher uses CodePen's [documented prefill form](https://blog.codepen.io/docs/api/post-to-prefill-pen/) to open a prepared draft, with the existing markup, styling, and JavaScript. It does not save or publish anything automatically.
+3. Sign in to CodePen if needed and save the demo as a public Pen under your account. Confirm the tree controls work in that saved Pen.
+4. Copy its public Pen URL. In the Medium story, paste that URL on an otherwise empty line and press **Enter**. Paste the URL, not CodePen's HTML/iframe embed code.
+5. Check that Medium expands the URL to an interactive Pen. Some CMS embeds are interactive only after publication, as the provider documentation notes. Verify the actual result; the local browser checks do not establish that Medium has accepted an embed.
+
+This adds the tree's interactive controls; it does not reproduce the full website as Medium's native page layout. If Medium shows only a link card, keep the existing direct website link and investigate the saved Pen's embed rather than claiming the story is interactive.
+
+The launcher's exported model and UI are copied from the canonical local JavaScript; the renderer is referenced through the configured public website URL. Local launcher controls, form serialization, and a reconstructed Pen payload are tested separately from the external CodePen/Medium publishing step. The C++ library is independent of this publication workflow.
+
 ### Recommended: import the hosted article
 
 Medium's [Import a story tool](https://help.medium.com/hc/en-us/articles/214550207-Importing-a-post-to-Medium) accepts a public article URL. The files are already prepared; hosting makes that HTML and its images available to the importer.
@@ -69,6 +83,27 @@ Medium's [Import a story tool](https://help.medium.com/hc/en-us/articles/2145502
 7. Publish the reviewed story. Save its actual public Medium URL in `medium_url`, rebuild, and finish the Codeforces article last.
 
 The website URL is filled in only after its deployment is confirmed. A file on your computer is not a public URL, and pushing HTML into a repository does not by itself enable Pages hosting. Medium does not run the website's JavaScript; the story links to the interactive page.
+
+### Repair missing C++ blocks in an imported draft
+
+In the first Medium import for this project, the opening C++ example was confirmed missing. The pasted story text also omitted the other C++ examples, so each of the eight blocks needs a visual check. The original publishing page and shared examples contain all eight; an imported draft is not proof that every block transferred.
+
+Keep the imported draft and restore only the missing blocks. Open [the complete examples](Examples.md), or the [GitHub examples page](https://github.com/Tareq-Ali-1998/Organized-CPP-Ordered-Set/blob/main/docs/Examples.md), beside Medium. The snippets match the article and retain the aligned output comments.
+
+For each missing example, put the cursor at the end of the preceding paragraph in the Medium draft and press **Enter** to create a blank line. Click the **+** on the left, then **{ }** to insert a native code block. Copy only the matching example's code, without Markdown fences, and paste into that block. If a language selector is offered, choose C++. Check indentation after pasting. These are the [documented Medium code-block controls](https://help.medium.com/hc/en-us/articles/35756844492439-Using-code-blocks-and-inline-code).
+
+| Order | Example to copy | Exact position in the Medium story |
+|---|---|---|
+| 1 | [QuickStart](Examples.md#quickstart) | In **Start with the interface**, after the paragraph ending “access by sorted rank” and before “The sorted multiset begins”. |
+| 2 | [RawPBDS](Examples.md#rawpbds) | After “The underlying unique-key declaration looks like this:” in **The library already knows how to balance the tree**. |
+| 3 | [Construction](Examples.md#construction) | Immediately below **A few declarations you can keep in a template**, before the explanation of `T`. |
+| 4 | [Descending](Examples.md#descending) | After “For descending order:”. |
+| 5 | [CustomKeys](Examples.md#customkeys) | After “For custom objects, equivalence also follows the comparator:”. |
+| 6 | [Inversions](Examples.md#inversions) | In **Counting inversions**, after the paragraph ending “earlier values are strictly greater” and before “We subtract the upper rank”. |
+| 7 | [SlidingMedian](Examples.md#slidingmedian) | In **Sliding lower medians**, after the paragraph ending “this container's operations” and before the input/output example. |
+| 8 | [NarrowId](Examples.md#narrowid) | In **The contract behind the convenience**, after the ID-counter paragraph ending “padding may absorb any storage saving”. |
+
+The subtree-size formula is a separate ninth block; it is not one of these eight C++ snippets. If the import omitted the headings **The useful detail hidden inside the tree** or **Sliding lower medians**, restore those headings in their positions from the source article too. Check that each of the three colored diagrams is visible rather than only its caption. Do not reimport the article over a repaired draft or replace code with screenshots: native blocks keep it selectable and copyable.
 
 ### Fallback: copy the complete rendered article
 
