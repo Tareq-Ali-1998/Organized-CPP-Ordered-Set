@@ -6,6 +6,8 @@ The project is **Organized C++ Ordered Set**. You can write `ordered_set<int>` o
 
 [Code, examples, and complete API reference](https://github.com/Tareq-Ali-1998/Organized-CPP-Ordered-Set)
 
+[GitLab mirror](https://gitlab.com/tareqali591998/organized-cpp-ordered-set)
+
 ## Usage first
 
 ```c++
@@ -1058,7 +1060,15 @@ using multi_ordered_set = OrderedMultiSet<T, Compare, IdType>;
 
 </spoiler>
 
-**Detailed Medium walkthrough: publication URL pending.**
+## Visual walkthrough
+
+For a step-by-step explanation, the companion website lets you change values and follow rank/select queries through a tree.
+
+[Try the interactive tree on the website](https://tareq-ali-1998.github.io/Organized-CPP-Ordered-Set/#ordered-set-lab)
+
+
+
+[Read the detailed visual walkthrough on Medium](https://medium.com/@tareqali591998/c-ordered-set-and-multiset-a-practical-guide-to-gnu-pbds-35aeb7df7efc)
 
 Thanks for reading. If you find a counterexample, please share the smallest reproducing case so it can become a regression test. <3
 

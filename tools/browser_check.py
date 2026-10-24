@@ -9,7 +9,7 @@ from pathlib import Path
 import tempfile
 import time
 import websocket
-from urllib.parse import urlsplit, urljoin
+from urllib.parse import urlsplit
 
 from render_diagrams import ROOT, browser_path
 
@@ -50,38 +50,6 @@ window.addEventListener('load', async () => {
         await WaitFor(() => document.querySelector('#lab-tree svg'));
         Check(innerWidth === EXPECT_WIDTH, 'Viewport matches requested width');
         Check(document.querySelectorAll('figure[data-diagram] svg').length === EXPECT_FIGURES, 'Static diagram count matches the page');
-        const exportForm = document.querySelector('form[data-codepen]');
-        if (exportForm) {
-            const payload = JSON.parse(exportForm.elements.data.value);
-            Check(exportForm.action === 'https://codepen.io/cpe/pen/define/', 'Export uses the documented CodePen prefill endpoint');
-            Check(payload.html.includes('ordered-set-lab') && payload.js.includes('OrderedSetDemo'), 'Prefill contains the interactive markup and code');
-            Check(payload.js_external.startsWith('https://') && !exportForm.querySelector('button').disabled, 'Public renderer and export button are configured');
-        }
-        const source = document.getElementById('codepen-source');
-        if (source) {
-            Check(source.readOnly && source.value.startsWith('<style>') && !/<\/?(?:html|head|body)\b/i.test(source.value) && source.value.includes('OrderedSetDemo'), 'Classic copy contains styling and scripts without document wrappers');
-            const previousClipboard = Object.getOwnPropertyDescriptor(navigator, 'clipboard');
-            try {
-                let copied;
-                Object.defineProperty(navigator, 'clipboard', {configurable:true, value:{writeText:async value => { copied = value; }}});
-                Click('codepen-copy');
-                await WaitFor(() => document.getElementById('codepen-copy-status').textContent.startsWith('Copied.'));
-                Check(copied === source.value, 'Copy button passes the exact HTML to the clipboard');
-                Object.defineProperty(navigator, 'clipboard', {configurable:true, value:{writeText:async () => { throw new Error('Clipboard denied'); }}});
-                Click('codepen-copy');
-                await WaitFor(() => document.getElementById('codepen-copy-status').textContent.includes('Ctrl+C'));
-                Check(document.activeElement === source && source.selectionStart === 0 && source.selectionEnd === source.value.length, 'Clipboard denial leaves all code selected for manual copying');
-                Object.defineProperty(navigator, 'clipboard', {configurable:true, value:undefined});
-                Click('codepen-copy');
-                await WaitFor(() => document.getElementById('codepen-copy-status').textContent.includes('Ctrl+C'));
-                Check(source.selectionEnd === source.value.length, 'Missing Clipboard API also supports manual copying');
-                source.blur();
-            }
-            finally {
-                if (previousClipboard) Object.defineProperty(navigator, 'clipboard', previousClipboard);
-                else delete navigator.clipboard;
-            }
-        }
         await Query('1,2,3,5,6,7,9', 'multi', 'select', '4', 'Rank 4 contains 6.');
         Check(document.getElementById('lab-trace').children.length === 3, 'Select trace has the expected three decisions');
         await Query('1,2,3,5,6,7,9', 'multi', 'rank', '6', '4 entries are strictly before 6.');
@@ -100,9 +68,7 @@ window.addEventListener('load', async () => {
         const ids = [...document.querySelectorAll('[id]')].map(node => node.id);
         Check(new Set(ids).size === ids.length, 'No duplicate HTML/SVG IDs');
         Check(document.documentElement.scrollWidth <= innerWidth + 1, 'No page-width overflow');
-        const publicScripts = [...document.querySelectorAll('script[src^="http"]')].map(script => script.src);
-        const permittedScripts = EXPECT_RENDERER_URLS;
-        Check(JSON.stringify(publicScripts) === JSON.stringify(permittedScripts), 'Scripts use local files or the explicitly configured export renderer');
+        Check(document.querySelectorAll('script[src^="http"]').length === 0, 'All scripts are local');
         Check(browserErrors.length === 0, 'No browser script or resource errors');
         report.textContent = JSON.stringify({status:'passed', viewport:[innerWidth,innerHeight], checks:results});
     }
@@ -119,15 +85,7 @@ def main():
     parser.add_argument('--report', default='validation/Browser.json')
     parser.add_argument('--screenshot-prefix', default='validation/Medium')
     parser.add_argument('--no-screenshots', action='store_true')
-    parser.add_argument('--hosted-renderer', action='store_true', help='Test the CodePen export with its configured public renderer')
     args = parser.parse_args()
-    renderers = []
-    if args.hosted_renderer:
-        website = json.loads((ROOT/'publishing.json').read_text(encoding='utf-8')).get('interactive_url', '')
-        renderer = urljoin(website, 'assets/vendor/mermaid.min.js') if website else ''
-        if not renderer.startswith('https://'):
-            parser.error('--hosted-renderer needs a configured HTTPS website URL')
-        renderers.append(renderer)
     browser = browser_path(None)
     source = ROOT/args.page
     original = source.read_text(encoding='utf-8')
@@ -192,7 +150,6 @@ def main():
                     'deviceScaleFactor':1, 'mobile':name=='mobile'})
                 page = work/(name+'-check.html')
                 checks = TEST_SCRIPT.replace('EXPECT_WIDTH',str(width)).replace('EXPECT_FIGURES',str(figures))
-                checks = checks.replace('EXPECT_RENDERER_URLS', json.dumps(renderers))
                 harness = original.replace('</body>', '<script>'+checks+'</script></body>')
                 page.write_text(harness, encoding='utf-8')
                 call('Page.navigate', {'url':page.as_uri()})

@@ -2,7 +2,7 @@
 
 Generic, set-like C++ containers with sorted-rank access, correct duplicate handling, and a documented interface.
 
-[Interactive guide](https://tareq-ali-1998.github.io/Organized-CPP-Ordered-Set/) · [GitHub repository](https://github.com/Tareq-Ali-1998/Organized-CPP-Ordered-Set) · [GitLab mirror](https://gitlab.com/tareqali591998/organized-cpp-ordered-set)
+[Interactive guide](https://tareq-ali-1998.github.io/Organized-CPP-Ordered-Set/) · [Medium article](https://medium.com/@tareqali591998/c-ordered-set-and-multiset-a-practical-guide-to-gnu-pbds-35aeb7df7efc) · [Codeforces article](https://codeforces.com/blog/entry/158106) · [GitHub repository](https://github.com/Tareq-Ali-1998/Organized-CPP-Ordered-Set) · [GitLab mirror](https://gitlab.com/tareqali591998/organized-cpp-ordered-set)
 
 ```cpp
 ordered_set<int> s = {7, 2, 7, 5};
@@ -65,15 +65,14 @@ On GitHub or GitLab, an HTML file link normally opens the repository's source vi
 | [Examples](docs/Examples.md) | Strings, pairs, custom comparators, inversion counting, and sliding medians |
 | [Medium.md](Medium.md) | The detailed visual article, with Mermaid sources |
 | [Interactive visual guide](index.html) | Colored article with rendered diagrams and an interactive rank/select walkthrough; opens locally |
-| [CodePen setup for Medium](embeds/CodePen.html) | Preview the tree and copy the complete demo into a blank Pen; automatic setup is optional |
 | [Medium.publish.md](Medium.publish.md) | Medium publishing copy using PNG diagrams instead of Mermaid fences |
 | [Codeforces.md](Codeforces.md) | A separate contest-focused article with LaTeX math and collapsible full code |
-| [Codeforces.html](Codeforces.html) | Local reading preview of the Codeforces draft |
+| [Codeforces.html](Codeforces.html) | Local reading copy of the Codeforces article |
 | [Publishing guide](docs/Publishing.md) | Platform-specific steps, image captions, public URLs, and export instructions |
 | [Project guide](docs/ProjectGuide.md) | What each helper does, which files to edit, and how to fix stale-file messages |
 | [Validation](docs/Validation.md) | Actual test results and their limits |
 
-GitHub and GitLab render fenced Mermaid diagrams in Markdown. The HTML copies use diagrams rendered from those Mermaid sources, with a pinned local renderer for interactive updates. Medium stories use PNG images and can include a supported CodePen embed for the tree controls; importing the article does not transfer its JavaScript.
+GitHub and GitLab render fenced Mermaid diagrams in Markdown. The HTML copies use diagrams rendered from those Mermaid sources, with a pinned local renderer for interactive updates. The Medium story uses PNG diagrams and links to the interactive tree on the companion website. Readers open that website to change values and step through queries; importing the article into Medium does not transfer its JavaScript.
 
 `Medium.html` and `index.html` are identical interactive guides; `index.html` is the website entry point. `Medium.publish.html` is a static preparation copy with PNG diagrams, which makes copying prose and preparing Medium uploads easier. Publish `Codeforces.md` through the Codeforces editor and prepare the Medium story from `Medium.publish.md`; neither platform is a destination for pasting the complete HTML application.
 

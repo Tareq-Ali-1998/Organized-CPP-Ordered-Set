@@ -5,7 +5,7 @@ import html
 import json
 from pathlib import Path
 import re
-from urllib.parse import urlparse, urljoin
+from urllib.parse import urlparse
 
 from markdown_it import MarkdownIt
 from pygments import highlight
@@ -78,11 +78,13 @@ def source_code():
 
 
 def validate_urls(config, require_all=False):
+    required = ['repository_url', 'medium_url', 'interactive_url']
     missing = []
-    for field in ['repository_url', 'medium_url', 'interactive_url']:
+    for field in required + ['codeforces_url']:
         value = config.get(field, '')
         if not value:
-            missing.append(field)
+            if field in required:
+                missing.append(field)
             continue
         parsed = urlparse(value)
         if (parsed.scheme != 'https' or not parsed.netloc or parsed.username or parsed.password
@@ -93,11 +95,14 @@ def validate_urls(config, require_all=False):
     return missing
 
 
-def paragraph_link(config, field, label):
+def paragraph_link(config, field, label, fragment=''):
     if config.get(field):
-        return f'[{label}]({config[field]})'
+        target = config[field]
+        if fragment:
+            target = urlparse(target)._replace(fragment=fragment).geturl()
+        return f'[{label}]({target})'
     descriptions = {'repository_url': 'Repository', 'medium_url': 'Detailed Medium walkthrough',
-                    'interactive_url': 'Interactive walkthrough'}
+                    'interactive_url': 'Interactive walkthrough', 'codeforces_url': 'Codeforces article'}
     return f'**{descriptions[field]}: publication URL pending.**'
 
 
@@ -105,7 +110,8 @@ def expand(template, config, examples, code):
     replacements = {
         'repository': paragraph_link(config, 'repository_url', 'Code, examples, and complete API reference'),
         'medium': paragraph_link(config, 'medium_url', 'Read the detailed visual walkthrough on Medium'),
-        'interactive': paragraph_link(config, 'interactive_url', 'Open the interactive rank/select walkthrough') + '\n\n<!-- INTERACTIVE LAB -->',
+        'codeforces': paragraph_link(config, 'codeforces_url', 'Read the contest-focused article on Codeforces') if config.get('codeforces_url') else '',
+        'interactive': paragraph_link(config, 'interactive_url', 'Try the interactive tree on the website', fragment='ordered-set-lab') + '\n\n<!-- INTERACTIVE LAB -->',
         'implementation': '```c++\n' + code + '\n```',
     }
     def replace(match):
@@ -209,96 +215,6 @@ def render_html(text, title, interactive=False, prefix=''):
             + ''.join(toc) + f'</aside><article>{body}</article></div></body></html>\n')
 
 
-def codepen_payload(config):
-    website = config.get('interactive_url', '')
-    css = (ROOT/'assets/article.css').read_text(encoding='utf-8')
-    css += '\nbody { padding: 16px; background: white; }\n.lab { max-width: 900px; margin: 0 auto; }\n'
-    javascript = '\n\n'.join((ROOT/f'assets/{name}').read_text(encoding='utf-8')
-                             for name in ['demo-model.js', 'demo-ui.js'])
-    return {'title': 'Ordered Set: Interactive Rank and Selection',
-            'description': 'By Tareq Ali. A schematic tree walkthrough for sorted ranks, duplicates, and lower/upper counts.',
-            'private': False, 'html': LAB, 'css': css, 'js': javascript,
-            'js_external': urljoin(website, 'assets/vendor/mermaid.min.js') if website else '',
-            'head': '<meta name="viewport" content="width=device-width, initial-scale=1">'}
-
-
-def codepen_body(payload):
-    renderer = payload['js_external'] or '../assets/vendor/mermaid.min.js'
-    javascript = re.sub(r'</script', r'<\\/script', payload['js'], flags=re.I)
-    return ('<style>\n' + payload['css'] + '</style>\n' + payload['html']
-            + '\n<script src="' + html.escape(renderer, quote=True) + '"></script>\n'
-            + '<script>\n' + javascript + '\n</script>\n')
-
-
-def render_codepen_demo(config):
-    payload = codepen_payload(config)
-    return ('<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n'
-            + payload['head'] + '\n<title>' + html.escape(payload['title']) + '</title>\n'
-            + '</head>\n<body>\n' + codepen_body(payload) + '</body>\n</html>\n')
-
-
-def render_codepen_launcher(config):
-    export = codepen_payload(config)
-    payload = html.escape(json.dumps(export, ensure_ascii=False), quote=True)
-    manual_source = html.escape(codepen_body(export), quote=False)
-    disabled = '' if config.get('interactive_url') else ' disabled'
-    notice = '' if not disabled else '<p>Set the confirmed hosted website URL in publishing.json and rebuild before exporting.</p>'
-    return ('<!doctype html>\n<html lang="en"><head><meta charset="utf-8">\n'
-            '<meta name="viewport" content="width=device-width, initial-scale=1">\n'
-            '<title>Interactive tree for Medium through CodePen</title>\n'
-            '<link rel="stylesheet" href="../assets/article.css">\n'
-            '<style>body{padding:20px}.embed-intro{max-width:900px;margin:0 auto 24px}'
-            '.embed-intro h1{font-size:2rem}.lab{max-width:900px;margin:0 auto}'
-            '#codepen-source{display:block;width:100%;height:180px;margin:14px 0;'
-            'font:13px/1.5 Consolas,monospace;white-space:pre;overflow:auto}'
-            '#codepen-copy-status{min-height:1.75em}</style>\n'
-            '</head><body><main><div class="embed-intro">\n'
-            '<h1>Put the interactive tree inside Medium</h1>\n'
-            '<p>Medium can display a supported CodePen embed. The demo below is prepared from the same files as the website.</p>\n'
-            '<ol><li>Sign in to CodePen and <a href="https://codepen.io/pen/" target="_blank" rel="noopener">open a blank Pen</a>.</li>'
-            '<li>Click <strong>Copy demo HTML</strong> below. Replace everything in the '
-            'Classic editor’s <strong>HTML</strong> panel '
-            'with the copied code. Leave the CSS and JS editors empty.</li>'
-            '<li>Test the tree in the preview, then save the Pen as public.</li>'
-            '<li>Copy the saved Pen URL, paste it on its own line in Medium, and press Enter.</li></ol>\n'
-            '<p>The HTML contains the demo styling and query scripts. It loads the diagram renderer from '
-            'the configured public website, so the Pen needs an internet connection. '
-            'Medium keeps its own article layout, and its embeds become interactive after publication.</p>\n'
-            f'<button type="button" id="codepen-copy"{disabled}>Copy demo HTML</button>\n'
-            '<p id="codepen-copy-status" role="status" aria-live="polite"></p>\n'
-            '<label for="codepen-source">Classic HTML-panel code (styling and scripts included; '
-            'no document wrappers)</label>\n'
-            f'<textarea id="codepen-source" readonly spellcheck="false">{manual_source}</textarea>\n'
-            '<p>Using the new editor with an <strong>index.html</strong> file? Open '
-            '<a href="CodePenDemo.html">CodePenDemo.html</a> in a text editor and copy the '
-            'entire file instead. That version includes the document wrappers.</p>\n'
-            '<details><summary>Optional automatic setup</summary>\n'
-            '<p>The automatic form can fail with “Something Went Wrong” on CodePen. '
-            'Use the copy instructions above if it fails. This opens a draft; it does not save or publish a Pen automatically.</p>\n'
-            '<form data-codepen action="https://codepen.io/cpe/pen/define/" method="post" target="_blank" rel="noopener">\n'
-            f'<input type="hidden" name="data" value="{payload}">\n'
-            f'<button type="submit"{disabled}>Open the prepared demo in CodePen</button>\n'
-            f'</form></details>{notice}\n<p>Live local preview:</p></div>\n{LAB}\n</main>\n'
-            '<script>\n'
-            'document.getElementById("codepen-copy").addEventListener("click", async () => {\n'
-            '    const source = document.getElementById("codepen-source");\n'
-            '    const status = document.getElementById("codepen-copy-status");\n'
-            '    source.focus();\n'
-            '    source.select();\n'
-            '    try {\n'
-            '        await navigator.clipboard.writeText(source.value);\n'
-            '        status.textContent = "Copied. Replace the Classic editor’s HTML-panel contents with this code.";\n'
-            '    }\n'
-            '    catch (error) {\n'
-            '        status.textContent = "The code is selected. Press Ctrl+C (Cmd+C on Mac), then paste into CodePen.";\n'
-            '    }\n'
-            '});\n</script>\n'
-            '<script defer src="../assets/vendor/mermaid.min.js"></script>\n'
-            '<script defer src="../assets/demo-model.js"></script>\n'
-            '<script defer src="../assets/demo-ui.js"></script>\n'
-            '</body></html>\n')
-
-
 def make_files(config=None):
     config = config or json.loads((ROOT/'publishing.json').read_text(encoding='utf-8'))
     validate_urls(config)
@@ -309,6 +225,7 @@ def make_files(config=None):
     cf = expand((ROOT/'sources/Codeforces.template.md').read_text(encoding='utf-8'), config, examples, code)
     cf = cf.replace('```cpp\n', '```c++\n')
     cf = re.sub(r'<!-- example: \w+ -->\n', '', cf)
+    cf = cf.replace('<!-- INTERACTIVE LAB -->', '')
     publish = diagram_images(medium, png=True).replace('<!-- INTERACTIVE LAB -->', '')
     publish = re.sub(r'<!-- example: \w+ -->\n', '', publish)
     example = (ROOT/'Example.cpp').read_text(encoding='utf-8')
@@ -332,8 +249,6 @@ def make_files(config=None):
         'Codeforces.html': render_html(cf, 'Organized C++ Ordered Set — Codeforces preview'),
         'docs/Examples.md': examples_doc,
         'docs/API.html': render_html((ROOT/'docs/API.md').read_text(encoding='utf-8'), 'Ordered set API', prefix='../'),
-        'embeds/CodePen.html': render_codepen_launcher(config),
-        'embeds/CodePenDemo.html': render_codepen_demo(config),
     }
     return files
 

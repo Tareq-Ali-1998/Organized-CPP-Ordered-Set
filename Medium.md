@@ -134,9 +134,9 @@ This is the idea behind `order_of_key(x)`. With the default ascending comparator
 
 For `{2, 5, 7, 7}`, the lower rank of seven is two and the upper rank is four. Their difference gives the number of sevens: two. Counting duplicates does not require walking over them.
 
-The interactive version accompanying this article lets you change the values, choose a rank or threshold, and step through the decisions. Every step shows what was counted or skipped.
+You can try these queries on the companion website. Change the values, choose a rank or threshold, and step through the decisions. Each step shows which values were counted or skipped.
 
-[Open the interactive rank/select walkthrough](https://tareq-ali-1998.github.io/Organized-CPP-Ordered-Set/)
+[Try the interactive tree on the website](https://tareq-ali-1998.github.io/Organized-CPP-Ordered-Set/#ordered-set-lab)
 
 <!-- INTERACTIVE LAB -->
 
@@ -376,6 +376,8 @@ The supplied suite compares these containers with standard sets and multisets, t
 The exact compiler results and any execution restrictions are recorded with the project. Tests give us evidence and useful regression cases; the ordering invariant explains why the method works.
 
 The central idea is small enough to keep in mind: **store the size of each subtree, then count whole groups instead of individual elements**. The reusable class is there so that idea is convenient to use on the next problem.
+
+[Read the contest-focused article on Codeforces](https://codeforces.com/blog/entry/158106)
 
 [Code, examples, and complete API reference](https://github.com/Tareq-Ali-1998/Organized-CPP-Ordered-Set)
 

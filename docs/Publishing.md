@@ -1,18 +1,31 @@
 # Publishing this project
 
-## Links to add later
+## Publication links
 
-The project has been pushed to [GitHub](https://github.com/Tareq-Ali-1998/Organized-CPP-Ordered-Set) and [GitLab](https://gitlab.com/tareqali591998/organized-cpp-ordered-set). GitHub is the primary repository linked from the articles. The [interactive guide](https://tareq-ali-1998.github.io/Organized-CPP-Ordered-Set/) and [Medium import page](https://tareq-ali-1998.github.io/Organized-CPP-Ordered-Set/Medium.publish.html) are live on GitHub Pages; both pages and all three article diagrams were checked with successful HTTP responses. The Medium story URL is still pending:
+The project has been pushed to [GitHub](https://github.com/Tareq-Ali-1998/Organized-CPP-Ordered-Set) and [GitLab](https://gitlab.com/tareqali591998/organized-cpp-ordered-set). GitHub is the primary repository linked from the articles. The [interactive guide](https://tareq-ali-1998.github.io/Organized-CPP-Ordered-Set/) and [Medium import page](https://tareq-ali-1998.github.io/Organized-CPP-Ordered-Set/Medium.publish.html) are live on GitHub Pages; both pages and all three article diagrams were checked with successful HTTP responses. The author has published the [Medium story](https://medium.com/@tareqali591998/c-ordered-set-and-multiset-a-practical-guide-to-gnu-pbds-35aeb7df7efc) and the [new Codeforces article](https://codeforces.com/blog/entry/158106), and supplied both public URLs. All four publishing URL fields are filled:
 
 - [x] Create both repositories and add the actual GitHub URL to `repository_url` in `publishing.json`.
-- [ ] Add the actual Medium story URL to `medium_url`.
+- [x] Add the actual Medium story URL to `medium_url`.
+- [x] Add the new Codeforces article's public URL to `codeforces_url`.
 - [x] Confirm the hosted website and add its actual URL to `interactive_url`.
-- [ ] Run `python build.py` to put those links into both articles.
-- [ ] After the Medium story and hosted guide exist, run `python build.py --release-check` before posting the Codeforces article. It rejects missing or invalid URLs and stale outputs.
+- [x] Run `python build.py` to put those links into both articles.
+- [x] Run `python build.py --release-check`. It rejects missing required URLs, invalid configured URLs, and stale outputs.
 
-Push the generated article with its confirmed interactive-guide link, wait for Pages to update, and import the hosted article into Medium. Publish the story when its content and outgoing links are ready. Then save its actual public story URL in `publishing.json`, rebuild, and finish Codeforces last. The release check is the final cross-platform link check; it does not prevent starting a Medium draft before that story has a public URL.
+Both articles are published. The final local update records their public URLs, adds the Codeforces link to the visual guide and static publishing copies, and refreshes the README and these publication notes. Leave the existing old Codeforces blog unchanged. Commit and push the reviewed source/generated-file updates so both repositories and the hosted guide receive these links.
 
-The Codeforces draft intentionally displays a pending Medium link until that real URL exists. The repository links point to the projects' default-branch views, so readers reach the current code as new commits are pushed. No unpublished article or hosting URL is guessed.
+The Codeforces article source links to the published Medium story, the interactive website, GitHub, and GitLab. The visual guide links back to the published Codeforces article. Repository links point to the projects' default-branch views, so readers reach the current code as new commits are pushed.
+
+### Before the final push
+
+The author asked for the publication links to be updated locally before the final push to both remotes. The public Medium and Codeforces URLs are now saved in `publishing.json`, the README, and the publication/status documentation. These local changes do not update already-published stories automatically.
+
+- [x] Record the public URL of the **new** Codeforces entry in the configuration, README, and publication/status documentation. Keep the old blog unchanged.
+- [x] Check the configured repository, website, Medium, and new Codeforces URL values and generated destinations; use public article URLs rather than editor or preview URLs.
+- [x] Rebuild with `python build.py`, then run `python build.py --release-check` and `python verify.py --documents-only` after the last link edit.
+- [ ] Commit the reviewed source and generated-file updates, then push the same commit to `origin` and `gitlab`.
+- [ ] After GitHub Pages redeploys, check the updated website's outgoing links.
+
+The release check requires repository, Medium, and website URLs, validates the Codeforces URL when supplied, and checks generated-file freshness. `codeforces_url` may be empty before a new article is published; its link is omitted in that case. A successful local check validates URL syntax and generated destinations, not live platform availability or a completed push.
 
 ## GitHub and GitLab
 
@@ -30,9 +43,11 @@ The `.gitattributes` file keeps text line endings stable across Windows and Linu
 
 ## Codeforces
 
-Suggested title: **Organized C++ Ordered Set and Multiset**.
+Published article: [Organized C++ Ordered Set and Multiset](https://codeforces.com/blog/entry/158106).
 
-Paste the contents of `Codeforces.md` into the body. It is a distinct contest-focused article, with zero-based usage, complexity, duplicate handling, a sliding-window example, and the complete copyable implementation inside a spoiler.
+The new entry under `Tareq_Ali` is already published. The existing old blog is to remain published and unchanged. The author will decide separately whether to remove it after assessing the new post. Do not create a duplicate entry to refresh links.
+
+`Codeforces.md` retains the distinct contest-focused article, with zero-based usage, complexity, duplicate handling, a sliding-window example, and the complete copyable implementation inside a spoiler. If the author later updates the published article, use this source and review the editor preview before saving the change.
 
 Codeforces uses modified Markdown, with LaTeX for math. The source uses `$...$` inline formulas, fenced `c++` blocks, and `<spoiler summary="...">` for the implementation, following the [Codeforces formatting tutorial](https://codeforces.com/blog/entry/104522?locale=en). It is not a pure LaTeX document. Use the editor preview before publishing.
 
@@ -56,21 +71,17 @@ Use `Medium.publish.md` as the publishing source and `Medium.publish.html` as th
 
 Pasting HTML source into Medium will not install the website or execute the tutorial's JavaScript. Copying rendered text can help transfer prose, but images and code blocks still need checking in Medium's own editor. Colors, layout, and custom CSS from the local preview are not promised to survive. The PNG diagrams retain their colors because those colors are part of the images.
 
-### Put the interactive tree inside Medium with a supported embed
+### Link to the interactive website
 
-The article importer does not transfer working JavaScript. It produces a Medium story with readable content. This is different from a supported third-party embed: Medium explicitly lists [CodePen among its embed providers](https://help.medium.com/hc/en-us/articles/214981378-Using-embeds), and [CodePen documents URL-based embedding in Medium](https://blog.codepen.io/docs/embeds/). That route can put the working tree inside a story while Medium keeps its own surrounding article layout.
+The Medium story contains the explanation, eight C++ examples, a subtree-size formula, and three PNG diagrams. The query controls run on the companion website. The generated article's **Try the interactive tree on the website** link opens that page directly at the controls.
 
-1. Open the local [embeds/CodePen.html](../embeds/CodePen.html) in a browser. The local tree preview uses the existing tested demo files. This does not require another push.
-2. Sign in to CodePen, then [open a blank Classic Pen](https://codepen.io/pen/). Click **Copy demo HTML** on the local setup page. Replace everything in the **HTML** panel with that code. It includes styling and scripts but omits document wrappers, because the [Classic HTML panel expects body content](https://blog.codepen.io/documentation/editor-view/). Leave the CSS and JS panels empty. If clipboard access is denied, the setup page selects all the code; press **Ctrl+C** (**Cmd+C** on Mac) yourself. In the new editor, open [CodePenDemo.html](../embeds/CodePenDemo.html) in a text editor and copy the entire file into **index.html** instead. The full file includes the document wrappers required there; CodePen's [editor migration guide](https://blog.codepen.io/docs/what-changed/) explains that difference.
-3. Confirm the tree controls work in the preview, then save the demo as a public Pen under your account. Check the saved Pen too.
-4. Copy its public Pen URL. In the Medium story, paste that URL on an otherwise empty line and press **Enter**. Paste the URL, not CodePen's HTML/iframe embed code.
-5. Check that Medium expands the URL into a Pen embed. Medium says its embeds become interactive after publication; the draft may show a preview. Verify the actual published result too. The local browser checks do not establish that Medium has accepted an embed.
+In Medium, keep this as a normal hyperlink. If the importer omitted it, select the text **Try the interactive tree on the website**, use the chain-link button, and enter:
 
-This adds the tree's interactive controls; it does not reproduce the full website as Medium's native page layout. If Medium shows only a link card, keep the existing direct website link and investigate the saved Pen's embed rather than claiming the story is interactive.
+```text
+https://tareq-ali-1998.github.io/Organized-CPP-Ordered-Set/#ordered-set-lab
+```
 
-The Classic copy and complete demo HTML use identical styling, model, and UI from the canonical local files; their only external asset is the renderer at the configured public website URL. A saved Pen needs internet access to load that renderer. The setup page's own preview remains local and works offline. Local preview controls, copy success/failure, absence of document wrappers in the Classic copy, form serialization, and the exported HTML are tested separately from the external CodePen/Medium publishing step. The C++ library is independent of this publication workflow.
-
-The **Optional automatic setup** section retains CodePen's [documented prefill form](https://blog.codepen.io/docs/api/post-to-prefill-pen/). That endpoint returned **Something Went Wrong** during the publisher's attempt; its error page did not identify a cause. The manual setup above bypasses the endpoint, and the page does not save or publish anything automatically. Do not keep retrying the failed form or mistake its failure for a failure of the demo itself.
+Medium's [story editor guide](https://help.medium.com/hc/en-us/articles/215194537-Using-the-story-editor) explains how to add a hyperlink. Readers follow the link to change values and step through rank/select queries on the website. Do not describe the controls as running inside the Medium story.
 
 ### Recommended: import the hosted article
 

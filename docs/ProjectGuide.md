@@ -11,14 +11,12 @@ To use the C++ container, take `OrderedSet.hpp`. To explore the tree, open `inde
 | `Medium.md` | The long article in Markdown, retaining editable Mermaid diagram blocks. |
 | `Medium.publish.md` | The story-preparation copy with PNG diagrams instead of Mermaid source. |
 | `Medium.publish.html` | The complete static article with PNG diagrams. Copy its rendered content, or host it and give its public URL to Medium's importer. It is not a local file attachment to upload in Write. |
-| `embeds/CodePen.html` | A working tree preview and a copy button for a Classic Pen's HTML panel. The copied markup omits document wrappers. The automatic form is optional because it can fail on CodePen. |
-| `embeds/CodePenDemo.html` | Complete demo HTML for the new editor's `index.html` or a normal browser. Styling and query scripts are included; the diagram renderer loads from the configured public website. The Classic HTML panel uses the copy button above instead. |
 | `Codeforces.md` | The shorter contest article in Codeforces Markdown, including math and a full-code spoiler. Paste this version into the Codeforces editor. |
 | `Codeforces.html` | A local preview for reading. Codeforces itself renders the final math and spoiler. |
 
 The HTML pages are already generated and committed. Readers do **not** need to run `build.py` to make links or buttons work. Public repository/story/demo links stay visibly pending until their real URLs are added to `publishing.json`.
 
-Importing the article into Medium transfers readable content, not its JavaScript. Medium can display a supported CodePen embed separately. The launcher prepares the existing tree demo for that route; a live Pen and its behavior inside Medium still require saving and checking with the publisher's account. It does not transfer the complete website layout into Medium.
+The Medium story contains the explanation, C++ examples, and PNG diagrams. Its interactive-tree link opens the companion website at the query controls. Readers use the controls there; the Medium importer does not transfer the website’s JavaScript or layout. No separate demo-hosting account is needed.
 
 ## Code, helpers, and inputs
 
@@ -34,7 +32,7 @@ Importing the article into Medium transfers readable content, not its JavaScript
 | `sources/Medium.template.md` | The editable prose for the long article, with placeholders for shared examples and diagrams. | Article maintainers. |
 | `sources/Codeforces.template.md` | The editable contest article. Its audience and wording remain separate from Medium. | Article maintainers. |
 | `sources/examples.json` | The shared C++ snippets. Trailing output comments align in one column across the published copies. | Example maintainers. |
-| `publishing.json` | The real repository, Medium story, and hosted-demo URLs. Empty means not published yet. | The publisher. |
+| `publishing.json` | The real repository, Medium story, Codeforces article, and hosted-demo URLs. The Codeforces link is optional until that article is published. | The publisher. |
 | `assets/demo-model.js` | Builds a small schematic balanced tree and calculates rank/select steps. This teaches the counting idea; it is not the C++ PBDS implementation. | Loaded automatically by the interactive HTML. |
 | `assets/demo-ui.js` | Connects inputs and buttons to that model and updates the diagram. | Loaded automatically by the interactive HTML. |
 | `assets/vendor/mermaid.min.js` | The pinned local Mermaid diagram renderer and its retained license. | Loaded automatically by the interactive HTML. |
@@ -98,4 +96,4 @@ The executable goes under `build/`; its exact location depends on the generator.
 
 Follow [Publishing.md](Publishing.md) for GitHub, GitLab, Codeforces, and Medium. For Medium, the recommended bulk-transfer route is to host `Medium.publish.html` and use **Stories → Import a story** with its public URL. Copying the complete rendered article is the fallback; retyping it section by section is unnecessary. Review the converted story before publishing.
 
-Publishing the repository and publishing the articles are separate steps. Remember to add the real URLs to `publishing.json` when they exist; the release check deliberately refuses missing links. The local HTML is a complete offline website, while the story platforms use their own editors.
+Publishing the repository and publishing the articles are separate steps. Remember to add the real URLs to `publishing.json` when they exist; the release check refuses missing repository, Medium, and website links and validates the Codeforces link when supplied. The local HTML is a complete offline website, while the story platforms use their own editors.

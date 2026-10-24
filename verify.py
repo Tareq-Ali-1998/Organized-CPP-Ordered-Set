@@ -14,7 +14,7 @@ import subprocess
 import tempfile
 import xml.etree.ElementTree as ET
 
-from build import ROOT, make_files, source_code, stale_outputs, stale_message, codepen_payload
+from build import ROOT, make_files, source_code, stale_outputs, stale_message
 from tools.example_checks import published_tests
 
 
@@ -96,15 +96,11 @@ def check_documents():
                             ('svg_sha256', ROOT/f'assets/diagrams/{name}.svg'),
                             ('png_sha256', ROOT/f'assets/medium/{name}.png')]:
             require(sha(path) == record[field], 'Stale diagram export: '+name)
-    config = json.loads((ROOT/'publishing.json').read_text(encoding='utf-8'))
-    codepen_renderer = codepen_payload(config)['js_external']
     for name in [relative for relative in generated if relative.endswith('.html')]:
         parser = PageParser()
         parser.feed(generated[name])
         require(len(parser.ids) == len(set(parser.ids)), 'Duplicate HTML IDs in '+name)
         for path in parser.resources:
-            if name == 'embeds/CodePenDemo.html' and path == codepen_renderer:
-                continue
             require(not path.startswith(('http:', 'https:', '//')), 'HTML requests an external asset: '+path)
             require((ROOT/name).parent.joinpath(path).is_file(), 'Missing local HTML asset: '+path)
         require(re.search(r'\sstyle="[\s;]*"', generated[name]) is None,
@@ -114,8 +110,7 @@ def check_documents():
     provenance = json.loads((ROOT/'assets/vendor/provenance.json').read_text(encoding='utf-8'))
     require(sha(ROOT/'assets/vendor/mermaid.min.js') == provenance['bundle_sha256'], 'Mermaid bundle changed')
     return generated, {'generated_files': list(generated), 'documented_method_names': len(methods),
-                       'rendered_diagrams': len(manifest['diagrams']), 'offline_assets_present': True,
-                       'codepen_export_hosted_renderer': codepen_renderer}
+                       'rendered_diagrams': len(manifest['diagrams']), 'offline_assets_present': True}
 
 
 def check_preserved_contributions():

@@ -6,6 +6,8 @@ The project is **Organized C++ Ordered Set**. You can write `ordered_set<int>` o
 
 {{repository}}
 
+[GitLab mirror](https://gitlab.com/tareqali591998/organized-cpp-ordered-set)
+
 ## Usage first
 
 {{example:QuickStart}}
@@ -98,6 +100,12 @@ Copy this above your solution functions. The code has no custom-header dependenc
 {{implementation}}
 
 </spoiler>
+
+## Visual walkthrough
+
+For a step-by-step explanation, the companion website lets you change values and follow rank/select queries through a tree.
+
+{{interactive}}
 
 {{medium}}
 

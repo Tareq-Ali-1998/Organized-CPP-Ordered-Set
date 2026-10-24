@@ -200,8 +200,8 @@ pre .il { color: #666 } /* Literal.Number.Integer.Long */
 <p>At node six, equality does not count for a strict “smaller than” query. Move left again, reaching a missing child. The answer is four.</p>
 <p>This is the idea behind <code>order_of_key(x)</code>. With the default ascending comparator, it counts values <code>&lt; x</code>. A second operation, <code>order_of_key_upper(x)</code>, includes equivalent values and therefore counts <code>&lt;= x</code>.</p>
 <p>For <code>{2, 5, 7, 7}</code>, the lower rank of seven is two and the upper rank is four. Their difference gives the number of sevens: two. Counting duplicates does not require walking over them.</p>
-<p>The interactive version accompanying this article lets you change the values, choose a rank or threshold, and step through the decisions. Every step shows what was counted or skipped.</p>
-<p><a href="https://tareq-ali-1998.github.io/Organized-CPP-Ordered-Set/">Open the interactive rank/select walkthrough</a></p>
+<p>You can try these queries on the companion website. Change the values, choose a rank or threshold, and step through the decisions. Each step shows which values were counted or skipped.</p>
+<p><a href="https://tareq-ali-1998.github.io/Organized-CPP-Ordered-Set/#ordered-set-lab">Try the interactive tree on the website</a></p>
 <section id="ordered-set-lab" class="lab" aria-labelledby="lab-title">
 <h2 id="lab-title">Try the counting idea</h2>
 <p class="lab-note">A schematic balanced search tree for learning rank and selection.
@@ -374,6 +374,7 @@ PBDS can choose a different balanced shape. This walkthrough uses ascending inte
 <p>The supplied suite compares these containers with standard sets and multisets, tests both ordering directions, and checks custom types, numeric limits, iterators, copy/move/swap, and ID exhaustion. Each successful full suite run includes 27,073,587 checks, with randomized operations and bounded exhaustive traces. The examples above are extracted and compiled, and the recipe functions are compared with simple reference solutions.</p>
 <p>The exact compiler results and any execution restrictions are recorded with the project. Tests give us evidence and useful regression cases; the ordering invariant explains why the method works.</p>
 <p>The central idea is small enough to keep in mind: <strong>store the size of each subtree, then count whole groups instead of individual elements</strong>. The reusable class is there so that idea is convenient to use on the next problem.</p>
+<p><a href="https://codeforces.com/blog/entry/158106">Read the contest-focused article on Codeforces</a></p>
 <p><a href="https://github.com/Tareq-Ali-1998/Organized-CPP-Ordered-Set">Code, examples, and complete API reference</a></p>
 <p><em>By Tareq Ali. This article was organized with AI assistance.</em></p>
 </article></div></body></html>
